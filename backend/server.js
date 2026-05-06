@@ -27,12 +27,46 @@ app.use('/api/admin',         require('./routes/admin'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Meipuratchi API running' }));
 
+// Serve frontend static files in production
+if (process.env.NODE_ENV === 'production') {
+  const path = require('path');
+  const frontendDist = path.join(__dirname, '../frontend/dist');
+  app.use(express.static(frontendDist));
+  // All non-API routes → index.html (SPA fallback)
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(frontendDist, 'index.html'));
+    }
+  });
+}
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
 })
-  .then(() => {
+  .then(async () => {
     console.log('✅ MongoDB Atlas connected');
+
+    // Auto-seed content if DB is empty
+    try {
+      const SiteContent = require('./models/SiteContent');
+      const count = await SiteContent.countDocuments();
+      if (count === 0) {
+        console.log('📦 No content found — running seed...');
+        const SiteTheme = require('./models/SiteTheme');
+        const { defaultPages, defaultThemes } = require('./seed/seedContent');
+        for (const page of defaultPages) {
+          await SiteContent.findOneAndUpdate({ pageId: page.pageId }, { $set: { blocks: page.blocks, title: page.title, slug: page.slug, order: page.order } }, { upsert: true });
+        }
+        for (const theme of defaultThemes) {
+          await SiteTheme.findOneAndUpdate({ name: theme.name }, { $setOnInsert: theme }, { upsert: true });
+        }
+        console.log('✅ Auto-seed complete');
+      }
+    } catch (e) {
+      console.log('Seed skipped:', e.message);
+    }
+
     app.listen(process.env.PORT, () => console.log(`🚀 Server running on port ${process.env.PORT}`));
   })
   .catch(err => {

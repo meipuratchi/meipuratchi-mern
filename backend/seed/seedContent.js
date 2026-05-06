@@ -241,7 +241,6 @@ const defaultThemes = [
 async function seed() {
   await mongoose.connect(process.env.MONGO_URI);
   console.log('Connected to MongoDB');
-
   // Force update all pages (replace blocks completely)
   for (const page of defaultPages) {
     await SiteContent.findOneAndUpdate(
@@ -265,4 +264,11 @@ async function seed() {
   process.exit(0);
 }
 
-seed().catch(e => { console.error(e); process.exit(1); });
+// Only run when executed directly
+if (require.main === module) {
+  seed().catch(e => { console.error(e); process.exit(1); });
+}
+
+// Export for auto-seed on startup
+module.exports = { defaultPages, defaultThemes };
+
