@@ -1,0 +1,166 @@
+.reg-page { padding-top: 0; }
+
+.reg-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, #1a3a6e 100%);
+  color: white;
+  padding: 140px 0 60px;
+  text-align: center;
+}
+
+.reg-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 166, 35, 0.2);
+  border: 1px solid rgba(245, 166, 35, 0.4);
+  color: var(--accent);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.reg-hero h1 { font-size: 2.8rem; margin-bottom: 12px; }
+.reg-hero p { opacity: 0.8; font-size: 1.1rem; }
+
+.reg-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  padding-top: 60px;
+  padding-bottom: 80px;
+  align-items: start;
+}
+
+.reg-info {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(25, 36, 65, 0.08);
+  position: sticky;
+  top: 100px;
+}
+
+.reg-info h3 {
+  font-size: 1.2rem;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+.reg-info ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.reg-info ul li {
+  font-size: 0.9rem;
+  color: var(--dark);
+  line-height: 1.5;
+}
+
+.reg-eligibility {
+  background: rgba(25, 36, 65, 0.04);
+  border-left: 4px solid var(--accent);
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+}
+
+.reg-eligibility h4 {
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.reg-eligibility p {
+  font-size: 0.85rem;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+.reg-form-wrap {
+  padding: 40px;
+}
+
+.reg-form-wrap h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.4rem;
+  color: var(--primary);
+  margin-bottom: 28px;
+}
+
+.submit-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 16px;
+  font-size: 1.05rem;
+  margin-top: 8px;
+}
+
+.success-card {
+  max-width: 600px;
+  margin: 60px auto 80px;
+  background: white;
+  border-radius: 20px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(25, 36, 65, 0.1);
+}
+
+.success-icon { font-size: 4rem; margin-bottom: 20px; }
+.success-card h2 { color: var(--primary); margin-bottom: 16px; }
+.success-card p { color: var(--gray); line-height: 1.7; }
+
+@media (max-width: 900px) {
+  .reg-container { grid-template-columns: 1fr; }
+  .reg-info { position: static; }
+}
+
+@media (max-width: 640px) {
+  .reg-hero h1 { font-size: 2rem; }
+  .reg-form-wrap { padding: 24px; }
+}
+
+/* inline eye toggle for registration page */
+.input-eye-reg {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-eye-reg input {
+  width: 100%;
+  padding: 14px 44px 14px 18px;
+  border: 2px solid #e9ecef;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  background: white;
+  color: var(--dark);
+}
+
+.input-eye-reg input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(25, 36, 65, 0.08);
+}
+
+.input-eye-reg button {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
+.input-eye-reg button:hover { color: var(--primary); }

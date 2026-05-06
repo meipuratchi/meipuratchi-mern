@@ -1,0 +1,166 @@
+.para-page { padding-top: 0; }
+
+.para-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, #1a3a6e 100%);
+  color: white;
+  padding: 140px 0 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-circles { position: absolute; inset: 0; }
+.fc {
+  position: absolute;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+  animation: float 15s infinite ease-in-out;
+}
+.fc:nth-child(1) { width: 200px; height: 200px; top: 10%; left: 5%; animation-delay: 0s; }
+.fc:nth-child(2) { width: 300px; height: 300px; top: 50%; left: 75%; animation-delay: 3s; }
+.fc:nth-child(3) { width: 150px; height: 150px; top: 70%; left: 25%; animation-delay: 6s; }
+
+.para-hero-content { position: relative; z-index: 2; }
+.para-hero h1 { font-size: 2.8rem; margin-bottom: 16px; }
+.para-hero p { opacity: 0.85; font-size: 1.05rem; max-width: 700px; margin: 0 auto 28px; line-height: 1.7; }
+
+.para-content { padding: 60px 0 80px; }
+
+.info-banner {
+  background: rgba(25, 36, 65, 0.05);
+  border-left: 5px solid var(--accent);
+  padding: 24px;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 32px;
+}
+
+.info-banner h3 { color: var(--primary); margin-bottom: 10px; }
+.info-banner p { color: var(--gray); line-height: 1.7; font-size: 0.95rem; }
+
+.para-section {
+  background: white;
+  border-radius: 16px;
+  padding: 36px;
+  margin-bottom: 28px;
+  box-shadow: 0 5px 20px rgba(25, 36, 65, 0.07);
+}
+
+.para-section h2 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+table { width: 100%; border-collapse: collapse; background: white; }
+
+th {
+  background: var(--primary);
+  color: white;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+  color: var(--dark);
+}
+
+tr:hover td { background: #f9f9f9; }
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge.yes { background: rgba(40, 167, 69, 0.1); color: var(--success); }
+.badge.no { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+.fee-cell { font-weight: 600; color: var(--primary); }
+
+.note { font-size: 0.85rem; color: var(--gray); font-style: italic; margin-top: 16px; }
+
+/* Accordion */
+.accordion { margin-bottom: 12px; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.2s;
+}
+
+.accordion-header:hover { background: var(--primary-light); }
+
+.accordion-body {
+  padding: 24px;
+  background: white;
+  animation: fadeInUp 0.3s ease;
+}
+
+.elig-box {
+  background: #f8f9fa;
+  border-left: 4px solid var(--accent);
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 16px;
+}
+
+.elig-box h4 { color: var(--primary); margin-bottom: 8px; }
+.elig-box p { color: var(--gray); margin-bottom: 8px; font-size: 0.9rem; }
+.elig-box ul { padding-left: 20px; }
+.elig-box ul li { color: var(--gray); font-size: 0.9rem; margin-bottom: 4px; }
+
+.doc-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.doc-link-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.doc-link-card:hover {
+  border-color: var(--primary);
+  background: rgba(25, 36, 65, 0.05);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .para-hero h1 { font-size: 2rem; }
+}
