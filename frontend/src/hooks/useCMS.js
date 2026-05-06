@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../config';
 
 const cache = {};
 
@@ -9,7 +10,7 @@ export function useCMS(pageId) {
 
   useEffect(() => {
     if (cache[pageId]) { setContent(cache[pageId]); setLoading(false); return; }
-    axios.get(`http://localhost:5000/api/content/pages/${pageId}`)
+    axios.get(`${API_URL}/api/content/pages/${pageId}`)
       .then(r => {
         cache[pageId] = r.data.data.content;
         setContent(r.data.data.content);

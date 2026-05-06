@@ -13,7 +13,8 @@ import {
 import './AdminDashboard.css';
 import AdminCMS from './AdminCMS';
 
-const API = 'http://localhost:5000/api/admin';
+import API_URL from '../config';
+const API = `${API_URL}/api/admin`;
 const headers = key => ({ 'x-admin-key': key });
 
 function useAdminKey() {

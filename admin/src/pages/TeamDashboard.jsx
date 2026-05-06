@@ -9,7 +9,8 @@ import {
 } from 'react-icons/fa';
 import './TeamDashboard.css';
 
-const API = 'http://localhost:5000/api/admin';
+import API_URL from '../config';
+const API = `${API_URL}/api/admin`;
 
 function getToken() { return localStorage.getItem('userToken'); }
 const authH = () => ({ Authorization: `Bearer ${getToken()}` });

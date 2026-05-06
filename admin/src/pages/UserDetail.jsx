@@ -10,7 +10,8 @@ import {
 } from 'react-icons/fa';
 import './UserDetail.css';
 
-const API = 'http://localhost:5000/api/admin';
+import API_URL from '../config';
+const API = `${API_URL}/api/admin`;
 
 // Works for both admin (x-admin-key) and team (Bearer token)
 function getHeaders() {

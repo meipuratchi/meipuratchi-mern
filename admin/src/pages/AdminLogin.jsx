@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaLock, FaShieldAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import API_URL from '../config';
 import './AdminLogin.css';
 
 export default function AdminLogin() {
@@ -14,7 +15,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.get('http://localhost:5000/api/admin/stats', {
+      await axios.get(`${API_URL}/api/admin/stats`, {
         headers: { 'x-admin-key': key }
       });
       localStorage.setItem('adminKey', key);

@@ -8,7 +8,8 @@ import {
 } from 'react-icons/fa';
 import './AdminCMS.css';
 
-const BASE = 'http://localhost:5000/api/content';
+import API_URL from '../config';
+const BASE = `${API_URL}/api/content`;
 const h = key => ({ 'x-admin-key': key });
 
 // ── Block type icon ────────────────────────────────────────

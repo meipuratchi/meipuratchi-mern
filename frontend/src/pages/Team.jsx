@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaPaintBrush, FaHashtag, FaHandsHelping, FaCode, FaLanguage, FaLightbulb, FaHeadset, FaUserShield, FaChartLine, FaCalendarAlt, FaUsers } from 'react-icons/fa';
 import axios from 'axios';
 import { useCMS } from '../hooks/useCMS';
+import API_URL from '../config';
 import './Team.css';
 
 const departments = [
@@ -92,7 +93,7 @@ export default function Team() {
   const [liveMembers, setLiveMembers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/admin/team/public')
+    axios.get(`${API_URL}/api/admin/team/public`)
       .then(r => setLiveMembers(r.data.data))
       .catch(() => {}); // silently fall back
   }, []);
