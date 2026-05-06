@@ -1,5 +1,8 @@
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+// Load .env only in development (Render injects env vars directly)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+}
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -8,6 +11,11 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Startup check
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('MONGO_URI set:', !!process.env.MONGO_URI);
+console.log('PORT:', process.env.PORT);
 
 // Routes
 app.use('/api/auth',          require('./routes/auth'));
