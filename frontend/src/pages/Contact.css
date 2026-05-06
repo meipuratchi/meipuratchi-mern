@@ -108,3 +108,16 @@
   .contact-hero h1 { font-size: 2rem; }
   .contact-form-wrap { padding: 24px; }
 }
+
+/* ── Mobile Contact Fixes ── */
+@media (max-width: 480px) {
+  .contact-hero { padding: 90px 0 40px; }
+  .contact-hero h1 { font-size: 1.8rem; }
+  .contact-hero p { font-size: 0.9rem; }
+  .contact-container { grid-template-columns: 1fr; padding: 28px 0 40px; gap: 20px; }
+  .contact-info { position: static; padding: 24px 20px; }
+  .contact-info h3 { font-size: 1.1rem; }
+  .contact-form-wrap { padding: 20px; }
+  .contact-form-wrap h3 { font-size: 1.1rem; }
+  .social-row { gap: 8px; }
+}

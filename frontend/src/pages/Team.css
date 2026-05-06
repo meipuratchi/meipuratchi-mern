@@ -162,3 +162,19 @@
   font-size: 0.72rem;
   font-weight: 600;
 }
+
+/* ── Mobile Team Fixes ── */
+@media (max-width: 480px) {
+  .team-hero { padding: 90px 0 40px; }
+  .team-hero h1 { font-size: 1.6rem; }
+  .team-hero p { font-size: 0.88rem; }
+  .team-grid { grid-template-columns: 1fr; gap: 16px; }
+  .team-card { padding: 20px; }
+  .team-announcement { padding: 20px 0; }
+  .team-announcement h2 { font-size: 1.2rem; }
+  .team-content { padding: 28px 0 40px; }
+  .collab-banner { padding: 24px 16px; }
+  .collab-banner h3 { font-size: 1.1rem; }
+  .live-members-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .live-member-card { padding: 14px 10px; }
+}

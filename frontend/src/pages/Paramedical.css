@@ -164,3 +164,18 @@ tr:hover td { background: #f9f9f9; }
 @media (max-width: 640px) {
   .para-hero h1 { font-size: 2rem; }
 }
+
+/* ── Mobile Paramedical Fixes ── */
+@media (max-width: 480px) {
+  .para-hero { padding: 90px 0 50px; }
+  .para-hero h1 { font-size: 1.6rem; }
+  .para-hero p { font-size: 0.88rem; }
+  .para-section { padding: 20px 16px; }
+  .para-section h2 { font-size: 1.1rem; }
+  .para-content { padding: 28px 0 40px; }
+  th { padding: 10px 10px; font-size: 0.78rem; }
+  td { padding: 8px 10px; font-size: 0.82rem; }
+  .doc-links { grid-template-columns: 1fr; }
+  .accordion-header { padding: 14px 16px; font-size: 0.9rem; }
+  .info-banner { padding: 16px; }
+}

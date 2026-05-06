@@ -159,3 +159,31 @@
   color: white;
   border-color: rgba(220,53,69,0.5);
 }
+
+/* ── Mobile Nav Fixes ── */
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: fixed;
+    top: 66px;
+    left: 0; right: 0;
+    background: var(--primary);
+    flex-direction: column;
+    padding: 16px;
+    gap: 4px;
+    transform: translateY(-120%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 999;
+  }
+  .nav-links.open { transform: translateY(0); }
+  .nav-links a { display: block; padding: 12px 16px; width: 100%; text-align: center; }
+  .nav-user-menu { flex-direction: column; gap: 6px; width: 100%; }
+  .nav-portal-btn { justify-content: center; width: 100%; }
+  .navbar-brand span { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand img { height: 36px; width: 36px; }
+  .navbar-brand span { font-size: 0.9rem; }
+}

@@ -125,3 +125,14 @@
   .role-selector { grid-template-columns: 1fr; }
   .auth-card { padding: 28px 20px; }
 }
+
+/* ── Mobile Auth Fixes ── */
+@media (max-width: 480px) {
+  .auth-page { padding: 20px 16px; align-items: flex-start; padding-top: 40px; }
+  .auth-card { padding: 24px 18px; border-radius: 14px; }
+  .auth-card.wide { max-width: 100%; }
+  .auth-logo h2 { font-size: 1.3rem; }
+  .role-selector { grid-template-columns: 1fr; gap: 8px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .span-2 { grid-column: span 1; }
+}

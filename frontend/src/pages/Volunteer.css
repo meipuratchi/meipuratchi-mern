@@ -74,3 +74,14 @@
   .vol-hero h1 { font-size: 2rem; }
   .vol-form-wrap { padding: 24px; }
 }
+
+/* ── Mobile Volunteer Fixes ── */
+@media (max-width: 480px) {
+  .vol-hero { padding: 90px 0 40px; }
+  .vol-hero h1 { font-size: 1.8rem; }
+  .vol-hero p { font-size: 0.9rem; }
+  .vol-container { grid-template-columns: 1fr; padding: 28px 0 40px; gap: 20px; }
+  .vol-why { position: static; padding: 20px; }
+  .vol-form-wrap { padding: 20px; }
+  .vol-form-wrap h3 { font-size: 1.1rem; }
+}

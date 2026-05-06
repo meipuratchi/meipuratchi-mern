@@ -125,3 +125,10 @@
 @media (max-width: 600px) {
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Mobile Footer Fixes ── */
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .footer-brand h3 { font-size: 1.1rem; }
+  .footer-bottom { font-size: 0.78rem; }
+}

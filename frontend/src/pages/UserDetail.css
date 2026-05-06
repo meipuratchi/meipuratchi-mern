@@ -498,3 +498,30 @@
   .ud-layout { grid-template-columns: 1fr; padding: 16px; }
   .ud-chat-card { height: 600px; position: static; }
 }
+
+/* ── Mobile UserDetail Fixes ── */
+@media (max-width: 800px) {
+  .ud-layout { grid-template-columns: 1fr; padding: 16px; gap: 0; }
+  .ud-chat-card { height: 500px; position: static; }
+}
+
+@media (max-width: 480px) {
+  .ud-topbar { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+  .ud-back { padding: 6px 12px; font-size: 0.82rem; }
+  .ud-site-link { display: none; }
+  .ud-delete-btn { padding: 6px 12px; font-size: 0.78rem; }
+  .ud-layout { padding: 12px; }
+  .ud-card { padding: 16px; }
+  .ud-profile-card h2 { font-size: 1.1rem; }
+  .ud-avatar { width: 60px; height: 60px; font-size: 1.6rem; }
+  .ud-pipeline { flex-direction: column; gap: 6px; }
+  .ud-pip-step { flex-direction: row; min-width: unset; width: 100%; gap: 10px; }
+  .ud-pip-line { display: none; }
+  .ud-pip-circle { width: 30px; height: 30px; flex-shrink: 0; font-size: 0.75rem; }
+  .ud-chat-card { height: 420px; }
+  .ud-chat-input textarea { rows: 2; }
+  .ud-quick-btns { gap: 4px; }
+  .ud-quick-btn { font-size: 0.7rem; padding: 4px 10px; }
+  .ud-info-grid { grid-template-columns: 1fr 1fr; }
+  .ud-viewonly-banner { font-size: 0.82rem; padding: 10px 14px; }
+}

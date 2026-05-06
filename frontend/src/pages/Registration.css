@@ -164,3 +164,15 @@
 }
 
 .input-eye-reg button:hover { color: var(--primary); }
+
+/* ── Mobile Registration Fixes ── */
+@media (max-width: 480px) {
+  .reg-hero { padding: 90px 0 40px; }
+  .reg-hero h1 { font-size: 1.8rem; }
+  .reg-hero p { font-size: 0.9rem; }
+  .reg-container { grid-template-columns: 1fr; padding-top: 28px; padding-bottom: 40px; }
+  .reg-info { position: static; padding: 20px; }
+  .reg-form-wrap { padding: 20px; }
+  .reg-form-wrap h3 { font-size: 1.1rem; }
+  .grid-2 { grid-template-columns: 1fr; }
+}

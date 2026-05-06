@@ -175,3 +175,19 @@
   .calc-form { grid-template-columns: 1fr; }
   .eng-hero h1 { font-size: 2rem; }
 }
+
+/* ── Mobile Engineering Fixes ── */
+@media (max-width: 480px) {
+  .eng-hero { padding: 90px 0 40px; }
+  .eng-hero h1 { font-size: 1.6rem; }
+  .eng-hero p { font-size: 0.88rem; }
+  .eng-hero-actions { flex-direction: column; align-items: center; }
+  .eng-section { padding: 20px 16px; }
+  .eng-section h2 { font-size: 1.1rem; }
+  .calc-form { grid-template-columns: 1fr; }
+  .college-grid { grid-template-columns: 1fr; }
+  .college-card { flex-direction: column; gap: 10px; }
+  .doc-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .eng-content { padding: 28px 0 40px; }
+  th, td { padding: 8px 10px; font-size: 0.8rem; }
+}
