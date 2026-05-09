@@ -33,7 +33,11 @@ if (process.env.NODE_ENV === 'production') {
   const frontendDist = path.join(__dirname, '../frontend/dist');
   app.use(express.static(frontendDist));
   // All non-API routes → index.html (SPA fallback)
-  app.get('/{*path}', (req, res) => {
+  app.get('*', (req, res) => {
+    // Don't serve index.html for API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API endpoint not found' });
+    }
     res.sendFile(path.join(frontendDist, 'index.html'));
   });
 }
