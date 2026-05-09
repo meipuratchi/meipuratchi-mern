@@ -24,6 +24,7 @@ body {
   background: #f5f7fa;
   color: var(--dark);
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 /* Scrollbar */
@@ -64,8 +65,28 @@ body {
   font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: var(--transition);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-primary {
@@ -109,13 +130,31 @@ body {
   background: white;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: var(--transition);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  position: relative;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
 }
 
 .card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-hover);
+}
+
+.card:hover::after {
+  opacity: 1;
 }
 
 /* Forms */
@@ -180,6 +219,16 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
@@ -191,8 +240,45 @@ body {
   100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(100px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(245, 166, 35, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(245, 166, 35, 0.8); }
+}
+
 .animate-fadeInUp { animation: fadeInUp 0.7s ease forwards; }
+.animate-fadeInDown { animation: fadeInDown 0.7s ease forwards; }
+.animate-fadeInLeft { animation: fadeInLeft 0.7s ease forwards; }
+.animate-fadeInRight { animation: fadeInRight 0.7s ease forwards; }
 .animate-float { animation: float 4s ease-in-out infinite; }
+.animate-scaleIn { animation: scaleIn 0.6s ease forwards; }
+.animate-slideInUp { animation: slideInUp 0.8s ease forwards; }
+.animate-bounce { animation: bounce 2s ease-in-out infinite; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
 
 /* ── Global Mobile Fixes ── */
 @media (max-width: 480px) {

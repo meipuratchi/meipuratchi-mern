@@ -47,7 +47,8 @@
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 24px;
-  animation: fadeInDown 0.8s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(245, 166, 35, 0.2);
 }
 
 .hero-title {
@@ -55,7 +56,7 @@
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 20px;
-  animation: fadeInUp 0.8s ease 0.1s both;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .hero-title span {
@@ -72,7 +73,7 @@
   line-height: 1.8;
   margin-bottom: 36px;
   max-width: 600px;
-  animation: fadeInUp 0.8s ease 0.2s both;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 .hero-actions {
@@ -80,13 +81,16 @@
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 48px;
-  animation: fadeInUp 0.8s ease 0.3s both;
 }
 
 .hero-stats {
   display: flex;
   gap: 40px;
-  animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+.hero-stat {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-stat span {
@@ -94,6 +98,7 @@
   font-size: 2rem;
   font-weight: 800;
   color: var(--accent);
+  text-shadow: 0 2px 10px rgba(245, 166, 35, 0.3);
 }
 
 .hero-stat p {
@@ -180,10 +185,31 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-.about-card:hover { transform: translateX(8px); }
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.about-card:hover::before {
+  left: 100%;
+}
+
+.about-card:hover { 
+  transform: translateX(8px) scale(1.02); 
+  box-shadow: 0 15px 50px rgba(25, 36, 65, 0.2);
+}
 
 .about-card svg {
   font-size: 2rem;
@@ -203,6 +229,24 @@
 .career-card {
   padding: 32px;
   text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.career-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.career-card:hover::before {
+  opacity: 1;
 }
 
 .career-icon {
@@ -215,6 +259,8 @@
   color: white;
   font-size: 1.6rem;
   margin-bottom: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .career-card h3 {
@@ -260,9 +306,10 @@
   padding: 28px;
   box-shadow: 0 5px 20px rgba(25, 36, 65, 0.07);
   text-align: left;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .step-card::before {
@@ -272,10 +319,19 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: var(--primary);
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.step-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(25, 36, 65, 0.12); }
+.step-card:hover::before {
+  width: 100%;
+  opacity: 0.05;
+}
+
+.step-card:hover { 
+  transform: translateY(-10px) scale(1.02); 
+  box-shadow: 0 20px 50px rgba(25, 36, 65, 0.15); 
+}
 
 .step-num {
   font-size: 2.5rem;
@@ -283,6 +339,12 @@
   color: rgba(25, 36, 65, 0.08);
   line-height: 1;
   margin-bottom: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-card:hover .step-num {
+  color: rgba(245, 166, 35, 0.3);
+  transform: scale(1.1);
 }
 
 .step-card h4 { font-size: 1rem; color: var(--primary); margin-bottom: 8px; }
@@ -293,10 +355,22 @@
   background: linear-gradient(135deg, var(--primary) 0%, #1a3a6e 100%);
   padding: 80px 0;
   color: white;
+  position: relative;
+  overflow: hidden;
 }
 
-.cta-banner h2 { font-size: 2.5rem; margin-bottom: 16px; }
-.cta-banner p { opacity: 0.8; font-size: 1.1rem; margin-bottom: 36px; }
+.cta-banner h2 { 
+  font-size: 2.5rem; 
+  margin-bottom: 16px; 
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.cta-banner p { 
+  opacity: 0.8; 
+  font-size: 1.1rem; 
+  margin-bottom: 36px; 
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
 
 .cta-actions {
   display: flex;

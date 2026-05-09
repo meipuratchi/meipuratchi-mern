@@ -5,14 +5,16 @@
   right: 0;
   z-index: 1000;
   padding: 16px 0;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
+  backdrop-filter: blur(0px);
 }
 
 .navbar.scrolled {
-  background: var(--primary);
+  background: rgba(25, 36, 65, 0.95);
   padding: 10px 0;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
 }
 
 .navbar-inner {
@@ -53,13 +55,33 @@
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-links a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+}
+
+.nav-links a:hover::before,
+.nav-links a.active::before {
+  width: 80%;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
   color: white;
   background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
 }
 
 .nav-cta {

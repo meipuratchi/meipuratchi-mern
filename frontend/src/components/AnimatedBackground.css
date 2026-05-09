@@ -1,0 +1,69 @@
+.animated-bg-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.animated-bg-particles .particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.8), rgba(245, 166, 35, 0));
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.animated-bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: linear-gradient(135deg, #192441, #2a3a6b);
+  top: -100px;
+  left: -100px;
+}
+
+.orb-2 {
+  width: 600px;
+  height: 600px;
+  background: linear-gradient(135deg, #f5a623, #e09520);
+  bottom: -150px;
+  right: -150px;
+}
+
+.orb-3 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+  .orb-1, .orb-2, .orb-3 {
+    width: 300px;
+    height: 300px;
+  }
+}
