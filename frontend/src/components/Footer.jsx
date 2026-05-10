@@ -44,7 +44,7 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
             />
             <h3>மெய் புரட்சி</h3>
-            <p>Empowering Tamil Nadu government school students with free career counseling and guidance.</p>
+            <p>Empowering Tamil Nadu government school students with dedicated career counseling and guidance.</p>
             <div className="footer-social">
               <motion.a 
                 href="https://www.facebook.com/people/Mei-Puratchi/pfbid02CebTu4BGTjdLaneMEbRXa7QQwAxpHQ4tVukDr9XCAzokawjEC28d8YSeeang6JGFl/" 

@@ -47,9 +47,9 @@ export default function Registration() {
     <div className="reg-page">
       <div className="reg-hero">
         <div className="container">
-          <div className="reg-hero-badge"><FaGraduationCap /> Free Registration</div>
+          <div className="reg-hero-badge"><FaGraduationCap /> Student Registration</div>
           <h1>Student Registration</h1>
-          <p>Free Career Guidance for Tamil Nadu Government School Students</p>
+          <p>Career Guidance for Tamil Nadu Government School Students — தமிழ்நாடு அரசுப் பள்ளி மாணவர்களுக்கான வழிகாட்டுதல்</p>
         </div>
       </div>
 
@@ -57,8 +57,8 @@ export default function Registration() {
         <div className="reg-info">
           <h3>Why Register?</h3>
           <ul>
-            <li>✅ 100% Free career counseling</li>
-            <li>✅ One-on-one guidance session</li>
+            <li>✅ Dedicated one-on-one career counseling</li>
+            <li>✅ Personalized guidance from expert counselors</li>
             <li>✅ Expert counselors for NEET, JEE, Engineering, Paramedical</li>
             <li>✅ 6 months follow-up support</li>
             <li>✅ Priority for government school students</li>
@@ -77,7 +77,7 @@ export default function Registration() {
         </div>
 
         <div className="reg-form-wrap card">
-          <h3><FaGraduationCap /> Register for Free Guidance</h3>
+          <h3><FaGraduationCap /> Register for Career Guidance</h3>
           <form onSubmit={handleSubmit}>
             <div className="grid-2">
               <div className="form-group">
@@ -147,6 +147,7 @@ export default function Registration() {
             <button type="submit" className="btn btn-primary submit-btn" disabled={loading}>
               {loading ? 'Creating your account...' : '🎓 Register & Go to My Portal'}
             </button>
+            <p className="submit-note">No fees. No charges. Fully supported by volunteers.</p>
           </form>
         </div>
       </div>

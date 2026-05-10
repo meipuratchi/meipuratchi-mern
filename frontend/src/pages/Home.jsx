@@ -33,8 +33,8 @@ export default function Home() {
     { num: '06', title: c('step6_title','Follow-up Support'),    desc: c('step6_desc','6 months of continued support') },
   ];
 
-  const checks = (c('about_checks',['Tamil Nadu Students','Government School Priority','Free of Cost','6 Months Follow-up']));
-  const checkList = Array.isArray(checks) ? checks : ['Tamil Nadu Students','Government School Priority','Free of Cost','6 Months Follow-up'];
+  const checks = (c('about_checks',['Tamil Nadu Students','Government School Priority','Fully Supported','6 Months Follow-up']));
+  const checkList = Array.isArray(checks) ? checks : ['Tamil Nadu Students','Government School Priority','Fully Supported','6 Months Follow-up'];
 
   return (
     <div className="home">
@@ -55,7 +55,7 @@ export default function Home() {
             >
               <FaStar />
             </motion.div>
-            {c('hero_badge','Free Career Guidance for TN Government School Students')}
+            {c('hero_badge','Career Guidance for TN Government School Students')}
           </motion.div>
 
           <motion.h1 
@@ -80,7 +80,7 @@ export default function Home() {
             animate={heroInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            {c('hero_desc','Empowering 10th, 12th & dropout students across Tamil Nadu with free, accessible career counseling.')}
+            {c('hero_desc','Empowering 10th, 12th & dropout students across Tamil Nadu with dedicated, accessible career counseling. — 10ம் வகுப்பு, 12ம் வகுப்பு மாணவர்களுக்கான தொழில் வழிகாட்டுதல்.')}
           </motion.p>
 
           <motion.div 
@@ -94,7 +94,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
             >
               <Link to="/registration" className="btn btn-accent">
-                <FaGraduationCap /> {c('hero_btn1',"Register Now — It's Free!")}
+                <FaGraduationCap /> {c('hero_btn1',"Begin Your Journey")}
               </Link>
             </motion.div>
             <motion.div
@@ -116,7 +116,7 @@ export default function Home() {
             {[
               { value: stats.total || c('stat1_value','500+'), label: c('stat1_label','Students Registered') },
               { value: stats.counseled || c('stat2_value','200+'), label: c('stat2_label','Students Counseled') },
-              { value: c('stat3_value','100%'), label: c('stat3_label','Free Service') }
+              { value: c('stat3_value','100%'), label: c('stat3_label','Volunteer-Powered') }
             ].map((stat, i) => (
               <motion.div 
                 key={i}
@@ -147,7 +147,7 @@ export default function Home() {
                   {c('about_tag','About the Initiative')}
                 </motion.div>
                 <h2 className="section-title">{c('about_title_ta','முயற்சி பற்றி')}<br /><span>{c('about_title','About Us')}</span></h2>
-                <p>{c('about_desc','We guide students from 10th, 12th, and even those who have failed in their board exams.')}</p>
+                <p>{c('about_desc','We stand beside students from 10th, 12th, and those who have faced setbacks in their board exams — guiding them toward a brighter path.')}</p>
                 <motion.div 
                   className="about-highlight"
                   whileHover={{ scale: 1.02, x: 10 }}
@@ -159,7 +159,7 @@ export default function Home() {
                   >
                     <FaHeart className="highlight-icon" />
                   </motion.div>
-                  <p><strong>{c('mission_label','Our Mission:')}</strong> {c('mission_text','To provide free, accessible career guidance to every government school student in Tamil Nadu.')}</p>
+                  <p><strong>{c('mission_label','Our Mission:')}</strong> {c('mission_text','To provide accessible career guidance to every government school student in Tamil Nadu, fully supported by volunteers.')}</p>
                 </motion.div>
                 <div className="about-checks">
                   {checkList.map((item, i) => (
@@ -285,7 +285,7 @@ export default function Home() {
             >
               {c('process_tag','Process')}
             </motion.div>
-            <h2 className="section-title">{c('process_title_ta','இது எப்படி வேலை செய்கிறது')}<br /><span>{c('process_title','How It Works')}</span></h2>
+            <h2 className="section-title">{c('process_title_ta','எவ்வாறு செயல்படுகிறது')}<br /><span>{c('process_title','How It Works')}</span></h2>
             <p className="section-subtitle">{c('process_desc','Simple 6-step process to get your career guidance')}</p>
           </AnimatedSection>
 
@@ -336,7 +336,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              {c('cta_desc','Join thousands of Tamil Nadu students who have found their career path with Meipuratchi')}
+              {c('cta_desc','Thousands of Tamil Nadu students have already discovered their calling with Meipuratchi. Your journey begins here.')}
             </motion.p>
             <motion.div 
               className="cta-actions"
@@ -350,7 +350,7 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link to="/registration" className="btn btn-accent">
-                  <FaGraduationCap /> {c('cta_btn1',"Register Now — Free!")}
+                  <FaGraduationCap /> {c('cta_btn1',"Start Your Journey")}
                 </Link>
               </motion.div>
               <motion.div

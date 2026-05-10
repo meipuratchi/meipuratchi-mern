@@ -106,7 +106,7 @@ export default function Navbar() {
                   </motion.button>
                 </div>
               ) : (
-                <Link to="/registration" className="nav-cta">Register Free</Link>
+                <Link to="/registration" className="nav-cta">Register Now</Link>
               )}
             </motion.li>
           </ul>
