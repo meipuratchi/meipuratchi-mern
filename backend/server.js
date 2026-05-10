@@ -24,6 +24,7 @@ app.use('/api/registrations', require('./routes/registrations'));
 app.use('/api/volunteers',    require('./routes/volunteers'));
 app.use('/api/contacts',      require('./routes/contacts'));
 app.use('/api/admin',         require('./routes/admin'));
+app.use('/api/upload',        require('./routes/upload'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Meipuratchi API running' }));
 

@@ -130,21 +130,36 @@ export default function Registration() {
 
     setLoading(true);
     try {
+      // ── Step 1: Upload proof file to Google Drive (if provided) ──
       let proofFileUrl = '';
       if (proofFile) {
-        proofFileUrl = await new Promise((res, rej) => {
-          const r = new FileReader();
-          r.onload  = () => res(r.result);
-          r.onerror = rej;
-          r.readAsDataURL(proofFile);
-        });
+        toast.loading('Uploading document…', { id: 'upload' });
+        const formData = new FormData();
+        formData.append('file', proofFile);
+
+        const uploadRes = await fetch(
+          `${import.meta.env.VITE_API_URL || ''}/api/upload/drive`,
+          { method: 'POST', body: formData }
+        );
+        const uploadData = await uploadRes.json();
+        toast.dismiss('upload');
+
+        if (!uploadData.success) {
+          toast.error(uploadData.message || 'File upload failed');
+          setLoading(false);
+          return;
+        }
+        proofFileUrl = uploadData.url;
       }
+
+      // ── Step 2: Register the user with the Drive link ──
       const payload = {
         email: form.email, phone: form.phone, password: form.password,
         name: form.name, dateOfBirth: form.dateOfBirth,
         district: form.district, school: form.school,
         qualification: finalQual, careerInterest: finalInterest,
-        proofFileUrl, role: 'student',
+        proofFileUrl,
+        role: 'student',
       };
       const res = await registerUser(payload);
       localStorage.setItem('userToken', res.data.token);
@@ -152,6 +167,7 @@ export default function Registration() {
       toast.success('Registration successful! Welcome to Meipuratchi 🎉');
       navigate('/portal');
     } catch (err) {
+      toast.dismiss('upload');
       toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
