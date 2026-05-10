@@ -476,3 +476,226 @@
 }
 
 .input-eye-reg button:hover { color: var(--primary); }
+
+/* ══════════════════════════════════════
+   METHOD SWITCHER
+══════════════════════════════════════ */
+.method-switcher {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.method-label {
+  font-size: 0.82rem;
+  color: var(--gray);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.method-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.method-tab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 2px solid #e0e3ea;
+  border-radius: 14px;
+  background: white;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.method-tab:hover {
+  border-color: var(--primary);
+  background: rgba(25, 36, 65, 0.03);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(25, 36, 65, 0.1);
+}
+
+.method-tab.active {
+  border-color: var(--primary);
+  background: rgba(25, 36, 65, 0.06);
+  box-shadow: 0 4px 20px rgba(25, 36, 65, 0.15);
+}
+
+.method-tab-icon {
+  font-size: 1.6rem;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.method-tab .google-icon {
+  color: #EA4335;
+}
+
+.method-tab.active .method-tab-icon {
+  color: var(--primary);
+}
+
+.method-tab.active .google-icon {
+  color: #EA4335;
+}
+
+.method-tab span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.method-tab strong {
+  font-size: 0.92rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.method-tab small {
+  font-size: 0.75rem;
+  color: var(--gray);
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════
+   GOOGLE FORM PANEL
+══════════════════════════════════════ */
+.google-form-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.gform-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #f8f9ff, #fff3e0);
+  border: 1px solid #e0e3ea;
+  border-radius: 12px 12px 0 0;
+  padding: 14px 18px;
+  gap: 12px;
+}
+
+.gform-topbar-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gform-g-icon {
+  font-size: 2rem;
+  color: #EA4335;
+  flex-shrink: 0;
+}
+
+.gform-topbar-info p {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 2px;
+}
+
+.gform-topbar-info small {
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+
+.btn-google-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: #EA4335;
+  color: white;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-google-open:hover {
+  background: #c5221f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 67, 53, 0.35);
+}
+
+.gform-embed-wrap {
+  border: 1px solid #e0e3ea;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  background: #f9f9f9;
+}
+
+.gform-iframe {
+  width: 100%;
+  height: 900px;
+  border: none;
+  display: block;
+}
+
+.gform-note {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: rgba(25, 36, 65, 0.04);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82rem;
+  color: var(--gray);
+  line-height: 1.7;
+}
+
+.gform-note span {
+  display: block;
+  margin-top: 4px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .method-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .gform-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .btn-google-open {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .gform-iframe {
+    height: 700px;
+  }
+}
+
+@media (max-width: 480px) {
+  .method-tab {
+    padding: 12px 14px;
+  }
+
+  .method-tab-icon {
+    font-size: 1.3rem;
+  }
+
+  .gform-iframe {
+    height: 600px;
+  }
+}

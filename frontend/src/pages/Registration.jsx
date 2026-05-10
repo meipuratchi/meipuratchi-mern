@@ -3,30 +3,32 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   FaGraduationCap, FaUser, FaPhone, FaEnvelope, FaSchool,
   FaMapMarkerAlt, FaLock, FaEye, FaEyeSlash, FaCheckCircle,
-  FaArrowRight, FaArrowLeft, FaCalendarAlt, FaUpload, FaFileAlt
+  FaArrowRight, FaArrowLeft, FaCalendarAlt, FaUpload, FaFileAlt,
+  FaExternalLinkAlt, FaWpforms
 } from 'react-icons/fa';
+import { SiGoogleforms } from 'react-icons/si';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { registerUser } from '../api';
 import './Registration.css';
 
+/* ── Google Form URLs ── */
+const GOOGLE_FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSf00BaJoU7uuBXMht4O4bsEtD2W_sTzZJyllF1DHNXzqoGyiA/viewform?usp=header';
+const GOOGLE_FORM_EMBED = 'https://docs.google.com/forms/d/e/1FAIpQLSf00BaJoU7uuBXMht4O4bsEtD2W_sTzZJyllF1DHNXzqoGyiA/viewform?embedded=true';
+
+/* ── Constants ── */
 const districts = [
   'Chennai','Coimbatore','Madurai','Tiruchirappalli','Salem','Tirunelveli',
   'Tiruppur','Vellore','Erode','Thoothukudi','Dindigul','Thanjavur','Ranipet',
   'Sivaganga','Virudhunagar','Nagapattinam','Kanyakumari','Dharmapuri',
   'Krishnagiri','Perambalur','Ariyalur','Pudukkottai','Ramanathapuram',
   'Namakkal','Cuddalore','Villupuram','Kallakurichi','Chengalpattu',
-  'Kancheepuram','Tiruvallur','Tiruvannamalai','Nilgiris','Karur','Tiruvarur'
+  'Kancheepuram','Tiruvallur','Tiruvannamalai','Nilgiris','Karur','Tiruvarur',
 ];
 
 const qualifications = [
-  '6th to 9th Std',
-  '10th Std',
-  '11th Std',
-  '12th Std',
-  'Diploma',
-  'Degree',
-  'Other'
+  '6th to 9th Std', '10th Std', '11th Std', '12th Std',
+  'Diploma', 'Degree', 'Other',
 ];
 
 const careerInterests = [
@@ -39,49 +41,48 @@ const careerInterests = [
   'Bachelor of Commerce (B.Com)',
   'Bachelor of Computer Applications (BCA)',
   'TNPSC / Government Jobs',
-  'Other'
+  'Other',
 ];
 
-// Step metadata
 const STEPS = [
-  { num: 1, label: 'Account',  labelTa: 'கணக்கு',    icon: <FaLock /> },
-  { num: 2, label: 'Personal', labelTa: 'தனிப்பட்ட', icon: <FaUser /> },
-  { num: 3, label: 'Education',labelTa: 'கல்வி',      icon: <FaGraduationCap /> },
+  { num: 1, label: 'Account',   labelTa: 'கணக்கு',    icon: <FaLock /> },
+  { num: 2, label: 'Personal',  labelTa: 'தனிப்பட்ட', icon: <FaUser /> },
+  { num: 3, label: 'Education', labelTa: 'கல்வி',      icon: <FaGraduationCap /> },
 ];
 
-const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
+const slide = {
+  enter: (d) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
   center: { x: 0, opacity: 1, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } },
-  exit:  (dir) => ({ x: dir > 0 ? -80 : 80, opacity: 0, transition: { duration: 0.25 } }),
+  exit:  (d) => ({ x: d > 0 ? -80 : 80, opacity: 0, transition: { duration: 0.25 } }),
 };
 
+/* ══════════════════════════════════════════════════════════ */
 export default function Registration() {
-  const navigate  = useNavigate();
-  const fileRef   = useRef(null);
+  const navigate = useNavigate();
+  const fileRef  = useRef(null);
 
-  const [step, setStep]       = useState(1);
-  const [dir,  setDir]        = useState(1);
-  const [showPw, setShowPw]   = useState(false);
+  /* method: 'website' | 'google' */
+  const [method, setMethod] = useState('website');
+
+  /* website form state */
+  const [step, setStep]   = useState(1);
+  const [dir,  setDir]    = useState(1);
+  const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [proofFile, setProofFile] = useState(null);
-  const [otherQual, setOtherQual]     = useState('');
+  const [otherQual, setOtherQual] = useState('');
   const [otherInterest, setOtherInterest] = useState('');
 
   const [form, setForm] = useState({
-    // Step 1 — Account
     email: '', phone: '', password: '', confirmPassword: '',
-    // Step 2 — Personal
     name: '', dateOfBirth: '',
-    // Step 3 — Education
     district: '', school: '', qualification: '', careerInterest: '',
   });
 
   const set = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-
-  const goNext = () => { setDir(1); setStep(s => s + 1); };
+  const goNext = () => { setDir(1);  setStep(s => s + 1); };
   const goPrev = () => { setDir(-1); setStep(s => s - 1); };
 
-  /* ── Step 1 validation ── */
   const validateStep1 = () => {
     if (!form.email || !form.phone || !form.password || !form.confirmPassword) {
       toast.error('Please fill all required fields'); return false;
@@ -101,7 +102,6 @@ export default function Registration() {
     return true;
   };
 
-  /* ── Step 2 validation ── */
   const validateStep2 = () => {
     if (!form.name || !form.dateOfBirth) {
       toast.error('Please fill all required fields'); return false;
@@ -115,53 +115,37 @@ export default function Registration() {
     goNext();
   };
 
-  /* ── File upload handler ── */
   const handleFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error('File size must be under 10 MB'); return;
-    }
+    if (file.size > 10 * 1024 * 1024) { toast.error('File must be under 10 MB'); return; }
     setProofFile(file);
   };
 
-  /* ── Final submit ── */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const finalQual     = form.qualification === 'Other' ? otherQual     : form.qualification;
+    const finalQual     = form.qualification  === 'Other' ? otherQual     : form.qualification;
     const finalInterest = form.careerInterest === 'Other' ? otherInterest : form.careerInterest;
-
-    if (!finalQual || !finalInterest) {
-      toast.error('Please fill all required fields'); return;
-    }
+    if (!finalQual || !finalInterest) { toast.error('Please fill all required fields'); return; }
 
     setLoading(true);
     try {
-      // Convert proof file to base64 if provided
       let proofFileUrl = '';
       if (proofFile) {
-        proofFileUrl = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload  = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(proofFile);
+        proofFileUrl = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload  = () => res(r.result);
+          r.onerror = rej;
+          r.readAsDataURL(proofFile);
         });
       }
-
       const payload = {
-        email:          form.email,
-        phone:          form.phone,
-        password:       form.password,
-        name:           form.name,
-        dateOfBirth:    form.dateOfBirth,
-        district:       form.district,
-        school:         form.school,
-        qualification:  finalQual,
-        careerInterest: finalInterest,
-        proofFileUrl,
-        role: 'student',
+        email: form.email, phone: form.phone, password: form.password,
+        name: form.name, dateOfBirth: form.dateOfBirth,
+        district: form.district, school: form.school,
+        qualification: finalQual, careerInterest: finalInterest,
+        proofFileUrl, role: 'student',
       };
-
       const res = await registerUser(payload);
       localStorage.setItem('userToken', res.data.token);
       localStorage.setItem('userInfo',  JSON.stringify(res.data.user));
@@ -174,31 +158,23 @@ export default function Registration() {
     }
   };
 
+  /* ══════════════════════════════════════════════════════════ */
   return (
     <div className="reg-page">
-      {/* Hero */}
+
+      {/* ── Hero ── */}
       <div className="reg-hero">
         <div className="container">
-          <motion.div
-            className="reg-hero-badge"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div className="reg-hero-badge"
+            initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <FaGraduationCap /> கல்வி ஆலோசனை பதிவேடு
           </motion.div>
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
             Career Guidance Registration
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
             Career Guidance for Tamil Nadu Government School Students<br />
             <span style={{ fontSize: '0.9rem', opacity: 0.75 }}>
               தமிழ்நாடு அரசுப் பள்ளி மாணவர்களுக்கான வழிகாட்டுதல்
@@ -208,7 +184,8 @@ export default function Registration() {
       </div>
 
       <div className="container reg-container">
-        {/* Sidebar */}
+
+        {/* ── Sidebar ── */}
         <div className="reg-info">
           <h3>Why Register?</h3>
           <ul>
@@ -220,355 +197,386 @@ export default function Registration() {
           </ul>
           <div className="reg-eligibility">
             <h4>Eligibility</h4>
-            <p>Students from Tamil Nadu who have completed or are studying 6th–12th standard, including those who have faced setbacks in board exams.</p>
+            <p>Students from Tamil Nadu studying 6th–12th standard, including those who have faced setbacks in board exams.</p>
             <p style={{ marginTop: 12 }}>
               <strong>Required Documents:</strong> School ID Card or Mark Sheet (max 10 MB)
             </p>
           </div>
           <div className="reg-eligibility" style={{ marginTop: 16 }}>
             <h4>Already registered?</h4>
-            <Link
-              to="/portal/login"
-              className="btn btn-primary"
-              style={{ marginTop: 10, display: 'inline-flex', fontSize: '0.85rem', padding: '10px 20px' }}
-            >
+            <Link to="/portal/login" className="btn btn-primary"
+              style={{ marginTop: 10, display: 'inline-flex', fontSize: '0.85rem', padding: '10px 20px' }}>
               Login to your Portal →
             </Link>
           </div>
         </div>
 
-        {/* Multi-step form */}
+        {/* ── Form Card ── */}
         <div className="reg-form-wrap card">
 
-          {/* Step indicator */}
-          <div className="step-indicator">
-            {STEPS.map((s, i) => (
-              <div key={s.num} className="step-indicator-item">
-                <motion.div
-                  className={`step-circle ${step === s.num ? 'active' : step > s.num ? 'done' : ''}`}
-                  whileHover={{ scale: 1.1 }}
-                >
-                  {step > s.num ? <FaCheckCircle /> : s.icon}
-                </motion.div>
-                <div className="step-label">
-                  <span>{s.label}</span>
-                  <small>{s.labelTa}</small>
+          {/* ── Method Switcher ── */}
+          <div className="method-switcher">
+            <p className="method-label">Choose how to register — பதிவு செய்யும் முறையை தேர்ந்தெடுக்கவும்:</p>
+            <div className="method-tabs">
+              <motion.button
+                className={`method-tab ${method === 'website' ? 'active' : ''}`}
+                onClick={() => { setMethod('website'); setStep(1); }}
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              >
+                <FaWpforms className="method-tab-icon" />
+                <span>
+                  <strong>Website Form</strong>
+                  <small>Register here &amp; get a portal login</small>
+                </span>
+              </motion.button>
+
+              <motion.button
+                className={`method-tab ${method === 'google' ? 'active' : ''}`}
+                onClick={() => setMethod('google')}
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              >
+                <SiGoogleforms className="method-tab-icon google-icon" />
+                <span>
+                  <strong>Google Form</strong>
+                  <small>Quick registration via Google</small>
+                </span>
+              </motion.button>
+            </div>
+          </div>
+
+          {/* ── Panels ── */}
+          <AnimatePresence mode="wait">
+
+            {/* ════════════════════════════
+                GOOGLE FORM PANEL
+            ════════════════════════════ */}
+            {method === 'google' && (
+              <motion.div key="google"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.3 }}
+                className="google-form-panel"
+              >
+                {/* Top bar */}
+                <div className="gform-topbar">
+                  <div className="gform-topbar-info">
+                    <SiGoogleforms className="gform-g-icon" />
+                    <div>
+                      <p>கல்வி ஆலோசனை பதிவேடு</p>
+                      <small>Career Guidance Registration Form</small>
+                    </div>
+                  </div>
+                  <a href={GOOGLE_FORM_URL} target="_blank" rel="noreferrer"
+                    className="btn btn-google-open">
+                    <FaExternalLinkAlt /> Open in New Tab
+                  </a>
                 </div>
-                {i < STEPS.length - 1 && (
-                  <div className={`step-line ${step > s.num ? 'done' : ''}`} />
-                )}
-              </div>
-            ))}
-          </div>
 
-          {/* Animated step content */}
-          <div className="step-content-wrap">
-            <AnimatePresence mode="wait" custom={dir}>
-              {/* ── STEP 1: Account ── */}
-              {step === 1 && (
-                <motion.div
-                  key="step1"
-                  custom={dir}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                >
-                  <div className="step-heading">
-                    <FaLock className="step-heading-icon" />
-                    <div>
-                      <h3>Create Your Account</h3>
-                      <p>உங்கள் கணக்கை உருவாக்கவும்</p>
-                    </div>
-                  </div>
+                {/* Embedded iframe */}
+                <div className="gform-embed-wrap">
+                  <iframe
+                    src={GOOGLE_FORM_EMBED}
+                    title="Career Guidance Registration Form — கல்வி ஆலோசனை பதிவேடு"
+                    className="gform-iframe"
+                    frameBorder="0"
+                    marginHeight="0"
+                    marginWidth="0"
+                  >
+                    Loading…
+                  </iframe>
+                </div>
 
-                  <div className="form-group">
-                    <label><FaEnvelope /> Email Address *</label>
-                    <input
-                      name="email" type="email" value={form.email} onChange={set}
-                      placeholder="your@email.com" required
-                    />
-                  </div>
+                <p className="gform-note">
+                  After submitting the Google Form, our team will contact you within 48 hours via phone or email.
+                  <br />
+                  <span>படிவத்தை சமர்ப்பித்த பிறகு, எங்கள் குழு 48 மணி நேரத்திற்குள் தொடர்பு கொள்ளும்.</span>
+                </p>
+              </motion.div>
+            )}
 
-                  <div className="form-group">
-                    <label><FaPhone /> Phone Number *</label>
-                    <input
-                      name="phone" type="tel" value={form.phone} onChange={set}
-                      placeholder="10-digit mobile number" maxLength={10} required
-                    />
-                  </div>
+            {/* ════════════════════════════
+                WEBSITE FORM PANEL
+            ════════════════════════════ */}
+            {method === 'website' && (
+              <motion.div key="website"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.3 }}
+              >
 
-                  <div className="grid-2">
-                    <div className="form-group">
-                      <label><FaLock /> Password *</label>
-                      <div className="input-eye-reg">
-                        <input
-                          type={showPw ? 'text' : 'password'}
-                          name="password" value={form.password} onChange={set}
-                          placeholder="Min 6 characters" required
-                        />
-                        <button type="button" onClick={() => setShowPw(v => !v)}>
-                          {showPw ? <FaEyeSlash /> : <FaEye />}
-                        </button>
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label><FaLock /> Confirm Password *</label>
-                      <input
-                        type="password" name="confirmPassword"
-                        value={form.confirmPassword} onChange={set}
-                        placeholder="Re-enter password" required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="step-nav">
-                    <span />
-                    <motion.button
-                      type="button" className="btn btn-primary step-btn"
-                      onClick={handleNext}
-                      whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    >
-                      Next — Personal Details <FaArrowRight />
-                    </motion.button>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* ── STEP 2: Personal Details ── */}
-              {step === 2 && (
-                <motion.div
-                  key="step2"
-                  custom={dir}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                >
-                  <div className="step-heading">
-                    <FaUser className="step-heading-icon" />
-                    <div>
-                      <h3>Personal Details</h3>
-                      <p>தனிப்பட்ட விவரங்கள்</p>
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label><FaUser /> Full Name * <span className="label-ta">(முழு பெயர்)</span></label>
-                    <input
-                      name="name" value={form.name} onChange={set}
-                      placeholder="Enter your full name" required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label><FaCalendarAlt /> Date of Birth * <span className="label-ta">(பிறந்த தேதி)</span></label>
-                    <input
-                      type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={set}
-                      max={new Date().toISOString().split('T')[0]}
-                      required
-                    />
-                  </div>
-
-                  <div className="step-nav">
-                    <motion.button
-                      type="button" className="btn btn-outline-dark step-btn"
-                      onClick={goPrev}
-                      whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    >
-                      <FaArrowLeft /> Back
-                    </motion.button>
-                    <motion.button
-                      type="button" className="btn btn-primary step-btn"
-                      onClick={handleNext}
-                      whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    >
-                      Next — Education Details <FaArrowRight />
-                    </motion.button>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* ── STEP 3: Education Details ── */}
-              {step === 3 && (
-                <motion.div
-                  key="step3"
-                  custom={dir}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                >
-                  <div className="step-heading">
-                    <FaGraduationCap className="step-heading-icon" />
-                    <div>
-                      <h3>Education Details</h3>
-                      <p>கல்வி விவரங்கள்</p>
-                    </div>
-                  </div>
-
-                  <form onSubmit={handleSubmit}>
-                    <div className="grid-2">
-                      <div className="form-group">
-                        <label><FaMapMarkerAlt /> District <span className="label-ta">(மாவட்டம்)</span></label>
-                        <select name="district" value={form.district} onChange={set}>
-                          <option value="">Select District</option>
-                          {districts.map(d => <option key={d} value={d}>{d}</option>)}
-                        </select>
-                      </div>
-                      <div className="form-group">
-                        <label><FaSchool /> School Name <span className="label-ta">(பள்ளி பெயர்)</span></label>
-                        <input
-                          name="school" value={form.school} onChange={set}
-                          placeholder="Enter your school name"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Qualification */}
-                    <div className="form-group">
-                      <label>
-                        <FaGraduationCap /> Current Academic Qualification *
-                        <span className="label-ta"> (தற்போதைய கல்வி தகுதி)</span>
-                      </label>
-                      <div className="radio-group">
-                        {qualifications.map(q => (
-                          <label key={q} className={`radio-card ${form.qualification === q ? 'selected' : ''}`}>
-                            <input
-                              type="radio" name="qualification"
-                              value={q} checked={form.qualification === q}
-                              onChange={set}
-                            />
-                            <span>{q}</span>
-                          </label>
-                        ))}
-                      </div>
-                      {form.qualification === 'Other' && (
-                        <motion.input
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          className="other-input"
-                          placeholder="Please specify your qualification"
-                          value={otherQual}
-                          onChange={e => setOtherQual(e.target.value)}
-                          required
-                        />
-                      )}
-                    </div>
-
-                    {/* Career Interest */}
-                    <div className="form-group">
-                      <label>
-                        Area of Interest (Career Stream) *
-                        <span className="label-ta"> (விருப்பமான துறை)</span>
-                      </label>
-                      <div className="radio-group">
-                        {careerInterests.map(ci => (
-                          <label key={ci} className={`radio-card ${form.careerInterest === ci ? 'selected' : ''}`}>
-                            <input
-                              type="radio" name="careerInterest"
-                              value={ci} checked={form.careerInterest === ci}
-                              onChange={set}
-                            />
-                            <span>{ci}</span>
-                          </label>
-                        ))}
-                      </div>
-                      {form.careerInterest === 'Other' && (
-                        <motion.input
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          className="other-input"
-                          placeholder="Please specify your career interest"
-                          value={otherInterest}
-                          onChange={e => setOtherInterest(e.target.value)}
-                          required
-                        />
-                      )}
-                    </div>
-
-                    {/* Proof Upload */}
-                    <div className="form-group">
-                      <label>
-                        <FaUpload /> Proof Document *
-                        <span className="label-ta"> (சான்று ஆவணம்)</span>
-                      </label>
-                      <p className="field-hint">
-                        Upload School ID Card, Mark Sheet, or any valid proof (Max 10 MB — JPG, PNG, PDF)
-                      </p>
-                      <div
-                        className={`file-drop-zone ${proofFile ? 'has-file' : ''}`}
-                        onClick={() => fileRef.current?.click()}
+                {/* Step indicator */}
+                <div className="step-indicator">
+                  {STEPS.map((s, i) => (
+                    <div key={s.num} className="step-indicator-item">
+                      <motion.div
+                        className={`step-circle ${step === s.num ? 'active' : step > s.num ? 'done' : ''}`}
+                        whileHover={{ scale: 1.08 }}
                       >
-                        <input
-                          ref={fileRef}
-                          type="file"
-                          accept=".jpg,.jpeg,.png,.pdf"
-                          onChange={handleFile}
-                          style={{ display: 'none' }}
-                        />
-                        {proofFile ? (
-                          <div className="file-selected">
-                            <FaFileAlt className="file-icon" />
-                            <div>
-                              <p className="file-name">{proofFile.name}</p>
-                              <p className="file-size">{(proofFile.size / 1024).toFixed(1)} KB</p>
+                        {step > s.num ? <FaCheckCircle /> : s.icon}
+                      </motion.div>
+                      <div className="step-label">
+                        <span>{s.label}</span>
+                        <small>{s.labelTa}</small>
+                      </div>
+                      {i < STEPS.length - 1 && (
+                        <div className={`step-line ${step > s.num ? 'done' : ''}`} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Animated step content */}
+                <div className="step-content-wrap">
+                  <AnimatePresence mode="wait" custom={dir}>
+
+                    {/* ── STEP 1: Account ── */}
+                    {step === 1 && (
+                      <motion.div key="s1" custom={dir} variants={slide}
+                        initial="enter" animate="center" exit="exit">
+                        <div className="step-heading">
+                          <FaLock className="step-heading-icon" />
+                          <div>
+                            <h3>Create Your Account</h3>
+                            <p>உங்கள் கணக்கை உருவாக்கவும்</p>
+                          </div>
+                        </div>
+
+                        <div className="form-group">
+                          <label><FaEnvelope /> Email Address *</label>
+                          <input name="email" type="email" value={form.email} onChange={set}
+                            placeholder="your@email.com" required />
+                        </div>
+
+                        <div className="form-group">
+                          <label><FaPhone /> Phone Number *</label>
+                          <input name="phone" type="tel" value={form.phone} onChange={set}
+                            placeholder="10-digit mobile number" maxLength={10} required />
+                        </div>
+
+                        <div className="grid-2">
+                          <div className="form-group">
+                            <label><FaLock /> Password *</label>
+                            <div className="input-eye-reg">
+                              <input type={showPw ? 'text' : 'password'} name="password"
+                                value={form.password} onChange={set} placeholder="Min 6 characters" required />
+                              <button type="button" onClick={() => setShowPw(v => !v)}>
+                                {showPw ? <FaEyeSlash /> : <FaEye />}
+                              </button>
                             </div>
-                            <button
-                              type="button"
-                              className="file-remove"
-                              onClick={e => { e.stopPropagation(); setProofFile(null); }}
-                            >
-                              ✕
-                            </button>
                           </div>
-                        ) : (
-                          <div className="file-placeholder">
-                            <FaUpload className="upload-icon" />
-                            <p>Click to upload or drag & drop</p>
-                            <small>JPG, PNG, PDF — Max 10 MB</small>
+                          <div className="form-group">
+                            <label><FaLock /> Confirm Password *</label>
+                            <input type="password" name="confirmPassword"
+                              value={form.confirmPassword} onChange={set}
+                              placeholder="Re-enter password" required />
                           </div>
-                        )}
-                      </div>
-                    </div>
+                        </div>
 
-                    <div className="step-nav">
-                      <motion.button
-                        type="button" className="btn btn-outline-dark step-btn"
-                        onClick={goPrev}
-                        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                      >
-                        <FaArrowLeft /> Back
-                      </motion.button>
-                      <motion.button
-                        type="submit" className="btn btn-primary step-btn submit-btn"
-                        disabled={loading}
-                        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                      >
-                        {loading ? 'Submitting...' : '🎓 Complete Registration'}
-                      </motion.button>
-                    </div>
+                        <div className="step-nav">
+                          <span />
+                          <motion.button type="button" className="btn btn-primary step-btn"
+                            onClick={handleNext} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                            Next — Personal Details <FaArrowRight />
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    )}
 
-                    <p className="submit-note">
-                      No fees. No charges. Fully supported by volunteers.
-                    </p>
-                  </form>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                    {/* ── STEP 2: Personal ── */}
+                    {step === 2 && (
+                      <motion.div key="s2" custom={dir} variants={slide}
+                        initial="enter" animate="center" exit="exit">
+                        <div className="step-heading">
+                          <FaUser className="step-heading-icon" />
+                          <div>
+                            <h3>Personal Details</h3>
+                            <p>தனிப்பட்ட விவரங்கள்</p>
+                          </div>
+                        </div>
 
-          {/* Thank-you note at bottom */}
-          <div className="reg-thankyou">
-            <p>
-              After verifying your details, our team will contact you via the provided phone number or email.
-              We'll help you discover the best career path tailored for you.
-              <strong> Wishing you success and joy in your life journey! 🌟</strong>
-            </p>
-            <p className="reg-thankyou-ta">
-              உங்கள் விவரங்களை சரிபார்த்த பிறகு, எங்கள் குழு உங்களை தொடர்பு கொள்ளும்.
-            </p>
-          </div>
+                        <div className="form-group">
+                          <label>
+                            <FaUser /> Full Name *
+                            <span className="label-ta"> (முழு பெயர்)</span>
+                          </label>
+                          <input name="name" value={form.name} onChange={set}
+                            placeholder="Enter your full name" required />
+                        </div>
+
+                        <div className="form-group">
+                          <label>
+                            <FaCalendarAlt /> Date of Birth *
+                            <span className="label-ta"> (பிறந்த தேதி)</span>
+                          </label>
+                          <input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={set}
+                            max={new Date().toISOString().split('T')[0]} required />
+                        </div>
+
+                        <div className="step-nav">
+                          <motion.button type="button" className="btn btn-outline-dark step-btn"
+                            onClick={goPrev} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                            <FaArrowLeft /> Back
+                          </motion.button>
+                          <motion.button type="button" className="btn btn-primary step-btn"
+                            onClick={handleNext} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                            Next — Education Details <FaArrowRight />
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* ── STEP 3: Education ── */}
+                    {step === 3 && (
+                      <motion.div key="s3" custom={dir} variants={slide}
+                        initial="enter" animate="center" exit="exit">
+                        <div className="step-heading">
+                          <FaGraduationCap className="step-heading-icon" />
+                          <div>
+                            <h3>Education Details</h3>
+                            <p>கல்வி விவரங்கள்</p>
+                          </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                          <div className="grid-2">
+                            <div className="form-group">
+                              <label>
+                                <FaMapMarkerAlt /> District
+                                <span className="label-ta"> (மாவட்டம்)</span>
+                              </label>
+                              <select name="district" value={form.district} onChange={set}>
+                                <option value="">Select District</option>
+                                {districts.map(d => <option key={d} value={d}>{d}</option>)}
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label>
+                                <FaSchool /> School Name
+                                <span className="label-ta"> (பள்ளி பெயர்)</span>
+                              </label>
+                              <input name="school" value={form.school} onChange={set}
+                                placeholder="Enter your school name" />
+                            </div>
+                          </div>
+
+                          {/* Qualification */}
+                          <div className="form-group">
+                            <label>
+                              Current Academic Qualification *
+                              <span className="label-ta"> (தற்போதைய கல்வி தகுதி)</span>
+                            </label>
+                            <div className="radio-group">
+                              {qualifications.map(q => (
+                                <label key={q} className={`radio-card ${form.qualification === q ? 'selected' : ''}`}>
+                                  <input type="radio" name="qualification" value={q}
+                                    checked={form.qualification === q} onChange={set} />
+                                  <span>{q}</span>
+                                </label>
+                              ))}
+                            </div>
+                            {form.qualification === 'Other' && (
+                              <motion.input
+                                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                className="other-input"
+                                placeholder="Please specify your qualification"
+                                value={otherQual} onChange={e => setOtherQual(e.target.value)} required
+                              />
+                            )}
+                          </div>
+
+                          {/* Career Interest */}
+                          <div className="form-group">
+                            <label>
+                              Area of Interest (Career Stream) *
+                              <span className="label-ta"> (விருப்பமான துறை)</span>
+                            </label>
+                            <div className="radio-group">
+                              {careerInterests.map(ci => (
+                                <label key={ci} className={`radio-card ${form.careerInterest === ci ? 'selected' : ''}`}>
+                                  <input type="radio" name="careerInterest" value={ci}
+                                    checked={form.careerInterest === ci} onChange={set} />
+                                  <span>{ci}</span>
+                                </label>
+                              ))}
+                            </div>
+                            {form.careerInterest === 'Other' && (
+                              <motion.input
+                                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                className="other-input"
+                                placeholder="Please specify your career interest"
+                                value={otherInterest} onChange={e => setOtherInterest(e.target.value)} required
+                              />
+                            )}
+                          </div>
+
+                          {/* Proof Upload */}
+                          <div className="form-group">
+                            <label>
+                              <FaUpload /> Proof Document
+                              <span className="label-ta"> (சான்று ஆவணம்)</span>
+                            </label>
+                            <p className="field-hint">
+                              School ID Card, Mark Sheet, or any valid proof — JPG, PNG, PDF (Max 10 MB)
+                            </p>
+                            <div className={`file-drop-zone ${proofFile ? 'has-file' : ''}`}
+                              onClick={() => fileRef.current?.click()}>
+                              <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf"
+                                onChange={handleFile} style={{ display: 'none' }} />
+                              {proofFile ? (
+                                <div className="file-selected">
+                                  <FaFileAlt className="file-icon" />
+                                  <div>
+                                    <p className="file-name">{proofFile.name}</p>
+                                    <p className="file-size">{(proofFile.size / 1024).toFixed(1)} KB</p>
+                                  </div>
+                                  <button type="button" className="file-remove"
+                                    onClick={e => { e.stopPropagation(); setProofFile(null); }}>✕</button>
+                                </div>
+                              ) : (
+                                <div className="file-placeholder">
+                                  <FaUpload className="upload-icon" />
+                                  <p>Click to upload or drag &amp; drop</p>
+                                  <small>JPG, PNG, PDF — Max 10 MB</small>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="step-nav">
+                            <motion.button type="button" className="btn btn-outline-dark step-btn"
+                              onClick={goPrev} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                              <FaArrowLeft /> Back
+                            </motion.button>
+                            <motion.button type="submit" className="btn btn-primary step-btn"
+                              disabled={loading} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                              {loading ? 'Submitting…' : '🎓 Complete Registration'}
+                            </motion.button>
+                          </div>
+
+                          <p className="submit-note">
+                            No fees. No charges. Fully supported by volunteers.
+                          </p>
+                        </form>
+                      </motion.div>
+                    )}
+
+                  </AnimatePresence>
+                </div>
+
+                {/* Thank-you note */}
+                <div className="reg-thankyou">
+                  <p>
+                    After verifying your details, our team will contact you via the provided phone number or email.
+                    We'll help you discover the best career path tailored for you.
+                    <strong> Wishing you success and joy in your life journey! 🌟</strong>
+                  </p>
+                  <p className="reg-thankyou-ta">
+                    உங்கள் விவரங்களை சரிபார்த்த பிறகு, எங்கள் குழு உங்களை தொடர்பு கொள்ளும்.
+                  </p>
+                </div>
+
+              </motion.div>
+            )}
+
+          </AnimatePresence>
         </div>
       </div>
     </div>
