@@ -1,8 +1,6 @@
 const path = require('path');
-// Load .env only in development (Render injects env vars directly)
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config({ path: path.resolve(__dirname, '.env') });
-}
+// Always load .env — Render injects env vars which override these in production
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -27,6 +25,13 @@ app.use('/api/admin',         require('./routes/admin'));
 app.use('/api/upload',        require('./routes/upload'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Meipuratchi API running' }));
+
+// Temp debug — remove after testing
+app.get('/api/debug-env', (req, res) => res.json({
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || 'NOT SET',
+  GOOGLE_DRIVE_FOLDER_ID: process.env.GOOGLE_DRIVE_FOLDER_ID || 'NOT SET',
+  GOOGLE_PRIVATE_KEY_SET: !!process.env.GOOGLE_PRIVATE_KEY,
+}));
 
 // Serve frontend static files in production
 if (process.env.NODE_ENV === 'production') {

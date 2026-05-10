@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   FaGraduationCap, FaUser, FaPhone, FaEnvelope, FaSchool,
   FaMapMarkerAlt, FaLock, FaEye, FaEyeSlash, FaCheckCircle,
-  FaArrowRight, FaArrowLeft, FaCalendarAlt, FaUpload, FaFileAlt,
+  FaArrowRight, FaArrowLeft, FaCalendarAlt,
   FaExternalLinkAlt, FaWpforms
 } from 'react-icons/fa';
 import { SiGoogleforms } from 'react-icons/si';
@@ -59,7 +59,6 @@ const slide = {
 /* ══════════════════════════════════════════════════════════ */
 export default function Registration() {
   const navigate = useNavigate();
-  const fileRef  = useRef(null);
 
   /* method: 'website' | 'google' */
   const [method, setMethod] = useState('website');
@@ -69,7 +68,6 @@ export default function Registration() {
   const [dir,  setDir]    = useState(1);
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [proofFile, setProofFile] = useState(null);
   const [otherQual, setOtherQual] = useState('');
   const [otherInterest, setOtherInterest] = useState('');
 
@@ -115,13 +113,6 @@ export default function Registration() {
     goNext();
   };
 
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { toast.error('File must be under 10 MB'); return; }
-    setProofFile(file);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const finalQual     = form.qualification  === 'Other' ? otherQual     : form.qualification;
@@ -130,35 +121,11 @@ export default function Registration() {
 
     setLoading(true);
     try {
-      // ── Step 1: Upload proof file to Google Drive (if provided) ──
-      let proofFileUrl = '';
-      if (proofFile) {
-        toast.loading('Uploading document…', { id: 'upload' });
-        const formData = new FormData();
-        formData.append('file', proofFile);
-
-        const uploadRes = await fetch(
-          `${import.meta.env.VITE_API_URL || ''}/api/upload/drive`,
-          { method: 'POST', body: formData }
-        );
-        const uploadData = await uploadRes.json();
-        toast.dismiss('upload');
-
-        if (!uploadData.success) {
-          toast.error(uploadData.message || 'File upload failed');
-          setLoading(false);
-          return;
-        }
-        proofFileUrl = uploadData.url;
-      }
-
-      // ── Step 2: Register the user with the Drive link ──
       const payload = {
         email: form.email, phone: form.phone, password: form.password,
         name: form.name, dateOfBirth: form.dateOfBirth,
         district: form.district, school: form.school,
         qualification: finalQual, careerInterest: finalInterest,
-        proofFileUrl,
         role: 'student',
       };
       const res = await registerUser(payload);
@@ -167,7 +134,6 @@ export default function Registration() {
       toast.success('Registration successful! Welcome to Meipuratchi 🎉');
       navigate('/portal');
     } catch (err) {
-      toast.dismiss('upload');
       toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
@@ -214,9 +180,6 @@ export default function Registration() {
           <div className="reg-eligibility">
             <h4>Eligibility</h4>
             <p>Students from Tamil Nadu studying 6th–12th standard, including those who have faced setbacks in board exams.</p>
-            <p style={{ marginTop: 12 }}>
-              <strong>Required Documents:</strong> School ID Card or Mark Sheet (max 10 MB)
-            </p>
           </div>
           <div className="reg-eligibility" style={{ marginTop: 16 }}>
             <h4>Already registered?</h4>
@@ -521,39 +484,6 @@ export default function Registration() {
                                 value={otherInterest} onChange={e => setOtherInterest(e.target.value)} required
                               />
                             )}
-                          </div>
-
-                          {/* Proof Upload */}
-                          <div className="form-group">
-                            <label>
-                              <FaUpload /> Proof Document
-                              <span className="label-ta"> (சான்று ஆவணம்)</span>
-                            </label>
-                            <p className="field-hint">
-                              School ID Card, Mark Sheet, or any valid proof — JPG, PNG, PDF (Max 10 MB)
-                            </p>
-                            <div className={`file-drop-zone ${proofFile ? 'has-file' : ''}`}
-                              onClick={() => fileRef.current?.click()}>
-                              <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf"
-                                onChange={handleFile} style={{ display: 'none' }} />
-                              {proofFile ? (
-                                <div className="file-selected">
-                                  <FaFileAlt className="file-icon" />
-                                  <div>
-                                    <p className="file-name">{proofFile.name}</p>
-                                    <p className="file-size">{(proofFile.size / 1024).toFixed(1)} KB</p>
-                                  </div>
-                                  <button type="button" className="file-remove"
-                                    onClick={e => { e.stopPropagation(); setProofFile(null); }}>✕</button>
-                                </div>
-                              ) : (
-                                <div className="file-placeholder">
-                                  <FaUpload className="upload-icon" />
-                                  <p>Click to upload or drag &amp; drop</p>
-                                  <small>JPG, PNG, PDF — Max 10 MB</small>
-                                </div>
-                              )}
-                            </div>
                           </div>
 
                           <div className="step-nav">
