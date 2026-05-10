@@ -47,6 +47,9 @@ const userSchema = new mongoose.Schema({
   stream:        { type: String },
   careerInterest:{ type: String },
   skills:        { type: String },
+  dateOfBirth:   { type: String },
+  qualification: { type: String },
+  proofFileUrl:  { type: String },
 
   // Messages thread between admin and user
   messages: [messageSchema],

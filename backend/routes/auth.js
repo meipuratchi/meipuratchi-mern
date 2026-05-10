@@ -26,7 +26,8 @@ const signToken = (user) =>
 router.post('/register', async (req, res) => {
   try {
     const { name, email, phone, password, role, school, district,
-            standard, stream, careerInterest, skills, department } = req.body;
+            standard, stream, careerInterest, skills, department,
+            dateOfBirth, qualification, proofFileUrl } = req.body;
 
     const exists = await User.findOne({ $or: [{ email }, { phone }] });
     if (exists) return res.status(400).json({ success: false, message: 'Email or phone already registered' });
@@ -35,6 +36,7 @@ router.post('/register', async (req, res) => {
       name, email, phone, password,
       role: role || 'student',
       school, district, standard, stream, careerInterest, skills, department,
+      dateOfBirth, qualification, proofFileUrl,
       messages: [{
         from: 'admin',
         text: `Welcome ${name}! Your request has been submitted successfully. Our team will review it within 48 hours.`,
