@@ -48,13 +48,22 @@ export default function Contact() {
                 <p>{c('phone','+91 72002 82924')}</p>
               </div>
             </a>
-            <a href={c('whatsapp_link','https://chat.whatsapp.com/Fw3a4hxJnCB4aqVcOxUkK6')} target="_blank" rel="noreferrer" className="contact-item">
+            <a href={c('whatsapp_link','https://chat.whatsapp.com/LM8lhAO5wReB5V4Yes1DXq')} target="_blank" rel="noreferrer" className="contact-item">
               <div className="ci-icon whatsapp"><FaWhatsapp /></div>
               <div>
-                <h4>{c('whatsapp_label','WhatsApp Group')}</h4>
+                <h4>{c('whatsapp_label','WhatsApp Community')}</h4>
                 <p>{c('whatsapp_desc','Join our community')}</p>
               </div>
             </a>
+          </div>
+
+          {/* WhatsApp QR Code */}
+          <div className="whatsapp-qr-box">
+            <p className="qr-label"><FaWhatsapp /> Scan to Join WhatsApp Community</p>
+            <a href={c('whatsapp_link','https://chat.whatsapp.com/LM8lhAO5wReB5V4Yes1DXq')} target="_blank" rel="noreferrer">
+              <img src="/qrwhatsapp.png" alt="Scan QR to join WhatsApp Community" className="whatsapp-qr-img" />
+            </a>
+            <p className="qr-hint">Point your phone camera at the QR code to join instantly</p>
           </div>
 
           <div className="social-section">

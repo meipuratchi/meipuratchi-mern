@@ -202,7 +202,7 @@ const defaultPages = [
       { key: 'phone',           type: 'text',     label: 'Phone Number',         value: '+91 72002 82924' },
       { key: 'whatsapp_label',  type: 'text',     label: 'WhatsApp Label',       value: 'WhatsApp Group' },
       { key: 'whatsapp_desc',   type: 'text',     label: 'WhatsApp Description', value: 'Join our community' },
-      { key: 'whatsapp_link',   type: 'link',     label: 'WhatsApp Group Link',  value: 'https://chat.whatsapp.com/Fw3a4hxJnCB4aqVcOxUkK6' },
+      { key: 'whatsapp_link',   type: 'link',     label: 'WhatsApp Group Link',  value: 'https://chat.whatsapp.com/LM8lhAO5wReB5V4Yes1DXq' },
       { key: 'social_label',    type: 'text',     label: 'Social Media Label',   value: 'Follow Us' },
       { key: 'facebook',        type: 'link',     label: 'Facebook URL',         value: 'https://www.facebook.com/people/Mei-Puratchi/pfbid02CebTu4BGTjdLaneMEbRXa7QQwAxpHQ4tVukDr9XCAzokawjEC28d8YSeeang6JGFl/' },
       { key: 'instagram',       type: 'link',     label: 'Instagram URL',        value: 'https://www.instagram.com/meipuratchi/' },

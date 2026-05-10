@@ -118,13 +118,13 @@ export default function Footer() {
                 <FaPhone /> +91 72002 82924
               </motion.a>
               <motion.a 
-                href="https://chat.whatsapp.com/Fw3a4hxJnCB4aqVcOxUkK6" 
+                href="https://chat.whatsapp.com/LM8lhAO5wReB5V4Yes1DXq" 
                 target="_blank" 
                 rel="noreferrer"
                 whileHover={{ x: 5 }}
                 transition={{ duration: 0.2 }}
               >
-                <FaWhatsapp /> WhatsApp Group
+                <FaWhatsapp /> WhatsApp Community
               </motion.a>
             </div>
           </motion.div>
