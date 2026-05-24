@@ -59,7 +59,7 @@ function AnimatedRoutes() {
         <Route path="/registration" element={<PublicLayout><Registration /></PublicLayout>} />
         <Route path="/engineering" element={<PublicLayout><Engineering /></PublicLayout>} />
         <Route path="/paramedical" element={<PublicLayout><Paramedical /></PublicLayout>} />
-        <Route path="/team" element={<PublicLayout><Team /></PublicLayout>} />
+        <Route path="/our-team" element={<PublicLayout><Team /></PublicLayout>} />
         <Route path="/volunteer" element={<PublicLayout><Volunteer /></PublicLayout>} />
         <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
       </Routes>

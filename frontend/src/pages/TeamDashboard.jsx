@@ -215,17 +215,17 @@ export default function TeamDashboard() {
                 ) : users.map((u, i) => (
                   <tr key={u._id}>
                     <td>{(page-1)*15+i+1}</td>
-                    <td>
+                    <td data-label="Name">
                       <div className="td-name">{u.name}</div>
                       <div className="td-sub">{u.email}</div>
                     </td>
-                    <td>{u.phone}</td>
-                    <td><span className={`td-role td-role-${u.role}`}>{u.role}</span></td>
-                    <td>{u.district || '—'}</td>
-                    <td>{u.careerInterest || u.skills || '—'}</td>
-                    <td><Badge status={u.status} /></td>
-                    <td>{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
-                    <td>
+                    <td data-label="Phone">{u.phone}</td>
+                    <td data-label="Role"><span className={`td-role td-role-${u.role}`}>{u.role}</span></td>
+                    <td data-label="District">{u.district || '—'}</td>
+                    <td data-label="Interest">{u.careerInterest || u.skills || '—'}</td>
+                    <td data-label="Status"><Badge status={u.status} /></td>
+                    <td data-label="Date">{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
+                    <td data-label="Action">
                       <button className="td-edit-btn" onClick={() => navigate(`/user/${u._id}`)}>
                         <FaEdit /> Manage
                       </button>

@@ -488,11 +488,10 @@ img[loading="lazy"].loaded {
    ANDROID-SPECIFIC FIXES
    ======================================== */
 
-/* Fix for Android Chrome Address Bar */
-@supports (-webkit-touch-callout: none) {
-  .hero {
-    min-height: -webkit-fill-available;
-  }
+/* Fix for Android Chrome Address Bar — use dvh */
+.hero {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Fix for Android Input Zoom */
@@ -511,6 +510,22 @@ img[loading="lazy"].loaded {
 /* Fix for Android Tap Delay */
 a, button, input, select, textarea {
   touch-action: manipulation;
+}
+
+/* Prevent horizontal scroll on Android */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Fix for Android status bar overlap on notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .navbar {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+  .portal-sidebar.bottom-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
 }
 
 /* ========================================

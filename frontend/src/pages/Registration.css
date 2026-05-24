@@ -424,18 +424,29 @@
 
 @media (max-width: 480px) {
   .reg-hero { padding: 90px 0 40px; }
-  .reg-hero h1 { font-size: 1.7rem; }
+  .reg-hero h1 { font-size: 1.6rem; }
   .reg-hero p { font-size: 0.88rem; }
-  .reg-container { padding-top: 24px; padding-bottom: 40px; }
+  .reg-container { padding-top: 20px; padding-bottom: 40px; }
   .reg-info { padding: 18px; }
-  .reg-form-wrap { padding: 18px 16px; }
-  .step-circle { width: 40px; height: 40px; font-size: 0.95rem; }
-  .step-heading h3 { font-size: 1.1rem; }
+  .reg-form-wrap { padding: 18px 14px; }
+  /* Compact step indicator on mobile */
+  .step-indicator { gap: 0; margin-bottom: 24px; padding-bottom: 20px; }
+  .step-circle { width: 36px; height: 36px; font-size: 0.85rem; }
+  .step-circle.active { transform: scale(1.05); }
+  .step-label { display: none; }
+  .step-line { margin: 0 2px; }
+  .step-heading h3 { font-size: 1rem; }
+  .step-heading-icon { font-size: 1.4rem; padding: 8px; }
   .radio-group { gap: 8px; }
   .radio-card { padding: 8px 12px; font-size: 0.82rem; }
-  .step-nav { flex-direction: column-reverse; }
+  .step-nav { flex-direction: column-reverse; gap: 10px; }
   .step-btn { width: 100%; justify-content: center; }
   .grid-2 { grid-template-columns: 1fr; }
+  /* Method tabs stack on mobile */
+  .method-tabs { grid-template-columns: 1fr; }
+  .gform-topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .btn-google-open { width: 100%; justify-content: center; }
+  .gform-iframe { height: 600px; }
 }
 
 /* ── Eye toggle ── */

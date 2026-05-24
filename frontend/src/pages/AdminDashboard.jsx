@@ -7,7 +7,8 @@ import {
   FaSearch, FaTrash, FaCheck, FaFilter,
   FaGraduationCap, FaCheckCircle,
   FaKey, FaTimes, FaEye, FaEyeSlash,
-  FaPaperPlane, FaUserShield, FaEdit, FaPalette
+  FaUserShield, FaEdit, FaPalette,
+  FaClipboardList, FaHeart
 } from 'react-icons/fa';
 import './AdminDashboard.css';
 import AdminCMS from './AdminCMS';
@@ -67,7 +68,7 @@ function UsersTab({ adminKey }) {
   const [page, setPage]       = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const fetch = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const params = { page, limit: 15, search, role: roleFilter, status: statusFilter };
@@ -78,14 +79,14 @@ function UsersTab({ adminKey }) {
     finally { setLoading(false); }
   }, [adminKey, page, search, roleFilter, statusFilter]);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { fetchUsers(); }, [fetchUsers]);
 
   const deleteUser = async id => {
     if (!window.confirm('Delete this user permanently?')) return;
     try {
       await axios.delete(`${API}/users/${id}`, { headers: headers(adminKey) });
       toast.success('User deleted');
-      fetch();
+      fetchUsers();
     } catch { toast.error('Delete failed'); }
   };
 
@@ -119,22 +120,14 @@ function UsersTab({ adminKey }) {
         </div>
         <span className="total-count">{total} users</span>
       </div>
-
       {loading ? <div className="loading-state">Loading...</div> : (
         <div className="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Role</th>
-                <th>District</th>
-                <th>Interest / Skills</th>
-                <th>Status</th>
-                <th>Messages</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>#</th><th>Name</th><th>Phone</th><th>Role</th>
+                <th>District</th><th>Interest / Skills</th><th>Status</th>
+                <th>Msgs</th><th>Date</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -143,10 +136,7 @@ function UsersTab({ adminKey }) {
               ) : data.map((u, i) => (
                 <tr key={u._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/user/${u._id}`)}>
                   <td>{(page - 1) * 15 + i + 1}</td>
-                  <td>
-                    <div className="cell-name">{u.name}</div>
-                    <div className="cell-sub">{u.email}</div>
-                  </td>
+                  <td><div className="cell-name">{u.name}</div><div className="cell-sub">{u.email}</div></td>
                   <td>{u.phone}</td>
                   <td>
                     <span className={`role-chip role-${u.role}`}>{u.role}</span>
@@ -159,12 +149,8 @@ function UsersTab({ adminKey }) {
                   <td>{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                   <td onClick={e => e.stopPropagation()}>
                     <div className="action-btns">
-                      <button className="icon-btn primary" title="Open Detail" onClick={() => navigate(`/user/${u._id}`)}>
-                        <FaEdit />
-                      </button>
-                      <button className="icon-btn danger" title="Delete" onClick={() => deleteUser(u._id)}>
-                        <FaTrash />
-                      </button>
+                      <button className="icon-btn primary" title="Open Detail" onClick={() => navigate(`/user/${u._id}`)}><FaEdit /></button>
+                      <button className="icon-btn danger" title="Delete" onClick={() => deleteUser(u._id)}><FaTrash /></button>
                     </div>
                   </td>
                 </tr>
@@ -173,7 +159,6 @@ function UsersTab({ adminKey }) {
           </table>
         </div>
       )}
-
       {total > 15 && (
         <div className="pagination">
           <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Prev</button>
@@ -184,7 +169,236 @@ function UsersTab({ adminKey }) {
     </div>
   );
 }
-// ── Contacts Tab ───────────────────────────────────────────
+
+// ── Volunteers Tab ─────────────────────────────────────────
+function VolunteersTab({ adminKey }) {
+  const [data, setData]       = useState([]);
+  const [total, setTotal]     = useState(0);
+  const [search, setSearch]   = useState('');
+  const [statusFilter, setSt] = useState('');
+  const [page, setPage]       = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const fetchVols = useCallback(async () => {
+    setLoading(true);
+    try {
+      const r = await axios.get(`${API}/volunteers`, {
+        headers: headers(adminKey),
+        params: { page, limit: 15, search, status: statusFilter }
+      });
+      setData(r.data.data);
+      setTotal(r.data.total);
+    } catch { toast.error('Failed to load volunteer applications'); }
+    finally { setLoading(false); }
+  }, [adminKey, page, search, statusFilter]);
+
+  useEffect(() => { fetchVols(); }, [fetchVols]);
+
+  const updateStatus = async (id, status) => {
+    try {
+      await axios.patch(`${API}/volunteers/${id}/status`, { status }, { headers: headers(adminKey) });
+      toast.success('Status updated');
+      fetchVols();
+    } catch { toast.error('Update failed'); }
+  };
+
+  const deleteVol = async id => {
+    if (!window.confirm('Delete this volunteer application?')) return;
+    try {
+      await axios.delete(`${API}/volunteers/${id}`, { headers: headers(adminKey) });
+      toast.success('Deleted');
+      fetchVols();
+    } catch { toast.error('Delete failed'); }
+  };
+
+  return (
+    <div className="tab-content-area">
+      <div className="tab-toolbar">
+        <div className="search-box">
+          <FaSearch />
+          <input placeholder="Search name, email, phone, department..."
+            value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
+        </div>
+        <div className="filter-box">
+          <FaFilter />
+          <select value={statusFilter} onChange={e => { setSt(e.target.value); setPage(1); }}>
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <span className="total-count">{total} applications</span>
+      </div>
+      {loading ? <div className="loading-state">Loading...</div> : (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Name</th><th>Phone</th><th>Department</th>
+                <th>Skills</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length === 0 ? (
+                <tr><td colSpan={9} className="empty-row">No volunteer applications found</td></tr>
+              ) : data.map((v, i) => (
+                <tr key={v._id}>
+                  <td>{(page - 1) * 15 + i + 1}</td>
+                  <td><div className="cell-name">{v.name}</div><div className="cell-sub">{v.email}</div></td>
+                  <td>{v.phone}</td>
+                  <td><span className="dept-chip">{v.department}</span></td>
+                  <td className="cell-wrap">{v.skills || '—'}</td>
+                  <td className="cell-wrap">{v.message ? v.message.slice(0, 60) + (v.message.length > 60 ? '…' : '') : '—'}</td>
+                  <td>
+                    <select className="status-select" value={v.status}
+                      onChange={e => updateStatus(v._id, e.target.value)}>
+                      <option value="pending">pending</option>
+                      <option value="approved">approved</option>
+                      <option value="rejected">rejected</option>
+                    </select>
+                  </td>
+                  <td>{new Date(v.createdAt).toLocaleDateString('en-IN')}</td>
+                  <td>
+                    <button className="icon-btn danger" title="Delete" onClick={() => deleteVol(v._id)}><FaTrash /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {total > 15 && (
+        <div className="pagination">
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Prev</button>
+          <span>Page {page} of {Math.ceil(total / 15)}</span>
+          <button disabled={page >= Math.ceil(total / 15)} onClick={() => setPage(p => p + 1)}>Next →</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Registrations Tab ──────────────────────────────────────
+function RegistrationsTab({ adminKey }) {
+  const [data, setData]       = useState([]);
+  const [total, setTotal]     = useState(0);
+  const [search, setSearch]   = useState('');
+  const [statusFilter, setSt] = useState('');
+  const [page, setPage]       = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const fetchRegs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const r = await axios.get(`${API}/registrations`, {
+        headers: headers(adminKey),
+        params: { page, limit: 15, search, status: statusFilter }
+      });
+      setData(r.data.data);
+      setTotal(r.data.total);
+    } catch { toast.error('Failed to load registrations'); }
+    finally { setLoading(false); }
+  }, [adminKey, page, search, statusFilter]);
+
+  useEffect(() => { fetchRegs(); }, [fetchRegs]);
+
+  const updateStatus = async (id, status) => {
+    try {
+      await axios.patch(`${API}/registrations/${id}/status`, { status }, { headers: headers(adminKey) });
+      toast.success('Status updated');
+      fetchRegs();
+    } catch { toast.error('Update failed'); }
+  };
+
+  const deleteReg = async id => {
+    if (!window.confirm('Delete this registration?')) return;
+    try {
+      await axios.delete(`${API}/registrations/${id}`, { headers: headers(adminKey) });
+      toast.success('Deleted');
+      fetchRegs();
+    } catch { toast.error('Delete failed'); }
+  };
+
+  return (
+    <div className="tab-content-area">
+      <div className="tab-toolbar">
+        <div className="search-box">
+          <FaSearch />
+          <input placeholder="Search name, email, phone, school, district..."
+            value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
+        </div>
+        <div className="filter-box">
+          <FaFilter />
+          <select value={statusFilter} onChange={e => { setSt(e.target.value); setPage(1); }}>
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="verified">Verified</option>
+            <option value="counseled">Counseled</option>
+          </select>
+        </div>
+        <span className="total-count">{total} registrations</span>
+      </div>
+      {loading ? <div className="loading-state">Loading...</div> : (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Name</th><th>Phone</th><th>School</th>
+                <th>District</th><th>Standard</th><th>Career Interest</th>
+                <th>Proof</th><th>Status</th><th>Date</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length === 0 ? (
+                <tr><td colSpan={11} className="empty-row">No registrations found</td></tr>
+              ) : data.map((r, i) => (
+                <tr key={r._id}>
+                  <td>{(page - 1) * 15 + i + 1}</td>
+                  <td><div className="cell-name">{r.name}</div><div className="cell-sub">{r.email}</div></td>
+                  <td>{r.phone}</td>
+                  <td className="cell-wrap">{r.school || '—'}</td>
+                  <td>{r.district || '—'}</td>
+                  <td>{r.standard || '—'}</td>
+                  <td className="cell-wrap">{r.careerInterest || '—'}</td>
+                  <td>
+                    {r.proofFileUrl
+                      ? <a href={r.proofFileUrl} target="_blank" rel="noreferrer"
+                          className="icon-btn success" title="View proof"
+                          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <FaEye />
+                        </a>
+                      : <span style={{ color: '#aaa', fontSize: '0.8rem' }}>—</span>
+                    }
+                  </td>
+                  <td>
+                    <select className="status-select" value={r.status}
+                      onChange={e => updateStatus(r._id, e.target.value)}>
+                      <option value="pending">pending</option>
+                      <option value="verified">verified</option>
+                      <option value="counseled">counseled</option>
+                    </select>
+                  </td>
+                  <td>{new Date(r.createdAt).toLocaleDateString('en-IN')}</td>
+                  <td>
+                    <button className="icon-btn danger" title="Delete" onClick={() => deleteReg(r._id)}><FaTrash /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {total > 15 && (
+        <div className="pagination">
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Prev</button>
+          <span>Page {page} of {Math.ceil(total / 15)}</span>
+          <button disabled={page >= Math.ceil(total / 15)} onClick={() => setPage(p => p + 1)}>Next →</button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ── Contacts Tab ───────────────────────────────────────────
 function ContactsTab({ adminKey }) {
@@ -192,7 +406,7 @@ function ContactsTab({ adminKey }) {
   const [loading, setLoading]   = useState(false);
   const [expanded, setExpanded] = useState(null);
 
-  const fetch = useCallback(async () => {
+  const fetchContacts = useCallback(async () => {
     setLoading(true);
     try {
       const r = await axios.get(`${API}/contacts`, { headers: headers(adminKey) });
@@ -201,13 +415,13 @@ function ContactsTab({ adminKey }) {
     finally { setLoading(false); }
   }, [adminKey]);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { fetchContacts(); }, [fetchContacts]);
 
   const markReplied = async id => {
     try {
       await axios.patch(`${API}/contacts/${id}/replied`, {}, { headers: headers(adminKey) });
       toast.success('Marked as replied');
-      fetch();
+      fetchContacts();
     } catch { toast.error('Update failed'); }
   };
 
@@ -237,7 +451,8 @@ function ContactsTab({ adminKey }) {
                 <div className="contact-body">
                   <p>{c.message}</p>
                   {!c.replied && (
-                    <button className="btn btn-primary" style={{ marginTop: 12, padding: '8px 20px', fontSize: '0.85rem' }}
+                    <button className="btn btn-primary"
+                      style={{ marginTop: 12, padding: '8px 20px', fontSize: '0.85rem' }}
                       onClick={() => markReplied(c._id)}>
                       <FaCheck /> Mark as Replied
                     </button>
@@ -329,8 +544,8 @@ function ChangeKeyModal({ adminKey, onClose }) {
 export default function AdminDashboard() {
   const adminKey = useAdminKey();
   const navigate = useNavigate();
-  const [stats, setStats]             = useState(null);
-  const [activeTab, setActiveTab]     = useState('users');
+  const [stats, setStats]               = useState(null);
+  const [activeTab, setActiveTab]       = useState('users');
   const [showKeyModal, setShowKeyModal] = useState(false);
 
   useEffect(() => {
@@ -346,9 +561,11 @@ export default function AdminDashboard() {
   };
 
   const tabs = [
-    { id: 'users',    label: 'All Users',  icon: <FaUsers /> },
-    { id: 'contacts', label: 'Messages',   icon: <FaEnvelope /> },
-    { id: 'cms',      label: 'CMS / Pages',icon: <FaPalette /> },
+    { id: 'users',         label: 'Users',        icon: <FaUsers /> },
+    { id: 'volunteers',    label: 'Volunteers',   icon: <FaHeart /> },
+    { id: 'registrations', label: 'Registrations',icon: <FaClipboardList /> },
+    { id: 'contacts',      label: 'Messages',     icon: <FaEnvelope /> },
+    { id: 'cms',           label: 'CMS',          icon: <FaPalette /> },
   ];
 
   return (
@@ -365,6 +582,12 @@ export default function AdminDashboard() {
               {t.icon} {t.label}
               {t.id === 'contacts' && stats?.contacts?.unreplied > 0 && (
                 <span className="nav-badge">{stats.contacts.unreplied}</span>
+              )}
+              {t.id === 'volunteers' && stats?.volunteerApps?.pending > 0 && (
+                <span className="nav-badge">{stats.volunteerApps.pending}</span>
+              )}
+              {t.id === 'registrations' && stats?.registrations?.pending > 0 && (
+                <span className="nav-badge">{stats.registrations.pending}</span>
               )}
             </button>
           ))}
@@ -389,10 +612,14 @@ export default function AdminDashboard() {
 
         {stats && (
           <div className="stats-row">
-            <StatCard icon={<FaGraduationCap />} label="Students"   value={stats.users.students}  sub={`${stats.pipeline.submitted} submitted`}  color="#192441" />
-            <StatCard icon={<FaHandsHelping />}  label="Volunteers" value={stats.users.volunteers} sub={`${stats.pipeline.validating} validating`} color="#28a745" />
-            <StatCard icon={<FaUsers />}         label="Team"       value={stats.users.team}       sub="Active members"                           color="#2196F3" />
-            <StatCard icon={<FaEnvelope />}      label="Messages"   value={stats.contacts.total}   sub={`${stats.contacts.unreplied} unreplied`}  color="#f5a623" />
+            <StatCard icon={<FaGraduationCap />} label="Portal Users"    value={stats.users.total}
+              sub={`${stats.users.students} students`} color="#192441" />
+            <StatCard icon={<FaHeart />}          label="Vol. Applications" value={stats.volunteerApps?.total ?? '—'}
+              sub={`${stats.volunteerApps?.pending ?? 0} pending`} color="#e74c3c" />
+            <StatCard icon={<FaClipboardList />}  label="Registrations"  value={stats.registrations?.total ?? '—'}
+              sub={`${stats.registrations?.pending ?? 0} pending`} color="#9b59b6" />
+            <StatCard icon={<FaEnvelope />}       label="Messages"       value={stats.contacts.total}
+              sub={`${stats.contacts.unreplied} unreplied`} color="#f5a623" />
           </div>
         )}
 
@@ -405,9 +632,11 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {activeTab === 'users'    && <UsersTab    adminKey={adminKey} />}
-        {activeTab === 'contacts' && <ContactsTab adminKey={adminKey} />}
-        {activeTab === 'cms'      && <AdminCMS    adminKey={adminKey} />}
+        {activeTab === 'users'         && <UsersTab         adminKey={adminKey} />}
+        {activeTab === 'volunteers'    && <VolunteersTab    adminKey={adminKey} />}
+        {activeTab === 'registrations' && <RegistrationsTab adminKey={adminKey} />}
+        {activeTab === 'contacts'      && <ContactsTab      adminKey={adminKey} />}
+        {activeTab === 'cms'           && <AdminCMS         adminKey={adminKey} />}
       </main>
 
       {showKeyModal && (

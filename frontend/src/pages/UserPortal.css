@@ -508,4 +508,50 @@
   .status-card { flex-direction: column; gap: 12px; padding: 16px; }
   .status-icon-big { font-size: 2rem; }
   .msg-bubble { max-width: 90%; }
+
+  /* Bottom nav replaces sidebar on small phones */
+  .portal-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    border-bottom: none;
+    border-top: 1px solid #e9ecef;
+    padding: 8px 12px;
+    background: white;
+    z-index: 200;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .portal-nav {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+  .portal-nav button {
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 4px;
+    font-size: 0.7rem;
+    border-radius: 8px;
+    min-height: 56px;
+    align-items: center;
+    justify-content: center;
+  }
+  .portal-nav button svg { font-size: 1.2rem; }
+  .portal-nav button .unread-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    margin-left: 0;
+  }
+  .portal-nav button { position: relative; }
+  .portal-main {
+    padding: 16px 16px 80px; /* space for bottom nav */
+  }
+  .portal-body { padding-bottom: 0; }
+  .messages-panel { height: calc(100dvh - 220px); }
 }

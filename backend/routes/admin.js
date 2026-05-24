@@ -7,9 +7,14 @@ const { adminAuth, teamAuth, manageAuth, logActivity } = require('../middleware/
 // ── Stats ──────────────────────────────────────────────────
 router.get('/stats', adminAuth, async (req, res) => {
   try {
+    const Volunteer    = require('../models/Volunteer');
+    const Registration = require('../models/Registration');
+
     const [students, volunteers, team,
            submitted, validating, verified, counseled,
-           totalContact, unreplied] = await Promise.all([
+           totalContact, unreplied,
+           totalVols, pendingVols, approvedVols,
+           totalRegs, pendingRegs] = await Promise.all([
       User.countDocuments({ role: 'student' }),
       User.countDocuments({ role: 'volunteer' }),
       User.countDocuments({ role: 'team' }),
@@ -19,13 +24,20 @@ router.get('/stats', adminAuth, async (req, res) => {
       User.countDocuments({ status: 'counseled' }),
       Contact.countDocuments({ type: 'contact' }),
       Contact.countDocuments({ type: 'contact', replied: false }),
+      Volunteer.countDocuments({}),
+      Volunteer.countDocuments({ status: 'pending' }),
+      Volunteer.countDocuments({ status: 'approved' }),
+      Registration.countDocuments({}),
+      Registration.countDocuments({ status: 'pending' }),
     ]);
     res.json({
       success: true,
       data: {
-        users:    { students, volunteers, team, total: students + volunteers + team },
-        pipeline: { submitted, validating, verified, counseled },
-        contacts: { total: totalContact, unreplied },
+        users:         { students, volunteers, team, total: students + volunteers + team },
+        pipeline:      { submitted, validating, verified, counseled },
+        contacts:      { total: totalContact, unreplied },
+        volunteerApps: { total: totalVols, pending: pendingVols, approved: approvedVols },
+        registrations: { total: totalRegs, pending: pendingRegs },
       }
     });
   } catch (err) {
@@ -153,7 +165,108 @@ router.delete('/users/:id', adminAuth, async (req, res) => {
   }
 });
 
-// ── Contacts ───────────────────────────────────────────────
+// ── Volunteers list (admin only) ──────────────────────────
+router.get('/volunteers', adminAuth, async (req, res) => {
+  try {
+    const Volunteer = require('../models/Volunteer');
+    const { status, search, page = 1, limit = 20 } = req.query;
+    const filter = {};
+    if (status) filter.status = status;
+    if (search) filter.$or = [
+      { name:  { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } },
+      { phone: { $regex: search, $options: 'i' } },
+      { department: { $regex: search, $options: 'i' } },
+    ];
+    const total = await Volunteer.countDocuments(filter);
+    const data  = await Volunteer.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    res.json({ success: true, data, total });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ── Update volunteer status (admin only) ──────────────────
+router.patch('/volunteers/:id/status', adminAuth, async (req, res) => {
+  try {
+    const Volunteer = require('../models/Volunteer');
+    const vol = await Volunteer.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+    if (!vol) return res.status(404).json({ success: false, message: 'Volunteer not found' });
+    res.json({ success: true, data: vol });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// ── Delete volunteer (admin only) ─────────────────────────
+router.delete('/volunteers/:id', adminAuth, async (req, res) => {
+  try {
+    const Volunteer = require('../models/Volunteer');
+    await Volunteer.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Volunteer deleted' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// ── Registrations list (admin only) ───────────────────────
+router.get('/registrations', adminAuth, async (req, res) => {
+  try {
+    const Registration = require('../models/Registration');
+    const { status, search, page = 1, limit = 20 } = req.query;
+    const filter = {};
+    if (status) filter.status = status;
+    if (search) filter.$or = [
+      { name:     { $regex: search, $options: 'i' } },
+      { email:    { $regex: search, $options: 'i' } },
+      { phone:    { $regex: search, $options: 'i' } },
+      { school:   { $regex: search, $options: 'i' } },
+      { district: { $regex: search, $options: 'i' } },
+    ];
+    const total = await Registration.countDocuments(filter);
+    const data  = await Registration.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    res.json({ success: true, data, total });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ── Update registration status (admin only) ───────────────
+router.patch('/registrations/:id/status', adminAuth, async (req, res) => {
+  try {
+    const Registration = require('../models/Registration');
+    const reg = await Registration.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+    if (!reg) return res.status(404).json({ success: false, message: 'Registration not found' });
+    res.json({ success: true, data: reg });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// ── Delete registration (admin only) ──────────────────────
+router.delete('/registrations/:id', adminAuth, async (req, res) => {
+  try {
+    const Registration = require('../models/Registration');
+    await Registration.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Registration deleted' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
 router.get('/contacts', teamAuth, async (req, res) => {
   try {
     const data = await Contact.find({ type: 'contact' }).sort({ createdAt: -1 });

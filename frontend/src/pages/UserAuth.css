@@ -128,11 +128,16 @@
 
 /* ── Mobile Auth Fixes ── */
 @media (max-width: 480px) {
-  .auth-page { padding: 20px 16px; align-items: flex-start; padding-top: 40px; }
-  .auth-card { padding: 24px 18px; border-radius: 14px; }
+  .auth-page { padding: 16px; align-items: flex-start; padding-top: 32px; min-height: 100dvh; }
+  .auth-card { padding: 22px 16px; border-radius: 14px; }
   .auth-card.wide { max-width: 100%; }
-  .auth-logo h2 { font-size: 1.3rem; }
-  .role-selector { grid-template-columns: 1fr; gap: 8px; }
-  .form-grid { grid-template-columns: 1fr; }
+  .auth-logo img { width: 52px; height: 52px; }
+  .auth-logo h2 { font-size: 1.2rem; }
+  .auth-logo p { font-size: 0.85rem; }
+  .role-selector { grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+  .role-option { padding: 12px 14px; font-size: 0.88rem; }
+  .form-grid { grid-template-columns: 1fr; gap: 12px; }
   .form-grid .span-2 { grid-column: span 1; }
+  .auth-btn { padding: 13px; font-size: 0.95rem; }
+  .auth-switch { font-size: 0.85rem; margin-top: 16px; }
 }

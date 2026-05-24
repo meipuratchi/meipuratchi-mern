@@ -128,7 +128,13 @@
 
 /* ── Mobile Footer Fixes ── */
 @media (max-width: 480px) {
+  .footer { padding: 40px 0 0; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
   .footer-brand h3 { font-size: 1.1rem; }
-  .footer-bottom { font-size: 0.78rem; }
+  .footer-brand p { font-size: 0.85rem; }
+  .footer-social a { width: 44px; height: 44px; font-size: 1.1rem; }
+  .footer-col h4 { font-size: 0.95rem; margin-bottom: 14px; }
+  .footer-col ul li a { font-size: 0.88rem; min-height: 36px; display: flex; align-items: center; }
+  .footer-contact a { font-size: 0.88rem; min-height: 40px; }
+  .footer-bottom { font-size: 0.78rem; padding: 16px 0; }
 }

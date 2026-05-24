@@ -92,7 +92,7 @@ export default function Footer() {
               <li><Link to="/registration">Register</Link></li>
               <li><Link to="/engineering">Engineering</Link></li>
               <li><Link to="/paramedical">Paramedical</Link></li>
-              <li><Link to="/team">Our Team</Link></li>
+              <li><Link to="/our-team">Our Team</Link></li>
             </ul>
           </motion.div>
 

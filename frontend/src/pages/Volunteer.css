@@ -78,10 +78,16 @@
 /* ── Mobile Volunteer Fixes ── */
 @media (max-width: 480px) {
   .vol-hero { padding: 90px 0 40px; }
-  .vol-hero h1 { font-size: 1.8rem; }
-  .vol-hero p { font-size: 0.9rem; }
-  .vol-container { grid-template-columns: 1fr; padding: 28px 0 40px; gap: 20px; }
-  .vol-why { position: static; padding: 20px; }
-  .vol-form-wrap { padding: 20px; }
-  .vol-form-wrap h3 { font-size: 1.1rem; }
+  .vol-hero h1 { font-size: 1.7rem; }
+  .vol-hero p { font-size: 0.88rem; }
+  .vol-container { grid-template-columns: 1fr; padding: 24px 0 40px; gap: 16px; }
+  .vol-why { position: static; padding: 18px 16px; border-radius: 12px; }
+  .vol-why h3 { font-size: 1rem; margin-bottom: 14px; }
+  .why-card { padding: 12px; }
+  .why-card span { font-size: 1.3rem; }
+  .why-card h4 { font-size: 0.88rem; }
+  .why-card p { font-size: 0.8rem; }
+  .vol-form-wrap { padding: 18px 16px; border-radius: 12px; }
+  .vol-form-wrap h3 { font-size: 1.1rem; margin-bottom: 20px; }
+  .submit-btn { padding: 14px; font-size: 0.95rem; }
 }

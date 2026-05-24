@@ -169,13 +169,23 @@ tr:hover td { background: #f9f9f9; }
 @media (max-width: 480px) {
   .para-hero { padding: 90px 0 50px; }
   .para-hero h1 { font-size: 1.6rem; }
-  .para-hero p { font-size: 0.88rem; }
-  .para-section { padding: 20px 16px; }
-  .para-section h2 { font-size: 1.1rem; }
-  .para-content { padding: 28px 0 40px; }
+  .para-hero p { font-size: 0.88rem; margin-bottom: 20px; }
+  .para-section { padding: 18px 14px; border-radius: 12px; }
+  .para-section h2 { font-size: 1.05rem; margin-bottom: 16px; }
+  .para-content { padding: 24px 0 40px; }
+  /* Horizontal scroll for tables */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
+  table { min-width: 480px; }
   th { padding: 10px 10px; font-size: 0.78rem; }
   td { padding: 8px 10px; font-size: 0.82rem; }
-  .doc-links { grid-template-columns: 1fr; }
-  .accordion-header { padding: 14px 16px; font-size: 0.9rem; }
-  .info-banner { padding: 16px; }
+  .doc-links { grid-template-columns: 1fr; gap: 10px; }
+  .doc-link-card { padding: 12px 14px; font-size: 0.85rem; }
+  .accordion-header { padding: 14px 16px; font-size: 0.88rem; }
+  .accordion-body { padding: 16px; }
+  .info-banner { padding: 14px 16px; border-radius: 0 10px 10px 0; }
+  .info-banner h3 { font-size: 1rem; }
+  .info-banner p { font-size: 0.88rem; }
+  .elig-box { padding: 12px; }
+  .elig-box h4 { font-size: 0.9rem; }
+  .elig-box p, .elig-box ul li { font-size: 0.85rem; }
 }

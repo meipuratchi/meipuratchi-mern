@@ -193,7 +193,7 @@ export default function UserPortal() {
               { to: '/',             label: '🏠 Home' },
               { to: '/engineering',  label: '⚙️ Engineering' },
               { to: '/paramedical',  label: '🏥 Paramedical' },
-              { to: '/team',         label: '👥 Our Team' },
+              { to: '/our-team',      label: '👥 Our Team' },
               { to: '/contact',      label: '📞 Contact' },
             ].map(l => (
               <Link key={l.to} to={l.to} className="site-nav-link">{l.label}</Link>

@@ -9,7 +9,7 @@ const links = [
   { to: '/registration', label: 'Register' },
   { to: '/engineering', label: 'Engineering' },
   { to: '/paramedical', label: 'Paramedical' },
-  { to: '/team', label: 'Our Team' },
+  { to: '/our-team', label: 'Our Team' },
   { to: '/volunteer', label: 'Volunteer' },
   { to: '/contact', label: 'Contact' },
 ];
@@ -68,6 +68,9 @@ export default function Navbar() {
           {open ? <FaTimes /> : <FaBars />}
         </motion.button>
 
+        {/* Backdrop for mobile menu */}
+        {open && <div className="nav-backdrop" onClick={() => setOpen(false)} />}
+
         <AnimatePresence>
           <ul className={`nav-links ${open ? 'open' : ''}`}>
             {links.map((l, i) => (
@@ -80,6 +83,7 @@ export default function Navbar() {
                 <Link 
                   to={l.to} 
                   className={location.pathname === l.to ? 'active' : ''}
+                  onClick={() => setOpen(false)}
                 >
                   {l.label}
                 </Link>
@@ -92,7 +96,7 @@ export default function Navbar() {
             >
               {userInfo ? (
                 <div className="nav-user-menu">
-                  <Link to="/portal" className="nav-portal-btn">
+                  <Link to="/portal" className="nav-portal-btn" onClick={() => setOpen(false)}>
                     <FaUserCircle /> {userInfo.name.split(' ')[0]}
                   </Link>
                   <motion.button 
@@ -106,7 +110,7 @@ export default function Navbar() {
                   </motion.button>
                 </div>
               ) : (
-                <Link to="/registration" className="nav-cta">Register Now</Link>
+                <Link to="/registration" className="nav-cta" onClick={() => setOpen(false)}>Register Now</Link>
               )}
             </motion.li>
           </ul>

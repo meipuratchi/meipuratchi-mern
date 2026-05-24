@@ -396,21 +396,29 @@
 /* ── Mobile Home Fixes ── */
 @media (max-width: 480px) {
   .hero { padding: 90px 0 50px; }
-  .hero-title { font-size: 2rem; }
-  .hero-title span { font-size: 1.1rem; }
-  .hero-desc { font-size: 0.92rem; margin-bottom: 24px; }
-  .hero-badge { font-size: 0.75rem; padding: 6px 14px; }
-  .hero-actions { gap: 10px; }
-  .hero-stats { gap: 20px; flex-wrap: wrap; }
+  .hero-title { font-size: 1.9rem; }
+  .hero-title span { font-size: 1rem; }
+  .hero-desc { font-size: 0.9rem; margin-bottom: 22px; }
+  .hero-badge { font-size: 0.72rem; padding: 6px 12px; }
+  .hero-actions { gap: 10px; flex-direction: column; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .hero-stats { gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .hero-stat { flex: 1 1 calc(50% - 8px); min-width: 100px; text-align: center; }
   .hero-stat span { font-size: 1.5rem; }
-  .hero-stat p { font-size: 0.78rem; }
+  .hero-stat p { font-size: 0.75rem; }
   .about-grid { grid-template-columns: 1fr; gap: 24px; }
   .about-checks { grid-template-columns: 1fr; }
-  .about-card-stack { display: none; }
+  /* Show about cards on mobile (was hidden) */
+  .about-card-stack { display: flex; }
+  .about-card { padding: 16px; gap: 12px; }
+  .about-card svg { font-size: 1.6rem; }
+  .about-card h4 { font-size: 0.9rem; }
+  .about-card p { font-size: 0.8rem; }
   .steps-grid { grid-template-columns: 1fr; }
   .step-card { padding: 18px; }
   .cta-banner h2 { font-size: 1.6rem; }
   .cta-banner p { font-size: 0.9rem; }
-  .cta-actions { flex-direction: column; align-items: center; }
+  .cta-actions { flex-direction: column; align-items: stretch; }
+  .cta-actions .btn { width: 100%; justify-content: center; }
   .career-card { padding: 20px; }
 }

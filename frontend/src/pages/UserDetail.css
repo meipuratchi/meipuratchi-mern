@@ -524,4 +524,7 @@
   .ud-quick-btn { font-size: 0.7rem; padding: 4px 10px; }
   .ud-info-grid { grid-template-columns: 1fr 1fr; }
   .ud-viewonly-banner { font-size: 0.82rem; padding: 10px 14px; }
+  /* Quick messages scroll horizontally on mobile */
+  .ud-quick-btns { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .ud-quick-btn { flex-shrink: 0; }
 }
