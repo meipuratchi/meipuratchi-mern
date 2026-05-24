@@ -81,6 +81,7 @@ export default function UserDetail() {
   const chatBottomRef = useRef(null);
 
   const backPath = isAdmin() ? '/admin/dashboard' : '/team/dashboard';
+  const isTeamMember = !isAdmin(); // Team members have read-only access
 
   const fetchUser = useCallback(async () => {
     try {
@@ -106,6 +107,10 @@ export default function UserDetail() {
   }, [user?.messages]);
 
   const saveStatus = async () => {
+    if (isTeamMember) {
+      toast.error('Team members have view-only access. Only admin can update status.');
+      return;
+    }
     setSaving(true);
     try {
       await axios.patch(`${API}/users/${id}/status`, { status, adminNotes: notes }, { headers: getHeaders() });
@@ -128,6 +133,10 @@ export default function UserDetail() {
 
   const sendMessage = async e => {
     e.preventDefault();
+    if (isTeamMember) {
+      toast.error('Team members cannot send messages. Only admin can chat with students.');
+      return;
+    }
     if (!msgText.trim()) return;
     setSending(true);
     try {
@@ -180,6 +189,31 @@ export default function UserDetail() {
         </div>
       </div>
 
+      {/* Team member view-only banner */}
+      {isTeamMember && (
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '16px 24px',
+          margin: '20px 24px',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
+        }}>
+          <span style={{ fontSize: '24px' }}>👁️</span>
+          <div>
+            <strong style={{ display: 'block', fontSize: '16px', marginBottom: '4px' }}>
+              Team Member - View Only Access
+            </strong>
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.95 }}>
+              You can view all student information in the database, but you cannot update status, send messages, or make any changes. Only admin has full access.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="ud-layout">
         {/* ── LEFT: Profile + Status + Role ── */}
         <div className="ud-left">
@@ -226,12 +260,13 @@ export default function UserDetail() {
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
-                placeholder="Add notes about this student..."
+                placeholder={isTeamMember ? "View only - cannot edit notes" : "Add notes about this student..."}
                 rows={3}
+                disabled={isTeamMember}
               />
             </div>
-            <button className="ud-btn-primary" onClick={saveStatus} disabled={saving}>
-              <FaSave /> {saving ? 'Saving...' : 'Save Status'}
+            <button className="ud-btn-primary" onClick={saveStatus} disabled={saving || isTeamMember}>
+              {isTeamMember ? '🔒 View Only' : (saving ? 'Saving...' : <><FaSave /> Save Status</>)}
             </button>
           </div>
 
@@ -265,7 +300,7 @@ export default function UserDetail() {
           )}
         </div>
 
-        {/* ── RIGHT: Chat ── */}
+        {/* ── RIGHT: Chat (Admin Only) ── */}
         <div className="ud-right">
           <div className="ud-card ud-chat-card">
             <h3 className="ud-card-title">
@@ -273,14 +308,35 @@ export default function UserDetail() {
               <span className="ud-msg-count">{user.messages?.length || 0} messages</span>
             </h3>
 
+            {isTeamMember && (
+              <div style={{
+                background: '#fff3cd',
+                border: '1px solid #ffc107',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                margin: '0 0 16px 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <span style={{ fontSize: '20px' }}>🔒</span>
+                <p style={{ margin: 0, fontSize: '14px', color: '#856404' }}>
+                  <strong>Chat Disabled for Team Members</strong><br />
+                  You can view message history below, but only admin can send messages to students.
+                </p>
+              </div>
+            )}
+
             <div className="ud-chat-body">
               {(!user.messages || user.messages.length === 0) ? (
-                <div className="ud-no-msgs">No messages yet. Send the first one below.</div>
+                <div className="ud-no-msgs">
+                  {isTeamMember ? 'No messages in history.' : 'No messages yet. Send the first one below.'}
+                </div>
               ) : (
                 user.messages.map((m, i) => (
                   <div key={i} className={`ud-msg ${m.from === 'admin' ? 'ud-msg-admin' : 'ud-msg-user'}`}>
                     <div className="ud-msg-from">
-                      {m.from === 'admin' ? '🛡️ Admin / Team' : `👤 ${m.from}`}
+                      {m.from === 'admin' ? '🛡️ Admin' : `👤 ${m.from}`}
                     </div>
                     <div className="ud-msg-text">{m.text}</div>
                     <div className="ud-msg-time">
@@ -293,36 +349,40 @@ export default function UserDetail() {
               <div ref={chatBottomRef} />
             </div>
 
-            <form className="ud-chat-input" onSubmit={sendMessage}>
-              <textarea
-                value={msgText}
-                onChange={e => setMsgText(e.target.value)}
-                placeholder={`Send a message to ${user.name}...`}
-                rows={3}
-                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }}
-              />
-              <button type="submit" disabled={sending || !msgText.trim()}>
-                <FaPaperPlane /> {sending ? 'Sending...' : 'Send Message'}
-              </button>
-            </form>
-
-            {/* Quick message templates */}
-            <div className="ud-quick-msgs">
-              <p>Quick messages:</p>
-              <div className="ud-quick-btns">
-                {[
-                  'We have received your request and will review it within 48 hours.',
-                  'Your profile is currently being validated by our team.',
-                  '✅ Your profile has been verified! Our counselor will contact you soon.',
-                  '🎉 Your counseling session is complete. Best wishes for your future!',
-                  'Please provide your 10th/12th mark sheet for verification.',
-                ].map((msg, i) => (
-                  <button key={i} className="ud-quick-btn" onClick={() => setMsgText(msg)}>
-                    {msg.length > 50 ? msg.slice(0, 50) + '...' : msg}
+            {!isTeamMember && (
+              <>
+                <form className="ud-chat-input" onSubmit={sendMessage}>
+                  <textarea
+                    value={msgText}
+                    onChange={e => setMsgText(e.target.value)}
+                    placeholder={`Send a message to ${user.name}...`}
+                    rows={3}
+                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }}
+                  />
+                  <button type="submit" disabled={sending || !msgText.trim()}>
+                    <FaPaperPlane /> {sending ? 'Sending...' : 'Send Message'}
                   </button>
-                ))}
-              </div>
-            </div>
+                </form>
+
+                {/* Quick message templates */}
+                <div className="ud-quick-msgs">
+                  <p>Quick messages:</p>
+                  <div className="ud-quick-btns">
+                    {[
+                      'We have received your request and will review it within 48 hours.',
+                      'Your profile is currently being validated by our team.',
+                      '✅ Your profile has been verified! Our counselor will contact you soon.',
+                      '🎉 Your counseling session is complete. Best wishes for your future!',
+                      'Please provide your 10th/12th mark sheet for verification.',
+                    ].map((msg, i) => (
+                      <button key={i} className="ud-quick-btn" onClick={() => setMsgText(msg)}>
+                        {msg.length > 50 ? msg.slice(0, 50) + '...' : msg}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

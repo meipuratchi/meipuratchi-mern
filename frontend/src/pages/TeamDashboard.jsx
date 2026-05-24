@@ -146,9 +146,8 @@ export default function TeamDashboard() {
   const [page, setPage]       = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // Check team role permissions
-  const isManageRole = userInfo.teamRole === 'manage';
-  const isViewOnly = userInfo.teamRole === 'view';
+  // Check team role permissions - ALL team members are view-only
+  const isTeamMember = true; // Team members can only view, not chat or manage
 
   // Redirect if not team
   useEffect(() => {
@@ -198,16 +197,28 @@ export default function TeamDashboard() {
       </header>
 
       <div className="td-body">
-        {/* Permission notice for view-only members */}
-        {isViewOnly && (
-          <div className="td-permission-notice">
-            <span>👁️</span>
-            <div>
-              <p><strong>View-Only Access</strong></p>
-              <p>You can view student information and chat with them, but cannot change statuses or delete records. Contact admin to upgrade your permissions.</p>
-            </div>
+        {/* Permission notice for all team members */}
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '16px 24px',
+          margin: '0 0 24px 0',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
+        }}>
+          <span style={{ fontSize: '28px' }}>👁️</span>
+          <div>
+            <strong style={{ display: 'block', fontSize: '17px', marginBottom: '6px' }}>
+              Team Member - Database View Only
+            </strong>
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.95, lineHeight: '1.5' }}>
+              You can view all student and volunteer information in the database, but you <strong>cannot chat with students</strong>, update their status, or make any changes. Only admin has full access to chat and manage users.
+            </p>
           </div>
-        )}
+        </div>
 
         {/* Stats bar */}
         <div className="td-stats">
@@ -268,7 +279,7 @@ export default function TeamDashboard() {
                     <td data-label="Date">{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                     <td data-label="Action">
                       <button className="td-edit-btn" onClick={() => navigate(`/user/${u._id}`)}>
-                        <FaEdit /> Manage
+                        <FaEdit /> View Details
                       </button>
                     </td>
                   </tr>

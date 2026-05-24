@@ -4,14 +4,20 @@
 
 /* Touch Optimization - MOBILE ONLY */
 @media (max-width: 768px) {
-  * {
+  /* Apply tap highlight only to interactive elements */
+  a, button, [role="button"] {
     -webkit-tap-highlight-color: rgba(245, 166, 35, 0.2);
-    -webkit-touch-callout: none;
   }
 
   /* Only prevent double-tap zoom on interactive elements on mobile */
   a, button, [role="button"] {
     touch-action: manipulation;
+  }
+
+  /* Prevent text selection callout on long-press for specific elements only */
+  img, svg {
+    -webkit-touch-callout: none;
+    user-select: none;
   }
 }
 
@@ -19,12 +25,17 @@
 html {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  /* Ensure touch events work properly */
+  touch-action: pan-y pan-x;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Ensure body is scrollable with touch */
+  touch-action: pan-y pan-x;
+  overflow-y: auto;
 }
 
 /* Prevent Text Size Adjustment */

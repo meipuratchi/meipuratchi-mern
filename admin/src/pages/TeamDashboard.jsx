@@ -112,7 +112,7 @@ function QuickActionModal({ user, onClose, onDone }) {
 export default function TeamDashboard() {
   const navigate  = useNavigate();
   const userInfo  = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  const isViewOnly = userInfo.teamRole === 'view';
+  const isTeamMember = true; // All team members are view-only
   const [users, setUsers]     = useState([]);
   const [total, setTotal]     = useState(0);
   const [search, setSearch]   = useState('');
@@ -163,25 +163,34 @@ export default function TeamDashboard() {
         </div>
         <div className="td-header-right">
           <Link to="/" className="td-site-link"><FaGlobe /> Browse Site</Link>
-          <span className={`td-role-badge ${isViewOnly ? 'view' : 'manage'}`}>
-            {isViewOnly ? '👁️ View Only' : '✏️ Can Chat & Manage'}
-          </span>
           <span className="td-member-name">{userInfo.name}</span>
           <button className="td-logout" onClick={logout}><FaSignOutAlt /></button>
         </div>
       </header>
 
       <div className="td-body">
-        {/* Permission banner */}
-        {isViewOnly ? (
-          <div className="td-permission-banner view-only">
-            👁️ <strong>View-Only Access</strong> — You can see all users but cannot chat or update status. Contact admin to upgrade your role.
+        {/* Permission banner for all team members */}
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '16px 24px',
+          margin: '0 0 24px 0',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
+        }}>
+          <span style={{ fontSize: '28px' }}>👁️</span>
+          <div>
+            <strong style={{ display: 'block', fontSize: '17px', marginBottom: '6px' }}>
+              Team Member - Database View Only
+            </strong>
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.95, lineHeight: '1.5' }}>
+              You can view all student and volunteer information in the database, but you <strong>cannot chat with students</strong>, update their status, or make any changes. Only admin has full access to chat and manage users.
+            </p>
           </div>
-        ) : (
-          <div className="td-permission-banner manage">
-            ✏️ <strong>Manage Access</strong> — You can view all users, chat with them, and update their status.
-          </div>
-        )}
+        </div>
 
         {/* Stats bar */}
         <div className="td-stats">
@@ -245,7 +254,7 @@ export default function TeamDashboard() {
                     <td>{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                     <td onClick={e => e.stopPropagation()}>
                       <button className="td-edit-btn" onClick={() => navigate(`/user/${u._id}`)}>
-                        <FaEdit /> {isViewOnly ? 'View' : 'Chat'}
+                        <FaEdit /> View Details
                       </button>
                     </td>
                   </tr>
