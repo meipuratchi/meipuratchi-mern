@@ -172,6 +172,17 @@ export default function TeamDashboard() {
       </header>
 
       <div className="td-body">
+        {/* Permission banner */}
+        {isViewOnly ? (
+          <div className="td-permission-banner view-only">
+            👁️ <strong>View-Only Access</strong> — You can see all users but cannot chat or update status. Contact admin to upgrade your role.
+          </div>
+        ) : (
+          <div className="td-permission-banner manage">
+            ✏️ <strong>Manage Access</strong> — You can view all users, chat with them, and update their status.
+          </div>
+        )}
+
         {/* Stats bar */}
         <div className="td-stats">
           <div className="td-stat"><FaUsers /><span>{total}</span><p>Total Users</p></div>
