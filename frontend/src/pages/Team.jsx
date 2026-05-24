@@ -105,6 +105,15 @@ export default function Team() {
     acc[d].push(m);
     return acc;
   }, {});
+
+  // Merge live members into departments
+  const enrichedDepartments = departments.map(dep => {
+    const liveInDept = liveByDept[dep.dept] || [];
+    const allMembers = liveInDept.length > 0
+      ? `${dep.members}, ${liveInDept.map(m => m.name).join(', ')}`
+      : dep.members;
+    return { ...dep, members: allMembers };
+  });
   return (
     <div className="team-page">
       <div className="team-hero">
@@ -123,7 +132,7 @@ export default function Team() {
 
       <div className="container team-content">
         <div className="team-grid">
-          {departments.map(dep => (
+          {enrichedDepartments.map(dep => (
             <div key={dep.dept} className="team-card card">
               <div className="team-icon" style={{ background: dep.color }}>
                 {dep.icon}
@@ -144,30 +153,6 @@ export default function Team() {
           <h3>👥 Interdepartmental Collaboration</h3>
           <p>Our {departments.length} specialized teams work in synergy to deliver comprehensive student support throughout the educational journey.</p>
         </div>
-
-        {/* Live team members from DB */}
-        {liveMembers.length > 0 && (
-          <div className="live-team-section">
-            <h2 className="section-title" style={{ marginTop: 48, marginBottom: 8 }}>
-              Meet Our Team
-            </h2>
-            <p className="section-subtitle">Our dedicated team members across departments</p>
-            {Object.keys(liveByDept).sort().map(dept => (
-              <div key={dept} className="live-dept-group">
-                <h3 className="live-dept-title">{dept}</h3>
-                <div className="live-members-grid">
-                  {liveByDept[dept].map(m => (
-                    <div key={m._id} className="live-member-card card">
-                      <div className="lm-avatar">{m.name[0].toUpperCase()}</div>
-                      <h4>{m.name}</h4>
-                      <span className="lm-dept">{m.department}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
