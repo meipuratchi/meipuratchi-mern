@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaGraduationCap, FaFlask, FaPaintBrush, FaMusic, FaArrowRight, FaUsers, FaStar, FaHeart, FaCheckCircle } from 'react-icons/fa';
+import { FaGraduationCap, FaFlask, FaPaintBrush, FaMusic, FaArrowRight, FaUsers, FaStar, FaHeart, FaCheckCircle, FaUserCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { getStats } from '../api';
@@ -89,20 +89,14 @@ export default function Home() {
             animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 1 }}
           >
-            <motion.div
-              whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(245, 166, 35, 0.4)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link to="/registration" className="btn btn-accent">
-                <FaGraduationCap /> {c('hero_btn1',"Begin Your Journey")}
+            <motion.div whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(245, 166, 35, 0.4)' }} whileTap={{ scale: 0.95 }}>
+              <Link to="/portal/register" className="btn btn-accent">
+                <FaGraduationCap /> {c('hero_btn1','Register Free')}
               </Link>
             </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link to="/engineering" className="btn btn-outline">
-                {c('hero_btn2','Explore Opportunities')} <FaArrowRight />
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/portal/login" className="btn btn-outline">
+                <FaUserCircle /> {c('hero_btn_login','Student Login')}
               </Link>
             </motion.div>
           </motion.div>
@@ -345,20 +339,14 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <motion.div
-                whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(245, 166, 35, 0.4)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link to="/registration" className="btn btn-accent">
-                  <FaGraduationCap /> {c('cta_btn1',"Start Your Journey")}
+              <motion.div whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(245, 166, 35, 0.4)' }} whileTap={{ scale: 0.95 }}>
+                <Link to="/portal/register" className="btn btn-accent">
+                  <FaGraduationCap /> {c('cta_btn1',"Register Free")}
                 </Link>
               </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link to="/volunteer" className="btn btn-outline">
-                  <FaHeart /> {c('cta_btn2','Volunteer With Us')}
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link to="/portal/login" className="btn btn-outline">
+                  <FaUserCircle /> {c('cta_btn_login','Student Login')}
                 </Link>
               </motion.div>
             </motion.div>

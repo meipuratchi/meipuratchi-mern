@@ -17,7 +17,8 @@ export const submitContact      = (data) => API.post('/contacts', data);
 export const getStats           = ()     => API.get('/registrations/stats');
 
 // Auth
-export const registerUser = (data)       => API.post('/auth/register', data);
-export const loginUser    = (data)       => API.post('/auth/login', data);
-export const getMe        = ()           => API.get('/auth/me');
-export const sendUserMsg  = (text)       => API.post('/auth/me/message', { text });
+export const registerUser  = (data) => API.post('/auth/register', data);
+export const loginUser     = (data) => API.post('/auth/login', data);
+export const getMe         = ()     => API.get('/auth/me');
+export const sendUserMsg   = (text) => API.post('/auth/me/message', { text });
+export const deleteAccount = ()     => API.delete('/auth/me');

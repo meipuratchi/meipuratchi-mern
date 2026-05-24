@@ -19,7 +19,7 @@ const signToken = (user) =>
   jwt.sign(
     { id: user._id, role: user.role, name: user.name, teamRole: user.teamRole || null },
     process.env.JWT_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: '10d' }
   );
 
 // POST /api/auth/register
@@ -108,6 +108,16 @@ router.post('/me/message', userAuth, async (req, res) => {
     res.json({ success: true, message: 'Message sent' });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/auth/me  — student deletes own account
+router.delete('/me', userAuth, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user.id);
+    res.json({ success: true, message: 'Account deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
