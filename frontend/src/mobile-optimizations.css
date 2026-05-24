@@ -6,11 +6,18 @@
 * {
   -webkit-tap-highlight-color: rgba(245, 166, 35, 0.2);
   -webkit-touch-callout: none;
+  /* Allow all touch actions by default */
+  touch-action: auto;
 }
 
-/* Only apply touch-action manipulation to interactive elements */
-a, button, input, select, textarea, [role="button"] {
+/* Only prevent double-tap zoom on interactive elements */
+a, button, [role="button"] {
   touch-action: manipulation;
+}
+
+/* Allow normal scrolling on inputs */
+input, select, textarea {
+  touch-action: auto;
 }
 
 /* Smooth Scrolling for Mobile */

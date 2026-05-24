@@ -257,7 +257,7 @@
   display: flex;
   flex-direction: column;
   height: calc(100dvh - 130px); /* header + bottom nav */
-  touch-action: pan-y; /* Allow vertical scrolling */
+  touch-action: auto; /* Allow all touch gestures */
 }
 
 .pt-chat-header {
@@ -307,7 +307,7 @@
   gap: 12px;
   background: #f8f9fa;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-y; /* Allow vertical scrolling */
+  touch-action: auto; /* Allow all touch gestures for scrolling */
 }
 
 .pt-no-msgs {
@@ -356,7 +356,7 @@
   flex-shrink: 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  touch-action: pan-x; /* Allow horizontal scrolling */
+  touch-action: auto; /* Allow all touch gestures */
 }
 .pt-quick-replies::-webkit-scrollbar { display: none; }
 
