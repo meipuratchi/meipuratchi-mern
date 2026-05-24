@@ -2,22 +2,17 @@
    MOBILE OPTIMIZATIONS FOR ANDROID
    ======================================== */
 
-/* Touch Optimization */
-* {
-  -webkit-tap-highlight-color: rgba(245, 166, 35, 0.2);
-  -webkit-touch-callout: none;
-  /* Allow all touch actions by default */
-  touch-action: auto;
-}
+/* Touch Optimization - MOBILE ONLY */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: rgba(245, 166, 35, 0.2);
+    -webkit-touch-callout: none;
+  }
 
-/* Only prevent double-tap zoom on interactive elements */
-a, button, [role="button"] {
-  touch-action: manipulation;
-}
-
-/* Allow normal scrolling on inputs */
-input, select, textarea {
-  touch-action: auto;
+  /* Only prevent double-tap zoom on interactive elements on mobile */
+  a, button, [role="button"] {
+    touch-action: manipulation;
+  }
 }
 
 /* Smooth Scrolling for Mobile */

@@ -164,7 +164,7 @@ export default function TeamDashboard() {
         <div className="td-header-right">
           <Link to="/" className="td-site-link"><FaGlobe /> Browse Site</Link>
           <span className={`td-role-badge ${isViewOnly ? 'view' : 'manage'}`}>
-            {isViewOnly ? '👁️ View Only' : '✏️ Manager'}
+            {isViewOnly ? '👁️ View Only' : '✏️ Can Chat & Manage'}
           </span>
           <span className="td-member-name">{userInfo.name}</span>
           <button className="td-logout" onClick={logout}><FaSignOutAlt /></button>
@@ -210,14 +210,14 @@ export default function TeamDashboard() {
               <thead>
                 <tr>
                   <th>#</th><th>Name</th><th>Phone</th><th>Role</th>
-                  <th>District</th><th>Interest</th><th>Status</th><th>Date</th><th>Action</th>
+                  <th>District</th><th>Interest</th><th>Status</th><th>Messages</th><th>Date</th><th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {users.length === 0 ? (
-                  <tr><td colSpan={9} className="td-empty">No users found</td></tr>
+                  <tr><td colSpan={10} className="td-empty">No users found</td></tr>
                 ) : users.map((u, i) => (
-                  <tr key={u._id}>
+                  <tr key={u._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/user/${u._id}`)}>
                     <td>{(page-1)*15+i+1}</td>
                     <td>
                       <div className="td-name">{u.name}</div>
@@ -228,10 +228,13 @@ export default function TeamDashboard() {
                     <td>{u.district || '—'}</td>
                     <td>{u.careerInterest || u.skills || '—'}</td>
                     <td><Badge status={u.status} /></td>
-                    <td>{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                     <td>
+                      <span className="td-msg-count">{u.messages?.length || 0}</span>
+                    </td>
+                    <td>{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
+                    <td onClick={e => e.stopPropagation()}>
                       <button className="td-edit-btn" onClick={() => navigate(`/user/${u._id}`)}>
-                        <FaEdit /> {isViewOnly ? 'View' : 'Manage'}
+                        <FaEdit /> {isViewOnly ? 'View' : 'Chat'}
                       </button>
                     </td>
                   </tr>
