@@ -273,14 +273,21 @@ export default function UserDetail() {
           )}
         </div>
 
-        {/* ── RIGHT: Chat ── */}
+        {/* ── RIGHT: WhatsApp-style Chat ── */}
         <div className="ud-right">
-          <div className="ud-card ud-chat-card">
-            <h3 className="ud-card-title">
-              <FaPaperPlane /> Messages
-              <span className="ud-msg-count">{user.messages?.length || 0} messages</span>
-            </h3>
+          <div className="ud-chat-card">
 
+            {/* Sticky chat header with user name */}
+            <div className="ud-chat-header">
+              <div className="ud-chat-header-avatar">{user.name[0].toUpperCase()}</div>
+              <div className="ud-chat-header-info">
+                <div className="ud-chat-header-name">{user.name}</div>
+                <div className="ud-chat-header-sub">{user.phone} · {user.district || user.email}</div>
+              </div>
+              <span className="ud-msg-count">{user.messages?.length || 0}</span>
+            </div>
+
+            {/* Scrollable messages */}
             <div className="ud-chat-body">
               {(!user.messages || user.messages.length === 0) ? (
                 <div className="ud-no-msgs">No messages yet. Send the first one below.</div>
@@ -288,12 +295,12 @@ export default function UserDetail() {
                 user.messages.map((m, i) => (
                   <div key={i} className={`ud-msg ${m.from === 'admin' ? 'ud-msg-admin' : 'ud-msg-user'}`}>
                     <div className="ud-msg-from">
-                      {m.from === 'admin' ? '🛡️ Admin / Team' : `👤 ${m.from}`}
+                      {m.from === 'admin' ? '🛡️ Admin / Team' : `👤 ${user.name}`}
                     </div>
                     <div className="ud-msg-text">{m.text}</div>
                     <div className="ud-msg-time">
                       {new Date(m.sentAt).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
-                      {!m.read && m.from === 'admin' && <span className="ud-unread-dot">• unread</span>}
+                      {!m.read && m.from === 'admin' && <span className="ud-unread-dot">✓</span>}
                     </div>
                   </div>
                 ))
@@ -301,22 +308,9 @@ export default function UserDetail() {
               <div ref={chatBottomRef} />
             </div>
 
-            <form className="ud-chat-input" onSubmit={sendMessage}>
-              <textarea
-                value={msgText}
-                onChange={e => setMsgText(e.target.value)}
-                placeholder={`Send a message to ${user.name}...`}
-                rows={3}
-                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }}
-              />
-              <button type="submit" disabled={sending || !msgText.trim() || isViewOnly}>
-                <FaPaperPlane /> {sending ? 'Sending...' : isViewOnly ? 'View Only' : 'Send Message'}
-              </button>
-            </form>
-
             {/* Quick message templates */}
             <div className="ud-quick-msgs">
-              <p>Quick messages:</p>
+              <p>Quick:</p>
               <div className="ud-quick-btns">
                 {[
                   'We have received your request and will review it within 48 hours.',
@@ -326,11 +320,31 @@ export default function UserDetail() {
                   'Please provide your 10th/12th mark sheet for verification.',
                 ].map((msg, i) => (
                   <button key={i} className="ud-quick-btn" onClick={() => setMsgText(msg)}>
-                    {msg.length > 50 ? msg.slice(0, 50) + '...' : msg}
+                    {msg.length > 45 ? msg.slice(0, 45) + '…' : msg}
                   </button>
                 ))}
               </div>
             </div>
+
+            {/* Input bar */}
+            <div className="ud-chat-input-area">
+              <form className="ud-chat-input" onSubmit={sendMessage}>
+                <textarea
+                  value={msgText}
+                  onChange={e => setMsgText(e.target.value)}
+                  placeholder={isViewOnly ? 'View-only access' : `Message ${user.name}…`}
+                  rows={1}
+                  disabled={isViewOnly}
+                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }}
+                />
+                <button type="submit" className="ud-chat-send-btn"
+                  disabled={sending || !msgText.trim() || isViewOnly}
+                  title={isViewOnly ? 'View only' : 'Send'}>
+                  <FaPaperPlane />
+                </button>
+              </form>
+            </div>
+
           </div>
         </div>
       </div>

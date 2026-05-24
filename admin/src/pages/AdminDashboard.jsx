@@ -660,15 +660,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        <div className="admin-tabs">
-          {tabs.map(t => (
-            <button key={t.id} className={`tab-btn ${activeTab === t.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(t.id)}>
-              {t.icon} {t.label}
-            </button>
-          ))}
-        </div>
-
         {activeTab === 'users'    && <UsersTab    adminKey={adminKey} />}
         {activeTab === 'team'     && <TeamMembersTab adminKey={adminKey} />}
         {activeTab === 'contacts' && <ContactsTab adminKey={adminKey} />}
