@@ -6,6 +6,10 @@
 * {
   -webkit-tap-highlight-color: rgba(245, 166, 35, 0.2);
   -webkit-touch-callout: none;
+}
+
+/* Only apply touch-action manipulation to interactive elements */
+a, button, input, select, textarea, [role="button"] {
   touch-action: manipulation;
 }
 
@@ -505,11 +509,6 @@ img[loading="lazy"].loaded {
   textarea {
     font-size: 16px !important;
   }
-}
-
-/* Fix for Android Tap Delay */
-a, button, input, select, textarea {
-  touch-action: manipulation;
 }
 
 /* Prevent horizontal scroll on Android */
