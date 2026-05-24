@@ -586,6 +586,53 @@
 .pt-delete-btn { color: #dc3545; }
 .pt-delete-btn:active { background: rgba(220,53,69,0.05); }
 
+/* Password change form */
+.pt-password-btn {
+  color: var(--primary);
+  background: rgba(25,36,65,0.04);
+}
+.pt-password-btn:active { background: rgba(25,36,65,0.08); }
+
+.pt-password-form {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pt-password-form input {
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 16px; /* prevent zoom on Android */
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.pt-password-form input:focus { border-color: var(--primary); }
+
+.pt-password-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.pt-btn-save {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pt-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+.pt-btn-save:active:not(:disabled) { background: var(--primary-light); }
+
 .pt-delete-confirm { padding: 14px 18px; }
 
 .pt-delete-warning {

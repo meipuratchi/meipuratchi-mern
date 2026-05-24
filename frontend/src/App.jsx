@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
 import ScrollProgress from './components/ScrollProgress';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 import Engineering from './pages/Engineering';
@@ -25,6 +26,7 @@ function PublicLayout({ children }) {
   return (
     <>
       <ScrollProgress />
+      <ScrollToTop />
       <Navbar />
       <PageTransition>{children}</PageTransition>
       <Footer />

@@ -29,7 +29,7 @@ function Badge({ status }) {
 }
 
 // Quick action modal for updating status + sending message
-function QuickActionModal({ user, onClose, onDone }) {
+function QuickActionModal({ user, onClose, onDone, isManageRole }) {
   const [status, setStatus]   = useState(user.status);
   const [msgText, setMsgText] = useState('');
   const [saving, setSaving]   = useState(false);
@@ -39,24 +39,36 @@ function QuickActionModal({ user, onClose, onDone }) {
     : ['submitted','validating','verified','counseled'];
 
   const updateStatus = async () => {
+    if (!isManageRole) {
+      toast.error('You need manage permissions to update status');
+      return;
+    }
     setSaving(true);
     try {
       await axios.patch(`${API}/users/${user._id}/status`, { status }, { headers: authH() });
       toast.success('Status updated');
       onDone();
-    } catch { toast.error('Failed'); }
+    } catch (err) { 
+      toast.error(err.response?.data?.message || 'Failed to update status'); 
+    }
     finally { setSaving(false); }
   };
 
   const sendMsg = async () => {
     if (!msgText.trim()) return;
+    if (!isManageRole) {
+      toast.error('You need manage permissions to send messages');
+      return;
+    }
     setSaving(true);
     try {
       await axios.post(`${API}/users/${user._id}/message`, { text: msgText }, { headers: authH() });
       toast.success('Message sent to user');
       setMsgText('');
       onDone();
-    } catch { toast.error('Failed'); }
+    } catch (err) { 
+      toast.error(err.response?.data?.message || 'Failed to send message'); 
+    }
     finally { setSaving(false); }
   };
 
@@ -75,21 +87,35 @@ function QuickActionModal({ user, onClose, onDone }) {
             <span>{user.careerInterest || user.skills || '—'}</span>
           </div>
 
+          {!isManageRole && (
+            <div className="td-view-only-notice">
+              <span>👁️</span>
+              <p>You have view-only access. You can see user details but cannot update status or send messages.</p>
+            </div>
+          )}
+
           <div className="td-section">
             <label>Update Status</label>
             <div className="td-row">
-              <select value={status} onChange={e => setStatus(e.target.value)}>
+              <select value={status} onChange={e => setStatus(e.target.value)} disabled={!isManageRole}>
                 {statusOptions.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <button className="td-btn-primary" onClick={updateStatus} disabled={saving}>Update</button>
+              <button className="td-btn-primary" onClick={updateStatus} disabled={saving || !isManageRole}>
+                {isManageRole ? 'Update' : '🔒'}
+              </button>
             </div>
           </div>
 
           <div className="td-section">
             <label>Send Message to User</label>
             <div className="td-row">
-              <input value={msgText} onChange={e => setMsgText(e.target.value)} placeholder="Type a message..." />
-              <button className="td-btn-primary" onClick={sendMsg} disabled={saving || !msgText.trim()}>
+              <input 
+                value={msgText} 
+                onChange={e => setMsgText(e.target.value)} 
+                placeholder={isManageRole ? "Type a message..." : "View-only access"} 
+                disabled={!isManageRole}
+              />
+              <button className="td-btn-primary" onClick={sendMsg} disabled={saving || !msgText.trim() || !isManageRole}>
                 <FaPaperPlane />
               </button>
             </div>
@@ -119,6 +145,10 @@ export default function TeamDashboard() {
   const [statusFilter, setSt] = useState('');
   const [page, setPage]       = useState(1);
   const [loading, setLoading] = useState(false);
+
+  // Check team role permissions
+  const isManageRole = userInfo.teamRole === 'manage';
+  const isViewOnly = userInfo.teamRole === 'view';
 
   // Redirect if not team
   useEffect(() => {
@@ -168,6 +198,17 @@ export default function TeamDashboard() {
       </header>
 
       <div className="td-body">
+        {/* Permission notice for view-only members */}
+        {isViewOnly && (
+          <div className="td-permission-notice">
+            <span>👁️</span>
+            <div>
+              <p><strong>View-Only Access</strong></p>
+              <p>You can view student information and chat with them, but cannot change statuses or delete records. Contact admin to upgrade your permissions.</p>
+            </div>
+          </div>
+        )}
+
         {/* Stats bar */}
         <div className="td-stats">
           <div className="td-stat"><FaUsers /><span>{total}</span><p>Total Users</p></div>

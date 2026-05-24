@@ -4,10 +4,11 @@ import {
   FaSignOutAlt, FaUser, FaEnvelope, FaPhone, FaSchool,
   FaPaperPlane, FaBell, FaCheckCircle, FaClock,
   FaGraduationCap, FaHandsHelping, FaUsers, FaHome,
-  FaCog, FaTrash, FaArrowLeft, FaComments, FaExclamationTriangle
+  FaCog, FaTrash, FaArrowLeft, FaComments, FaExclamationTriangle,
+  FaLock, FaEye, FaEyeSlash
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
-import { getMe, sendUserMsg, deleteAccount } from '../api';
+import { getMe, sendUserMsg, deleteAccount, changePassword } from '../api';
 import './UserPortal.css';
 
 // ── Status pipeline ────────────────────────────────────────
@@ -249,6 +250,11 @@ function ProfileTab({ user }) {
 function SettingsTab({ user, onLogout, onDelete }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -257,6 +263,32 @@ function SettingsTab({ user, onLogout, onDelete }) {
     } finally {
       setDeleting(false);
       setConfirmDelete(false);
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    setChangingPassword(true);
+    try {
+      const { changePassword } = await import('../api');
+      await changePassword(currentPassword, newPassword);
+      toast.success('Password changed successfully!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowPasswordChange(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to change password');
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -285,6 +317,64 @@ function SettingsTab({ user, onLogout, onDelete }) {
             <p className="pt-settings-value">{user.phone}</p>
           </div>
         </div>
+      </div>
+
+      {/* Password change */}
+      <div className="pt-settings-section">
+        <h3>Security</h3>
+        {!showPasswordChange ? (
+          <button 
+            className="pt-settings-btn pt-password-btn" 
+            onClick={() => setShowPasswordChange(true)}
+          >
+            🔒 Change Password
+          </button>
+        ) : (
+          <form className="pt-password-form" onSubmit={handlePasswordChange}>
+            <input
+              type="password"
+              placeholder="Current Password"
+              value={currentPassword}
+              onChange={e => setCurrentPassword(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="New Password (min 6 chars)"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              required
+            />
+            <div className="pt-password-actions">
+              <button 
+                type="button" 
+                className="pt-btn-cancel" 
+                onClick={() => {
+                  setShowPasswordChange(false);
+                  setCurrentPassword('');
+                  setNewPassword('');
+                  setConfirmPassword('');
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                className="pt-btn-save" 
+                disabled={changingPassword}
+              >
+                {changingPassword ? 'Saving...' : 'Save Password'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       {/* Navigation links */}

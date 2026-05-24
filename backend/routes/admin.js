@@ -383,4 +383,47 @@ router.patch('/team/:id/password', adminAuth, async (req, res) => {
   }
 });
 
+// ── View user password (admin only — for audit/recovery) ───
+router.get('/users/:id/password', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('name email password');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    // Note: password is hashed, so we return the hash for admin reference
+    // In production, you might want to store original passwords encrypted separately
+    res.json({ 
+      success: true, 
+      data: { 
+        name: user.name, 
+        email: user.email, 
+        passwordHash: user.password,
+        note: 'Password is hashed with bcrypt. Original password cannot be retrieved.'
+      } 
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;
+
+// ── View user password (admin only — for audit/recovery) ──
+router.get('/users/:id/password', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('name email role password');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    // Return hashed password (bcrypt hash) — admin can see it for audit purposes
+    // Note: bcrypt hashes are one-way, so this returns the hash, not plaintext
+    res.json({ 
+      success: true, 
+      data: { 
+        name: user.name, 
+        email: user.email, 
+        role: user.role,
+        passwordHash: user.password,
+        note: 'This is a bcrypt hash. Original password cannot be recovered. Use reset endpoint to set new password.'
+      } 
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});

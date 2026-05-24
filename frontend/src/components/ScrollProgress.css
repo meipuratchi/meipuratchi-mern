@@ -3,9 +3,10 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  height: 5px;
+  background: linear-gradient(90deg, #f5a623, #ff6b35);
   transform-origin: 0%;
-  z-index: 9999;
-  box-shadow: 0 2px 10px rgba(245, 166, 35, 0.5);
+  z-index: 99999;
+  box-shadow: 0 2px 12px rgba(245, 166, 35, 0.7);
+  pointer-events: none;
 }

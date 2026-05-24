@@ -22,3 +22,6 @@ export const loginUser     = (data) => API.post('/auth/login', data);
 export const getMe         = ()     => API.get('/auth/me');
 export const sendUserMsg   = (text) => API.post('/auth/me/message', { text });
 export const deleteAccount = ()     => API.delete('/auth/me');
+export const changePassword = (currentPassword, newPassword) => 
+  API.patch('/auth/me/password', { currentPassword, newPassword });
+
