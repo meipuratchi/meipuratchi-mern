@@ -81,7 +81,8 @@ export default function UserDetail() {
   const chatBottomRef = useRef(null);
 
   const backPath = isAdmin() ? '/admin/dashboard' : '/team/dashboard';
-  const isTeamMember = !isAdmin(); // Team members have read-only access
+  const isTeamMember = !isAdmin();
+  // Team members CAN chat and update status, but CANNOT delete users or change roles
 
   const fetchUser = useCallback(async () => {
     try {
@@ -107,10 +108,6 @@ export default function UserDetail() {
   }, [user?.messages]);
 
   const saveStatus = async () => {
-    if (isTeamMember) {
-      toast.error('Team members have view-only access. Only admin can update status.');
-      return;
-    }
     setSaving(true);
     try {
       await axios.patch(`${API}/users/${id}/status`, { status, adminNotes: notes }, { headers: getHeaders() });
@@ -133,10 +130,6 @@ export default function UserDetail() {
 
   const sendMessage = async e => {
     e.preventDefault();
-    if (isTeamMember) {
-      toast.error('Team members cannot send messages. Only admin can chat with students.');
-      return;
-    }
     if (!msgText.trim()) return;
     setSending(true);
     try {
@@ -189,7 +182,7 @@ export default function UserDetail() {
         </div>
       </div>
 
-      {/* Team member view-only banner */}
+      {/* Team member info banner */}
       {isTeamMember && (
         <div style={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -202,13 +195,13 @@ export default function UserDetail() {
           gap: '12px',
           boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
         }}>
-          <span style={{ fontSize: '24px' }}>👁️</span>
+          <span style={{ fontSize: '24px' }}>👥</span>
           <div>
             <strong style={{ display: 'block', fontSize: '16px', marginBottom: '4px' }}>
-              Team Member - View Only Access
+              Team Member Access
             </strong>
             <p style={{ margin: 0, fontSize: '14px', opacity: 0.95 }}>
-              You can view all student information in the database, but you cannot update status, send messages, or make any changes. Only admin has full access.
+              You can view student information, chat with them, and update their status. Only admin can delete users or change roles.
             </p>
           </div>
         </div>
@@ -260,13 +253,12 @@ export default function UserDetail() {
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
-                placeholder={isTeamMember ? "View only - cannot edit notes" : "Add notes about this student..."}
+                placeholder="Add notes about this student..."
                 rows={3}
-                disabled={isTeamMember}
               />
             </div>
-            <button className="ud-btn-primary" onClick={saveStatus} disabled={saving || isTeamMember}>
-              {isTeamMember ? '🔒 View Only' : (saving ? 'Saving...' : <><FaSave /> Save Status</>)}
+            <button className="ud-btn-primary" onClick={saveStatus} disabled={saving}>
+              <FaSave /> {saving ? 'Saving...' : 'Save Status'}
             </button>
           </div>
 

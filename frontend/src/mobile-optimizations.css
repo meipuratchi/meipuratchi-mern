@@ -9,11 +9,6 @@
     -webkit-tap-highlight-color: rgba(245, 166, 35, 0.2);
   }
 
-  /* Only prevent double-tap zoom on interactive elements on mobile */
-  a, button, [role="button"] {
-    touch-action: manipulation;
-  }
-
   /* Prevent text selection callout on long-press for specific elements only */
   img, svg {
     -webkit-touch-callout: none;
@@ -25,17 +20,21 @@
 html {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  /* Ensure touch events work properly */
-  touch-action: pan-y pan-x;
+  /* Critical: Allow vertical scrolling on mobile */
+  touch-action: pan-y;
+  overflow-y: auto;
+  height: 100%;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Ensure body is scrollable with touch */
-  touch-action: pan-y pan-x;
+  /* Critical: Allow vertical scrolling on mobile */
+  touch-action: pan-y;
   overflow-y: auto;
+  min-height: 100%;
+  position: relative;
 }
 
 /* Prevent Text Size Adjustment */
@@ -706,7 +705,16 @@ html, body {
 
 @media (max-width: 768px) {
   body {
-    overscroll-behavior-y: none;
+    /* Allow overscroll for better mobile experience */
+    overscroll-behavior-y: auto;
+  }
+  
+  /* Ensure root element allows scrolling */
+  #root {
+    min-height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 }
 

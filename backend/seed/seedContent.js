@@ -77,7 +77,7 @@ const defaultPages = [
   {
     pageId: 'engineering', title: 'Engineering', slug: '/engineering', order: 2,
     blocks: [
-      { key: 'hero_title',      type: 'text',     label: 'Page Title',           value: 'Tamil Nadu Engineering Counselling 2025' },
+      { key: 'hero_title',      type: 'text',     label: 'Page Title',           value: 'Tamil Nadu Engineering Counselling 2026' },
       { key: 'hero_quote',      type: 'text',     label: 'Hero Quote',           value: '"Design is the art of turning constraints into opportunities." – Aza Raskin' },
       { key: 'calc_btn',        type: 'text',     label: 'Calculator Button',    value: 'Calculate Cutoff' },
       { key: 'colleges_btn',    type: 'text',     label: 'Colleges Button',      value: 'Explore Colleges' },
@@ -95,8 +95,8 @@ const defaultPages = [
       { key: 'doc1_file',       type: 'link',     label: 'Document 1 File URL',  value: '/all_colleges.pdf' },
       { key: 'doc2_label',      type: 'text',     label: 'Document 2 Label',     value: 'Choice Order Guide' },
       { key: 'doc2_file',       type: 'link',     label: 'Document 2 File URL',  value: '/ChoiceOrder.pdf' },
-      { key: 'doc3_label',      type: 'text',     label: 'Document 3 Label',     value: 'TNEA Tentative Schedule 2025' },
-      { key: 'doc3_file',       type: 'link',     label: 'Document 3 File URL',  value: '/TNEA_Tent_Schedule_2025.pdf' },
+      { key: 'doc3_label',      type: 'text',     label: 'Document 3 Label',     value: 'TNEA Tentative Schedule 2026' },
+      { key: 'doc3_file',       type: 'link',     label: 'Document 3 File URL',  value: '/TNEA_Tent_Schedule_2026.pdf' },
       { key: 'doc4_label',      type: 'text',     label: 'Document 4 Label',     value: 'Top Colleges' },
       { key: 'doc4_file',       type: 'link',     label: 'Document 4 File URL',  value: '/top_colleges.pdf' },
     ],

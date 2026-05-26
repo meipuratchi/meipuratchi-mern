@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
@@ -21,6 +22,7 @@ import UserPortal from './pages/UserPortal';
 import TeamLogin from './pages/TeamLogin';
 import TeamDashboard from './pages/TeamDashboard';
 import UserDetail from './pages/UserDetail';
+import { initMobileScrollFix } from './utils/mobileScrollFix';
 
 function PublicLayout({ children }) {
   return (
@@ -70,6 +72,11 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  useEffect(() => {
+    // Initialize mobile scroll fix on mount
+    initMobileScrollFix();
+  }, []);
+
   return (
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ duration: 4000 }} />

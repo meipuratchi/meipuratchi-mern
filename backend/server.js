@@ -55,7 +55,8 @@ mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
 })
   .then(async () => {
-    console.log('✅ MongoDB Atlas connected');
+    console.log('✅ MongoDB connected to:', mongoose.connection.host);
+    console.log('📊 Database name:', mongoose.connection.name);
 
     // Auto-seed content if DB is empty
     try {

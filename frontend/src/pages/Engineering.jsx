@@ -55,7 +55,7 @@ export default function Engineering() {
     <div className="eng-page">
       <div className="eng-hero">
         <div className="container">
-          <h1>{c('hero_title','Tamil Nadu Engineering Counselling 2025')}</h1>
+          <h1>{c('hero_title','Tamil Nadu Engineering Counselling 2026')}</h1>
           <p>{c('hero_quote','"Design is the art of turning constraints into opportunities." – Aza Raskin')}</p>
           <div className="eng-hero-actions">
             <a href="#calculator" className="btn btn-accent"><FaCalculator /> {c('calc_btn','Calculate Cutoff')}</a>
@@ -145,7 +145,7 @@ export default function Engineering() {
             {[
               { label: 'All Colleges List', file: '/all_colleges.pdf' },
               { label: 'Choice Order Guide', file: '/ChoiceOrder.pdf' },
-              { label: 'TNEA Tentative Schedule 2025', file: '/TNEA_Tent_Schedule_2025.pdf' },
+              { label: 'TNEA Tentative Schedule 2026', file: '/TNEA_Tent_Schedule_2026.pdf' },
               { label: 'Top Colleges', file: '/top_colleges.pdf' },
             ].map(doc => (
               <a key={doc.label} href={doc.file} target="_blank" rel="noreferrer" className="doc-card card">

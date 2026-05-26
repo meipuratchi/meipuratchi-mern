@@ -99,7 +99,7 @@ export default function Footer() {
           <motion.div className="footer-col" variants={itemVariants}>
             <h4>Courses</h4>
             <ul>
-              <li><Link to="/engineering">TNEA 2025</Link></li>
+              <li><Link to="/engineering">TNEA 2026</Link></li>
               <li><Link to="/paramedical">Paramedical Degree</Link></li>
               <li><Link to="/paramedical">DMLT</Link></li>
               <li><Link to="/registration">Career Guidance</Link></li>
@@ -136,7 +136,7 @@ export default function Footer() {
           animate={inView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <p>© 2025 Meipuratchi. Built with ❤️ by Young Volunteers for Tamil Nadu Students.</p>
+          <p>© 2026 Meipuratchi. Built with ❤️ by Young Volunteers for Tamil Nadu Students.</p>
         </motion.div>
       </div>
     </footer>

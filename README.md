@@ -26,7 +26,7 @@ npm run dev
 ## Pages
 - `/` — Home (Hero, About, Career Paths, How It Works)
 - `/registration` — Student Registration Form
-- `/engineering` — TNEA 2025, Cutoff Calculator, College List
+- `/engineering` — TNEA 2026, Cutoff Calculator, College List
 - `/paramedical` — Paramedical Degree Courses
 - `/team` — Team Responsibilities
 - `/volunteer` — Volunteer Application
