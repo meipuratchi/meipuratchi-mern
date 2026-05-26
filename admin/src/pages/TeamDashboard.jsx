@@ -4,8 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
   FaSignOutAlt, FaUsers, FaGraduationCap, FaHandsHelping,
-  FaSearch, FaFilter, FaEdit, FaCheckCircle, FaPaperPlane,
-  FaTimes, FaGlobe, FaBell
+  FaSearch, FaEdit, FaGlobe, FaBell, FaComments
 } from 'react-icons/fa';
 import './TeamDashboard.css';
 
@@ -28,91 +27,9 @@ function Badge({ status }) {
   return <span className="td-badge" style={{ color: s.color, background: s.bg }}>{status}</span>;
 }
 
-// Quick action modal for updating status + sending message
-function QuickActionModal({ user, onClose, onDone }) {
-  const [status, setStatus]   = useState(user.status);
-  const [msgText, setMsgText] = useState('');
-  const [saving, setSaving]   = useState(false);
-
-  const statusOptions = user.role === 'volunteer'
-    ? ['submitted','validating','approved','rejected']
-    : ['submitted','validating','verified','counseled'];
-
-  const updateStatus = async () => {
-    setSaving(true);
-    try {
-      await axios.patch(`${API}/users/${user._id}/status`, { status }, { headers: authH() });
-      toast.success('Status updated');
-      onDone();
-    } catch { toast.error('Failed'); }
-    finally { setSaving(false); }
-  };
-
-  const sendMsg = async () => {
-    if (!msgText.trim()) return;
-    setSaving(true);
-    try {
-      await axios.post(`${API}/users/${user._id}/message`, { text: msgText }, { headers: authH() });
-      toast.success('Message sent to user');
-      setMsgText('');
-      onDone();
-    } catch { toast.error('Failed'); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <div className="td-modal-overlay" onClick={onClose}>
-      <div className="td-modal" onClick={e => e.stopPropagation()}>
-        <div className="td-modal-header">
-          <h3><FaEdit /> {user.name}</h3>
-          <button onClick={onClose}><FaTimes /></button>
-        </div>
-        <div className="td-modal-body">
-          <div className="td-user-info">
-            <span>{user.email}</span>
-            <span>{user.phone}</span>
-            <span>{user.district || '—'}</span>
-            <span>{user.careerInterest || user.skills || '—'}</span>
-          </div>
-
-          <div className="td-section">
-            <label>Update Status</label>
-            <div className="td-row">
-              <select value={status} onChange={e => setStatus(e.target.value)}>
-                {statusOptions.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-              <button className="td-btn-primary" onClick={updateStatus} disabled={saving}>Update</button>
-            </div>
-          </div>
-
-          <div className="td-section">
-            <label>Send Message to User</label>
-            <div className="td-row">
-              <input value={msgText} onChange={e => setMsgText(e.target.value)} placeholder="Type a message..." />
-              <button className="td-btn-primary" onClick={sendMsg} disabled={saving || !msgText.trim()}>
-                <FaPaperPlane />
-              </button>
-            </div>
-          </div>
-
-          {user.messages?.length > 0 && (
-            <div className="td-section">
-              <label>Last Message</label>
-              <div className="td-last-msg">
-                {user.messages[user.messages.length - 1].text}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function TeamDashboard() {
   const navigate  = useNavigate();
   const userInfo  = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  const isTeamMember = true; // All team members are view-only
   const [users, setUsers]     = useState([]);
   const [total, setTotal]     = useState(0);
   const [search, setSearch]   = useState('');
@@ -163,15 +80,15 @@ export default function TeamDashboard() {
         </div>
         <div className="td-header-right">
           <Link to="/" className="td-site-link"><FaGlobe /> Browse Site</Link>
-          <span className="td-member-name">{userInfo.name}</span>
+          <span className="td-member-name">👋 {userInfo.name}</span>
           <button className="td-logout" onClick={logout}><FaSignOutAlt /></button>
         </div>
       </header>
 
       <div className="td-body">
-        {/* Permission banner for all team members */}
+        {/* Welcome banner */}
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #192441 0%, #2a3a6b 100%)',
           color: 'white',
           padding: '16px 24px',
           margin: '0 0 24px 0',
@@ -179,15 +96,15 @@ export default function TeamDashboard() {
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
-          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
+          boxShadow: '0 4px 20px rgba(25, 36, 65, 0.3)'
         }}>
-          <span style={{ fontSize: '28px' }}>👁️</span>
+          <span style={{ fontSize: '28px' }}>🎓</span>
           <div>
-            <strong style={{ display: 'block', fontSize: '17px', marginBottom: '6px' }}>
-              Team Member - Database View Only
+            <strong style={{ display: 'block', fontSize: '17px', marginBottom: '4px' }}>
+              Welcome, {userInfo.name}! ({userInfo.department || 'Team'})
             </strong>
-            <p style={{ margin: 0, fontSize: '14px', opacity: 0.95, lineHeight: '1.5' }}>
-              You can view all student and volunteer information in the database, but you <strong>cannot chat with students</strong>, update their status, or make any changes. Only admin has full access to chat and manage users.
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>
+              You can view all students, chat with them, and update their counseling status. Click any student to manage them.
             </p>
           </div>
         </div>
@@ -230,7 +147,7 @@ export default function TeamDashboard() {
               <thead>
                 <tr>
                   <th>#</th><th>Name</th><th>Phone</th><th>Role</th>
-                  <th>District</th><th>Interest</th><th>Status</th><th>Messages</th><th>Date</th><th>Action</th>
+                  <th>District</th><th>Interest</th><th>Status</th><th>Msgs</th><th>Date</th><th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -248,13 +165,11 @@ export default function TeamDashboard() {
                     <td>{u.district || '—'}</td>
                     <td>{u.careerInterest || u.skills || '—'}</td>
                     <td><Badge status={u.status} /></td>
-                    <td>
-                      <span className="td-msg-count">{u.messages?.length || 0}</span>
-                    </td>
+                    <td><span className="td-msg-count">{u.messages?.length || 0}</span></td>
                     <td>{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                     <td onClick={e => e.stopPropagation()}>
                       <button className="td-edit-btn" onClick={() => navigate(`/user/${u._id}`)}>
-                        <FaEdit /> View Details
+                        <FaComments /> Counsel
                       </button>
                     </td>
                   </tr>

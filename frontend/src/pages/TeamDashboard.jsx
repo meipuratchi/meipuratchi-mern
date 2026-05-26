@@ -4,8 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
   FaSignOutAlt, FaUsers, FaGraduationCap, FaHandsHelping,
-  FaSearch, FaFilter, FaEdit, FaCheckCircle, FaPaperPlane,
-  FaTimes, FaGlobe, FaBell
+  FaSearch, FaEdit, FaGlobe, FaBell, FaComments
 } from 'react-icons/fa';
 import './TeamDashboard.css';
 
@@ -28,113 +27,6 @@ function Badge({ status }) {
   return <span className="td-badge" style={{ color: s.color, background: s.bg }}>{status}</span>;
 }
 
-// Quick action modal for updating status + sending message
-function QuickActionModal({ user, onClose, onDone, isManageRole }) {
-  const [status, setStatus]   = useState(user.status);
-  const [msgText, setMsgText] = useState('');
-  const [saving, setSaving]   = useState(false);
-
-  const statusOptions = user.role === 'volunteer'
-    ? ['submitted','validating','approved','rejected']
-    : ['submitted','validating','verified','counseled'];
-
-  const updateStatus = async () => {
-    if (!isManageRole) {
-      toast.error('You need manage permissions to update status');
-      return;
-    }
-    setSaving(true);
-    try {
-      await axios.patch(`${API}/users/${user._id}/status`, { status }, { headers: authH() });
-      toast.success('Status updated');
-      onDone();
-    } catch (err) { 
-      toast.error(err.response?.data?.message || 'Failed to update status'); 
-    }
-    finally { setSaving(false); }
-  };
-
-  const sendMsg = async () => {
-    if (!msgText.trim()) return;
-    if (!isManageRole) {
-      toast.error('You need manage permissions to send messages');
-      return;
-    }
-    setSaving(true);
-    try {
-      await axios.post(`${API}/users/${user._id}/message`, { text: msgText }, { headers: authH() });
-      toast.success('Message sent to user');
-      setMsgText('');
-      onDone();
-    } catch (err) { 
-      toast.error(err.response?.data?.message || 'Failed to send message'); 
-    }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <div className="td-modal-overlay" onClick={onClose}>
-      <div className="td-modal" onClick={e => e.stopPropagation()}>
-        <div className="td-modal-header">
-          <h3><FaEdit /> {user.name}</h3>
-          <button onClick={onClose}><FaTimes /></button>
-        </div>
-        <div className="td-modal-body">
-          <div className="td-user-info">
-            <span>{user.email}</span>
-            <span>{user.phone}</span>
-            <span>{user.district || '—'}</span>
-            <span>{user.careerInterest || user.skills || '—'}</span>
-          </div>
-
-          {!isManageRole && (
-            <div className="td-view-only-notice">
-              <span>👁️</span>
-              <p>You have view-only access. You can see user details but cannot update status or send messages.</p>
-            </div>
-          )}
-
-          <div className="td-section">
-            <label>Update Status</label>
-            <div className="td-row">
-              <select value={status} onChange={e => setStatus(e.target.value)} disabled={!isManageRole}>
-                {statusOptions.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-              <button className="td-btn-primary" onClick={updateStatus} disabled={saving || !isManageRole}>
-                {isManageRole ? 'Update' : '🔒'}
-              </button>
-            </div>
-          </div>
-
-          <div className="td-section">
-            <label>Send Message to User</label>
-            <div className="td-row">
-              <input 
-                value={msgText} 
-                onChange={e => setMsgText(e.target.value)} 
-                placeholder={isManageRole ? "Type a message..." : "View-only access"} 
-                disabled={!isManageRole}
-              />
-              <button className="td-btn-primary" onClick={sendMsg} disabled={saving || !msgText.trim() || !isManageRole}>
-                <FaPaperPlane />
-              </button>
-            </div>
-          </div>
-
-          {user.messages?.length > 0 && (
-            <div className="td-section">
-              <label>Last Message</label>
-              <div className="td-last-msg">
-                {user.messages[user.messages.length - 1].text}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function TeamDashboard() {
   const navigate  = useNavigate();
   const userInfo  = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -145,9 +37,6 @@ export default function TeamDashboard() {
   const [statusFilter, setSt] = useState('');
   const [page, setPage]       = useState(1);
   const [loading, setLoading] = useState(false);
-
-  // Check team role permissions - ALL team members are view-only
-  const isTeamMember = true; // Team members can only view, not chat or manage
 
   // Redirect if not team
   useEffect(() => {
@@ -191,15 +80,15 @@ export default function TeamDashboard() {
         </div>
         <div className="td-header-right">
           <Link to="/" className="td-site-link"><FaGlobe /> Browse Site</Link>
-          <span className="td-member-name">{userInfo.name}</span>
+          <span className="td-member-name">👋 {userInfo.name}</span>
           <button className="td-logout" onClick={logout}><FaSignOutAlt /></button>
         </div>
       </header>
 
       <div className="td-body">
-        {/* Permission notice for all team members */}
+        {/* Welcome banner */}
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #192441 0%, #2a3a6b 100%)',
           color: 'white',
           padding: '16px 24px',
           margin: '0 0 24px 0',
@@ -207,15 +96,15 @@ export default function TeamDashboard() {
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
-          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
+          boxShadow: '0 4px 20px rgba(25, 36, 65, 0.3)'
         }}>
-          <span style={{ fontSize: '28px' }}>👁️</span>
+          <span style={{ fontSize: '28px' }}>🎓</span>
           <div>
-            <strong style={{ display: 'block', fontSize: '17px', marginBottom: '6px' }}>
-              Team Member - Database View Only
+            <strong style={{ display: 'block', fontSize: '17px', marginBottom: '4px' }}>
+              Welcome, {userInfo.name}! ({userInfo.department || 'Team'})
             </strong>
-            <p style={{ margin: 0, fontSize: '14px', opacity: 0.95, lineHeight: '1.5' }}>
-              You can view all student and volunteer information in the database, but you <strong>cannot chat with students</strong>, update their status, or make any changes. Only admin has full access to chat and manage users.
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>
+              You can view all students, chat with them, and update their counseling status. Click any student to manage them.
             </p>
           </div>
         </div>
@@ -258,14 +147,14 @@ export default function TeamDashboard() {
               <thead>
                 <tr>
                   <th>#</th><th>Name</th><th>Phone</th><th>Role</th>
-                  <th>District</th><th>Interest</th><th>Status</th><th>Date</th><th>Action</th>
+                  <th>District</th><th>Interest</th><th>Status</th><th>Msgs</th><th>Date</th><th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {users.length === 0 ? (
-                  <tr><td colSpan={9} className="td-empty">No users found</td></tr>
+                  <tr><td colSpan={10} className="td-empty">No users found</td></tr>
                 ) : users.map((u, i) => (
-                  <tr key={u._id}>
+                  <tr key={u._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/user/${u._id}`)}>
                     <td>{(page-1)*15+i+1}</td>
                     <td data-label="Name">
                       <div className="td-name">{u.name}</div>
@@ -276,10 +165,13 @@ export default function TeamDashboard() {
                     <td data-label="District">{u.district || '—'}</td>
                     <td data-label="Interest">{u.careerInterest || u.skills || '—'}</td>
                     <td data-label="Status"><Badge status={u.status} /></td>
+                    <td data-label="Msgs">
+                      <span className="td-msg-count">{u.messages?.length || 0}</span>
+                    </td>
                     <td data-label="Date">{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
-                    <td data-label="Action">
+                    <td data-label="Action" onClick={e => e.stopPropagation()}>
                       <button className="td-edit-btn" onClick={() => navigate(`/user/${u._id}`)}>
-                        <FaEdit /> View Details
+                        <FaComments /> Counsel
                       </button>
                     </td>
                   </tr>

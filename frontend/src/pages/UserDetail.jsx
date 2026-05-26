@@ -6,14 +6,13 @@ import {
   FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaSchool,
   FaMapMarkerAlt, FaGraduationCap, FaHandsHelping, FaUsers,
   FaPaperPlane, FaEdit, FaSave, FaUserShield, FaCheckCircle,
-  FaClock, FaTrash, FaGlobe
+  FaTrash, FaGlobe
 } from 'react-icons/fa';
 import './UserDetail.css';
 
 import API_URL from '../config';
 const API = `${API_URL}/api/admin`;
 
-// Works for both admin (x-admin-key) and team (Bearer token)
 function getHeaders() {
   const adminKey = localStorage.getItem('adminKey');
   if (adminKey) return { 'x-admin-key': adminKey };
@@ -34,14 +33,10 @@ const STATUS_COLORS = {
 
 function StatusBadge({ status }) {
   const s = STATUS_COLORS[status] || STATUS_COLORS.submitted;
-  return (
-    <span className="ud-status-badge" style={{ color: s.color, background: s.bg }}>
-      {status}
-    </span>
-  );
+  return <span className="ud-status-badge" style={{ color: s.color, background: s.bg }}>{status}</span>;
 }
 
-const PIPELINE_STUDENT  = ['submitted', 'validating', 'verified', 'counseled'];
+const PIPELINE_STUDENT   = ['submitted', 'validating', 'verified', 'counseled'];
 const PIPELINE_VOLUNTEER = ['submitted', 'validating', 'approved'];
 
 function Pipeline({ status, role }) {
@@ -63,26 +58,22 @@ function Pipeline({ status, role }) {
 }
 
 export default function UserDetail() {
-  const { id }    = useParams();
-  const navigate  = useNavigate();
+  const { id }   = useParams();
+  const navigate = useNavigate();
   const [user, setUser]       = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Edit state
   const [status, setStatus]   = useState('');
   const [role, setRole]       = useState('');
   const [dept, setDept]       = useState('');
   const [notes, setNotes]     = useState('');
   const [saving, setSaving]   = useState(false);
-
-  // Chat
   const [msgText, setMsgText] = useState('');
   const [sending, setSending] = useState(false);
   const chatBottomRef = useRef(null);
 
-  const backPath = isAdmin() ? '/admin/dashboard' : '/team/dashboard';
-  const isTeamMember = !isAdmin();
-  // Team members CAN chat and update status, but CANNOT delete users or change roles
+  const admin    = isAdmin();
+  const backPath = admin ? '/admin/dashboard' : '/team/dashboard';
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
   const fetchUser = useCallback(async () => {
     try {
@@ -94,18 +85,13 @@ export default function UserDetail() {
       setDept(u.department || '');
       setNotes(u.adminNotes || '');
     } catch (err) {
-      if (err.response?.status === 401) navigate(isAdmin() ? '/admin' : '/team');
+      if (err.response?.status === 401) navigate(admin ? '/admin' : '/team');
       else toast.error('Failed to load user');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   }, [id, navigate]);
 
   useEffect(() => { fetchUser(); }, [fetchUser]);
-
-  useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [user?.messages]);
+  useEffect(() => { chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [user?.messages]);
 
   const saveStatus = async () => {
     setSaving(true);
@@ -118,7 +104,7 @@ export default function UserDetail() {
   };
 
   const saveRole = async () => {
-    if (!isAdmin()) { toast.error('Only admin can change roles'); return; }
+    if (!admin) { toast.error('Only admin can change roles'); return; }
     setSaving(true);
     try {
       await axios.patch(`${API}/users/${id}/role`, { role, department: dept }, { headers: getHeaders() });
@@ -141,8 +127,8 @@ export default function UserDetail() {
   };
 
   const deleteUser = async () => {
-    if (!isAdmin()) { toast.error('Only admin can delete users'); return; }
-    if (!window.confirm(`Delete ${user.name} permanently? This cannot be undone.`)) return;
+    if (!admin) { toast.error('Only admin can delete users'); return; }
+    if (!window.confirm(`Delete ${user.name} permanently?`)) return;
     try {
       await axios.delete(`${API}/users/${id}`, { headers: getHeaders() });
       toast.success('User deleted');
@@ -150,14 +136,8 @@ export default function UserDetail() {
     } catch { toast.error('Delete failed'); }
   };
 
-  if (loading) return (
-    <div className="ud-loading">
-      <div className="ud-spinner" />
-      Loading user details...
-    </div>
-  );
-
-  if (!user) return <div className="ud-loading">User not found</div>;
+  if (loading) return <div className="ud-loading"><div className="ud-spinner" />Loading...</div>;
+  if (!user)   return <div className="ud-loading">User not found</div>;
 
   const statusOptions = user.role === 'volunteer'
     ? ['submitted', 'validating', 'approved', 'rejected']
@@ -174,7 +154,7 @@ export default function UserDetail() {
         </button>
         <div className="ud-topbar-right">
           <Link to="/" className="ud-site-link"><FaGlobe /> Browse Site</Link>
-          {isAdmin() && (
+          {admin && (
             <button className="ud-delete-btn" onClick={deleteUser}>
               <FaTrash /> Delete User
             </button>
@@ -182,33 +162,22 @@ export default function UserDetail() {
         </div>
       </div>
 
-      {/* Team member info banner */}
-      {isTeamMember && (
+      {/* Team member banner */}
+      {!admin && (
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          padding: '16px 24px',
-          margin: '20px 24px',
-          borderRadius: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
+          background: 'linear-gradient(135deg, #192441 0%, #2a3a6b 100%)',
+          color: 'white', padding: '14px 24px', margin: '16px 24px',
+          borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px'
         }}>
-          <span style={{ fontSize: '24px' }}>👥</span>
-          <div>
-            <strong style={{ display: 'block', fontSize: '16px', marginBottom: '4px' }}>
-              Team Member Access
-            </strong>
-            <p style={{ margin: 0, fontSize: '14px', opacity: 0.95 }}>
-              You can view student information, chat with them, and update their status. Only admin can delete users or change roles.
-            </p>
-          </div>
+          <span style={{ fontSize: '22px' }}>🎓</span>
+          <p style={{ margin: 0, fontSize: '14px' }}>
+            <strong>{userInfo.name}</strong> ({userInfo.department}) — You can chat with this student and update their counseling status.
+          </p>
         </div>
       )}
 
       <div className="ud-layout">
-        {/* ── LEFT: Profile + Status + Role ── */}
+        {/* ── LEFT ── */}
         <div className="ud-left">
 
           {/* Profile card */}
@@ -229,16 +198,16 @@ export default function UserDetail() {
             <div className="ud-info-list">
               <div className="ud-info-row"><FaEnvelope /><div><span>Email</span><p>{user.email}</p></div></div>
               <div className="ud-info-row"><FaPhone /><div><span>Phone</span><p>{user.phone}</p></div></div>
-              {user.school    && <div className="ud-info-row"><FaSchool /><div><span>School</span><p>{user.school}</p></div></div>}
-              {user.district  && <div className="ud-info-row"><FaMapMarkerAlt /><div><span>District</span><p>{user.district}</p></div></div>}
-              {user.standard  && <div className="ud-info-row"><FaGraduationCap /><div><span>Standard</span><p>{user.standard}</p></div></div>}
-              {user.stream    && <div className="ud-info-row"><span>📚</span><div><span>Stream</span><p>{user.stream}</p></div></div>}
+              {user.school       && <div className="ud-info-row"><FaSchool /><div><span>School</span><p>{user.school}</p></div></div>}
+              {user.district     && <div className="ud-info-row"><FaMapMarkerAlt /><div><span>District</span><p>{user.district}</p></div></div>}
+              {user.standard     && <div className="ud-info-row"><FaGraduationCap /><div><span>Standard</span><p>{user.standard}</p></div></div>}
+              {user.stream       && <div className="ud-info-row"><span>📚</span><div><span>Stream</span><p>{user.stream}</p></div></div>}
               {user.careerInterest && <div className="ud-info-row"><span>🎯</span><div><span>Career Interest</span><p>{user.careerInterest}</p></div></div>}
-              {user.skills    && <div className="ud-info-row"><span>💡</span><div><span>Skills</span><p>{user.skills}</p></div></div>}
+              {user.skills       && <div className="ud-info-row"><span>💡</span><div><span>Skills</span><p>{user.skills}</p></div></div>}
             </div>
           </div>
 
-          {/* Status update */}
+          {/* Status update — both admin and team can do this */}
           <div className="ud-card">
             <h3 className="ud-card-title"><FaEdit /> Update Status</h3>
             <Pipeline status={user.status} role={user.role} />
@@ -249,11 +218,11 @@ export default function UserDetail() {
               </select>
             </div>
             <div className="ud-form-group">
-              <label>Internal Notes (not shown to user)</label>
+              <label>Internal Notes</label>
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
-                placeholder="Add notes about this student..."
+                placeholder="Add counseling notes..."
                 rows={3}
               />
             </div>
@@ -263,7 +232,7 @@ export default function UserDetail() {
           </div>
 
           {/* Role management — admin only */}
-          {isAdmin() && (
+          {admin && (
             <div className="ud-card">
               <h3 className="ud-card-title"><FaUserShield /> Assign Role</h3>
               <div className="ud-form-group">
@@ -292,7 +261,7 @@ export default function UserDetail() {
           )}
         </div>
 
-        {/* ── RIGHT: Chat (Admin Only) ── */}
+        {/* ── RIGHT: Chat — both admin and team can chat ── */}
         <div className="ud-right">
           <div className="ud-card ud-chat-card">
             <h3 className="ud-card-title">
@@ -300,35 +269,14 @@ export default function UserDetail() {
               <span className="ud-msg-count">{user.messages?.length || 0} messages</span>
             </h3>
 
-            {isTeamMember && (
-              <div style={{
-                background: '#fff3cd',
-                border: '1px solid #ffc107',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                margin: '0 0 16px 0',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px'
-              }}>
-                <span style={{ fontSize: '20px' }}>🔒</span>
-                <p style={{ margin: 0, fontSize: '14px', color: '#856404' }}>
-                  <strong>Chat Disabled for Team Members</strong><br />
-                  You can view message history below, but only admin can send messages to students.
-                </p>
-              </div>
-            )}
-
             <div className="ud-chat-body">
               {(!user.messages || user.messages.length === 0) ? (
-                <div className="ud-no-msgs">
-                  {isTeamMember ? 'No messages in history.' : 'No messages yet. Send the first one below.'}
-                </div>
+                <div className="ud-no-msgs">No messages yet. Send the first one below.</div>
               ) : (
                 user.messages.map((m, i) => (
                   <div key={i} className={`ud-msg ${m.from === 'admin' ? 'ud-msg-admin' : 'ud-msg-user'}`}>
                     <div className="ud-msg-from">
-                      {m.from === 'admin' ? '🛡️ Admin' : `👤 ${m.from}`}
+                      {m.from === 'admin' ? '🛡️ Admin / Team' : `👤 ${m.from}`}
                     </div>
                     <div className="ud-msg-text">{m.text}</div>
                     <div className="ud-msg-time">
@@ -341,40 +289,36 @@ export default function UserDetail() {
               <div ref={chatBottomRef} />
             </div>
 
-            {!isTeamMember && (
-              <>
-                <form className="ud-chat-input" onSubmit={sendMessage}>
-                  <textarea
-                    value={msgText}
-                    onChange={e => setMsgText(e.target.value)}
-                    placeholder={`Send a message to ${user.name}...`}
-                    rows={3}
-                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }}
-                  />
-                  <button type="submit" disabled={sending || !msgText.trim()}>
-                    <FaPaperPlane /> {sending ? 'Sending...' : 'Send Message'}
+            {/* Quick message templates */}
+            <div className="ud-quick-msgs">
+              <p>Quick messages:</p>
+              <div className="ud-quick-btns">
+                {[
+                  'We have received your request and will review it within 48 hours.',
+                  'Your profile is currently being validated by our team.',
+                  '✅ Your profile has been verified! Our counselor will contact you soon.',
+                  '🎉 Your counseling session is complete. Best wishes for your future!',
+                  'Please provide your 10th/12th mark sheet for verification.',
+                ].map((msg, i) => (
+                  <button key={i} className="ud-quick-btn" onClick={() => setMsgText(msg)}>
+                    {msg.length > 50 ? msg.slice(0, 50) + '...' : msg}
                   </button>
-                </form>
+                ))}
+              </div>
+            </div>
 
-                {/* Quick message templates */}
-                <div className="ud-quick-msgs">
-                  <p>Quick messages:</p>
-                  <div className="ud-quick-btns">
-                    {[
-                      'We have received your request and will review it within 48 hours.',
-                      'Your profile is currently being validated by our team.',
-                      '✅ Your profile has been verified! Our counselor will contact you soon.',
-                      '🎉 Your counseling session is complete. Best wishes for your future!',
-                      'Please provide your 10th/12th mark sheet for verification.',
-                    ].map((msg, i) => (
-                      <button key={i} className="ud-quick-btn" onClick={() => setMsgText(msg)}>
-                        {msg.length > 50 ? msg.slice(0, 50) + '...' : msg}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
+            <form className="ud-chat-input" onSubmit={sendMessage}>
+              <textarea
+                value={msgText}
+                onChange={e => setMsgText(e.target.value)}
+                placeholder={`Send a message to ${user.name}...`}
+                rows={3}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }}
+              />
+              <button type="submit" disabled={sending || !msgText.trim()}>
+                <FaPaperPlane /> {sending ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
           </div>
         </div>
       </div>
