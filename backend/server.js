@@ -34,21 +34,9 @@ app.get('/api/debug-env', (req, res) => res.json({
 }));
 
 // Serve frontend static files in production
-if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
-  const frontendDist = path.join(__dirname, '../frontend/dist');
-  app.use(express.static(frontendDist));
-  
-  // SPA fallback - serve index.html for all non-API routes
-  app.use((req, res, next) => {
-    // Skip if it's an API route
-    if (req.path.startsWith('/api/')) {
-      return next();
-    }
-    // Serve index.html for all other routes
-    res.sendFile(path.join(frontendDist, 'index.html'));
-  });
-}
+// NOTE: Frontend is deployed separately (Netlify/Vercel)
+// Backend only serves the API on Render
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
