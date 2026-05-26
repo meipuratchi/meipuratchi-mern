@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle, FaSignOutAlt, FaHistory } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Navbar.css';
 
@@ -89,6 +89,21 @@ export default function Navbar() {
                 </Link>
               </motion.li>
             ))}
+            <motion.li
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: (links.length - 0.5) * 0.05, duration: 0.3 }}
+            >
+              <a
+                href="https://meipuratchi.github.io/registration/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-old-view"
+                onClick={() => setOpen(false)}
+              >
+                <FaHistory /> Old View
+              </a>
+            </motion.li>
             <motion.li
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
