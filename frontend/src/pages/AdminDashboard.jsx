@@ -14,7 +14,6 @@ import './AdminDashboard.css';
 import AdminCMS from './AdminCMS';
 
 import API_URL from '../config';
-import axios from 'axios';
 import { broadcastEmail } from '../api';
 const API = `${API_URL}/api/admin`;
 const headers = key => ({ 'x-admin-key': key });
