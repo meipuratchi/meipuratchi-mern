@@ -23,6 +23,11 @@ app.use((req, res, next) => {
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('MONGO_URI set:', !!process.env.MONGO_URI);
 console.log('PORT:', process.env.PORT);
+console.log('EMAIL_USER set:', !!process.env.EMAIL_USER);
+console.log('EMAIL_PASS set:', !!process.env.EMAIL_PASS);
+console.log('JWT_SECRET set:', !!process.env.JWT_SECRET);
+console.log('ADMIN_KEY set:', !!process.env.ADMIN_KEY);
+console.log('FRONTEND_URL:', process.env.FRONTEND_URL || 'NOT SET — using fallback');
 if (process.env.WORKER_NAME) {
   console.log(`WORKER: ${process.env.WORKER_NAME} (id=${process.env.WORKER_ID})`);
 }
@@ -38,8 +43,14 @@ app.use('/api/upload',        require('./routes/upload'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Meipuratchi API running' }));
 
-// Temp debug — remove after testing
+// Debug env endpoint — shows what's configured (no secret values)
 app.get('/api/debug-env', (req, res) => res.json({
+  NODE_ENV: process.env.NODE_ENV,
+  EMAIL_USER_SET: !!process.env.EMAIL_USER,
+  EMAIL_PASS_SET: !!process.env.EMAIL_PASS,
+  FRONTEND_URL: process.env.FRONTEND_URL || 'NOT SET',
+  JWT_SECRET_SET: !!process.env.JWT_SECRET,
+  ADMIN_KEY_SET: !!process.env.ADMIN_KEY,
   GOOGLE_SERVICE_ACCOUNT_EMAIL: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || 'NOT SET',
   GOOGLE_DRIVE_FOLDER_ID: process.env.GOOGLE_DRIVE_FOLDER_ID || 'NOT SET',
   GOOGLE_PRIVATE_KEY_SET: !!process.env.GOOGLE_PRIVATE_KEY,
