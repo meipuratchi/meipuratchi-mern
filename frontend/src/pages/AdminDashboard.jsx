@@ -8,12 +8,14 @@ import {
   FaGraduationCap, FaCheckCircle,
   FaKey, FaTimes, FaEye, FaEyeSlash,
   FaUserShield, FaEdit, FaPalette,
-  FaClipboardList, FaHeart
+  FaClipboardList, FaHeart, FaBullhorn
 } from 'react-icons/fa';
 import './AdminDashboard.css';
 import AdminCMS from './AdminCMS';
 
 import API_URL from '../config';
+import axios from 'axios';
+import { broadcastEmail } from '../api';
 const API = `${API_URL}/api/admin`;
 const headers = key => ({ 'x-admin-key': key });
 
@@ -540,9 +542,113 @@ function ChangeKeyModal({ adminKey, onClose }) {
   );
 }
 
+// ── Broadcast Tab ─────────────────────────────────────────
+function BroadcastTab({ adminKey }) {
+  const [subject, setSubject]     = useState('');
+  const [message, setMessage]     = useState('');
+  const [targetRole, setTarget]   = useState('all');
+  const [sending, setSending]     = useState(false);
+  const [result, setResult]       = useState(null);
+
+  const handleSend = async e => {
+    e.preventDefault();
+    if (!subject.trim() || !message.trim()) { toast.error('Subject and message required'); return; }
+    if (!window.confirm(`Send broadcast email to all ${targetRole === 'all' ? 'users' : targetRole + 's'}? This cannot be undone.`)) return;
+    setSending(true);
+    setResult(null);
+    try {
+      // Use axios directly with admin key header
+      const res = await axios.post(`${API}/broadcast`, { subject, message, targetRole }, { headers: headers(adminKey) });
+      setResult(res.data);
+      toast.success(`Broadcast sent! ${res.data.stats?.sent || 0} emails delivered.`);
+      setSubject(''); setMessage('');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Broadcast failed');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="tab-content-area">
+      <div className="tab-toolbar">
+        <span style={{ fontWeight: 600, color: 'var(--primary)' }}>📢 Broadcast Email to Users</span>
+        <span className="total-count">Send announcements, updates, or instructions to all or specific user groups</span>
+      </div>
+      <div style={{ padding: '24px' }}>
+        <form onSubmit={handleSend}>
+          <div className="form-group" style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontWeight: 600, color: 'var(--primary)', marginBottom: 8, fontSize: '0.9rem' }}>
+              Target Audience
+            </label>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {[
+                { value: 'all',       label: '👥 All Users' },
+                { value: 'student',   label: '🎓 Students Only' },
+                { value: 'volunteer', label: '🤝 Volunteers Only' },
+                { value: 'team',      label: '🛡️ Team Only' },
+              ].map(opt => (
+                <label key={opt.value} style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '10px 18px', border: `2px solid ${targetRole === opt.value ? 'var(--primary)' : '#e9ecef'}`,
+                  borderRadius: 10, cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500,
+                  background: targetRole === opt.value ? 'rgba(25,36,65,0.06)' : 'white',
+                  color: targetRole === opt.value ? 'var(--primary)' : 'var(--dark)',
+                }}>
+                  <input type="radio" name="targetRole" value={opt.value}
+                    checked={targetRole === opt.value} onChange={e => setTarget(e.target.value)}
+                    style={{ display: 'none' }} />
+                  {opt.label}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontWeight: 600, color: 'var(--primary)', marginBottom: 8, fontSize: '0.9rem' }}>
+              Email Subject *
+            </label>
+            <input value={subject} onChange={e => setSubject(e.target.value)}
+              placeholder="e.g. Important Update from Meipuratchi Team"
+              style={{ width: '100%', padding: '12px 16px', border: '2px solid #e9ecef', borderRadius: 8, fontSize: '0.95rem', fontFamily: 'Poppins, sans-serif', outline: 'none' }}
+              required />
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 20 }}>
+            <label style={{ display: 'block', fontWeight: 600, color: 'var(--primary)', marginBottom: 8, fontSize: '0.9rem' }}>
+              Message *
+            </label>
+            <textarea value={message} onChange={e => setMessage(e.target.value)}
+              placeholder="Write your announcement or update here. This will be sent as both an in-app message and an email to all selected users."
+              rows={6}
+              style={{ width: '100%', padding: '12px 16px', border: '2px solid #e9ecef', borderRadius: 8, fontSize: '0.9rem', fontFamily: 'Poppins, sans-serif', outline: 'none', resize: 'vertical' }}
+              required />
+            <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginTop: 6 }}>
+              This message will also appear as an in-app notification in each user's portal chat.
+            </p>
+          </div>
+
+          <button type="submit" className="btn btn-primary" disabled={sending}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 28px' }}>
+            <FaBullhorn /> {sending ? 'Sending...' : `Send Broadcast to ${targetRole === 'all' ? 'All Users' : targetRole + 's'}`}
+          </button>
+        </form>
+
+        {result && (
+          <div style={{ marginTop: 20, padding: '16px 20px', background: 'rgba(40,167,69,0.08)', border: '1px solid rgba(40,167,69,0.3)', borderRadius: 10 }}>
+            <p style={{ margin: 0, fontWeight: 700, color: '#28a745' }}>✅ Broadcast Complete</p>
+            <p style={{ margin: '6px 0 0', fontSize: '0.88rem', color: 'var(--gray)' }}>
+              Sent: {result.stats?.sent} · Failed: {result.stats?.failed} · Total: {result.stats?.total}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Dashboard ─────────────────────────────────────────
-export default function AdminDashboard() {
-  const adminKey = useAdminKey();
+export default function AdminDashboard() {  const adminKey = useAdminKey();
   const navigate = useNavigate();
   const [stats, setStats]               = useState(null);
   const [activeTab, setActiveTab]       = useState('users');
@@ -565,6 +671,7 @@ export default function AdminDashboard() {
     { id: 'volunteers',    label: 'Volunteers',   icon: <FaHeart /> },
     { id: 'registrations', label: 'Registrations',icon: <FaClipboardList /> },
     { id: 'contacts',      label: 'Messages',     icon: <FaEnvelope /> },
+    { id: 'broadcast',     label: 'Broadcast',    icon: <FaBullhorn /> },
     { id: 'cms',           label: 'CMS',          icon: <FaPalette /> },
   ];
 
@@ -636,6 +743,7 @@ export default function AdminDashboard() {
         {activeTab === 'volunteers'    && <VolunteersTab    adminKey={adminKey} />}
         {activeTab === 'registrations' && <RegistrationsTab adminKey={adminKey} />}
         {activeTab === 'contacts'      && <ContactsTab      adminKey={adminKey} />}
+        {activeTab === 'broadcast'     && <BroadcastTab     adminKey={adminKey} />}
         {activeTab === 'cms'           && <AdminCMS         adminKey={adminKey} />}
       </main>
 

@@ -2,8 +2,15 @@ const express = require('express');
 const router  = express.Router();
 const jwt     = require('jsonwebtoken');
 const User    = require('../models/User');
+const OTP     = require('../models/OTP');
 const { logActivity } = require('../middleware/auth');
+const {
+  sendOTPEmail,
+  sendWelcomeEmail,
+  sendMessageNotification,
+} = require('../utils/emailService');
 
+// ── Helpers ───────────────────────────────────────────────
 const userAuth = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
@@ -15,21 +22,112 @@ const userAuth = (req, res, next) => {
   }
 };
 
+// Token valid for 7 days
 const signToken = (user) =>
   jwt.sign(
     { id: user._id, role: user.role, name: user.name, teamRole: user.teamRole || null },
     process.env.JWT_SECRET,
-    { expiresIn: '10d' }
+    { expiresIn: '7d' }
   );
 
-// POST /api/auth/register
+function generateOTP() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/send-otp
+//  Send OTP to email for login or register
+// ══════════════════════════════════════════════════════════
+router.post('/send-otp', async (req, res) => {
+  try {
+    const { identifier, purpose = 'login' } = req.body;
+    if (!identifier) return res.status(400).json({ success: false, message: 'Email or phone required' });
+
+    const normalised = identifier.toLowerCase().trim();
+
+    // For login: user must exist
+    if (purpose === 'login') {
+      const user = await User.findOne({
+        $or: [{ email: normalised }, { phone: identifier.trim() }]
+      });
+      if (!user) return res.status(404).json({ success: false, message: 'No account found with this email/phone' });
+    }
+
+    // Delete any existing OTP for this identifier+purpose
+    await OTP.deleteMany({ identifier: normalised, purpose });
+
+    const code = generateOTP();
+    await OTP.create({ identifier: normalised, code, purpose });
+
+    // Send email if identifier looks like an email
+    if (normalised.includes('@')) {
+      await sendOTPEmail(normalised, code, purpose);
+    }
+    // Phone OTP: in production integrate SMS gateway here
+    // For now we log it (dev mode)
+    if (!normalised.includes('@')) {
+      console.log(`[OTP] Phone OTP for ${identifier}: ${code}`);
+    }
+
+    res.json({ success: true, message: `OTP sent to ${normalised.includes('@') ? 'email' : 'phone'}` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/verify-otp
+//  Verify OTP (standalone — for email verification after register)
+// ══════════════════════════════════════════════════════════
+router.post('/verify-otp', userAuth, async (req, res) => {
+  try {
+    const { code } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const otp = await OTP.findOne({
+      identifier: user.email,
+      purpose: 'verify',
+      used: false,
+    });
+
+    if (!otp) return res.status(400).json({ success: false, message: 'OTP expired or not found. Request a new one.' });
+
+    otp.attempts += 1;
+    if (otp.attempts > 5) {
+      await otp.deleteOne();
+      return res.status(429).json({ success: false, message: 'Too many attempts. Request a new OTP.' });
+    }
+
+    if (otp.code !== code) {
+      await otp.save();
+      return res.status(400).json({ success: false, message: `Incorrect OTP. ${5 - otp.attempts} attempts remaining.` });
+    }
+
+    otp.used = true;
+    await otp.save();
+    user.emailVerified = true;
+    await user.save();
+
+    res.json({ success: true, message: 'Email verified successfully!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/register
+//  Step 1: create account → send OTP → return pending token
+// ══════════════════════════════════════════════════════════
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, phone, password, role, school, district,
-            standard, stream, careerInterest, skills, department,
-            dateOfBirth, qualification, proofFileUrl } = req.body;
+    const {
+      name, email, phone, password, role, school, district,
+      standard, stream, careerInterest, skills, department,
+      dateOfBirth, qualification, proofFileUrl,
+    } = req.body;
 
-    const exists = await User.findOne({ $or: [{ email }, { phone }] });
+    const exists = await User.findOne({ $or: [{ email: email?.toLowerCase() }, { phone }] });
     if (exists) return res.status(400).json({ success: false, message: 'Email or phone already registered' });
 
     const user = new User({
@@ -37,29 +135,47 @@ router.post('/register', async (req, res) => {
       role: role || 'student',
       school, district, standard, stream, careerInterest, skills, department,
       dateOfBirth, qualification, proofFileUrl,
+      emailVerified: false,
       messages: [{
         from: 'admin',
-        text: `Welcome ${name}! Your request has been submitted successfully. Our team will review it within 48 hours.`,
+        text: `வணக்கம் ${name}! 🎉 Welcome to Meipuratchi! Your registration is received. Our team will review your details within 48 hours and contact you soon. — மெய் புரட்சி குழு`,
       }],
     });
     await user.save();
 
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(email, name, role || 'student').catch(console.error);
+
+    // Generate & send OTP for email verification
+    const code = generateOTP();
+    await OTP.deleteMany({ identifier: email.toLowerCase(), purpose: 'verify' });
+    await OTP.create({ identifier: email.toLowerCase(), code, purpose: 'verify' });
+    sendOTPEmail(email, code, 'register').catch(console.error);
+
     const token = signToken(user);
     res.status(201).json({
       success: true,
-      message: 'Registration successful!',
+      message: 'Registration successful! Check your email for the verification OTP.',
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role, status: user.status },
+      requiresOTP: true,
+      user: {
+        id: user._id, name: user.name, email: user.email,
+        role: user.role, status: user.status, emailVerified: false,
+      },
     });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
 });
 
-// POST /api/auth/login  (email or phone + password)
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/login
+//  Step 1: verify password → send OTP → return { requiresOTP: true }
+//  Step 2: POST /api/auth/login/verify-otp → return full token
+// ══════════════════════════════════════════════════════════
 router.post('/login', async (req, res) => {
   try {
-    const { identifier, password } = req.body; // identifier = email or phone
+    const { identifier, password } = req.body;
     const user = await User.findOne({
       $or: [{ email: identifier?.toLowerCase() }, { phone: identifier }]
     });
@@ -68,27 +184,89 @@ router.post('/login', async (req, res) => {
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ success: false, message: 'Incorrect password' });
 
-    // Mark unread messages as read on login
-    user.messages.forEach(m => { m.read = true; });
-    await user.save();
+    // Generate OTP
+    const code = generateOTP();
+    const normalised = user.email.toLowerCase();
+    await OTP.deleteMany({ identifier: normalised, purpose: 'login' });
+    await OTP.create({ identifier: normalised, code, purpose: 'login' });
 
-    const token = signToken(user);
+    // Send OTP email (non-blocking)
+    sendOTPEmail(user.email, code, 'login').catch(console.error);
+
     res.json({
       success: true,
-      token,
-      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role, status: user.status, teamRole: user.teamRole },
+      requiresOTP: true,
+      message: `OTP sent to ${user.email}. Enter it to complete login.`,
+      // Return masked email so frontend can show it
+      maskedEmail: user.email.replace(/(.{2})(.*)(@.*)/, '$1***$3'),
+      userId: user._id, // needed for OTP step
     });
-
-    // Log login for team members
-    if (user.role === 'team') {
-      logActivity(user._id.toString(), 'login', null, null, 'Logged in to team dashboard');
-    }
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// GET /api/auth/me  — get own profile + messages + status
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/login/verify-otp
+//  Step 2 of login: verify OTP → return full JWT
+// ══════════════════════════════════════════════════════════
+router.post('/login/verify-otp', async (req, res) => {
+  try {
+    const { userId, code } = req.body;
+    if (!userId || !code) return res.status(400).json({ success: false, message: 'userId and code required' });
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const otp = await OTP.findOne({
+      identifier: user.email.toLowerCase(),
+      purpose: 'login',
+      used: false,
+    });
+
+    if (!otp) return res.status(400).json({ success: false, message: 'OTP expired. Please login again to get a new OTP.' });
+
+    otp.attempts += 1;
+    if (otp.attempts > 5) {
+      await otp.deleteOne();
+      return res.status(429).json({ success: false, message: 'Too many attempts. Please login again.' });
+    }
+
+    if (otp.code !== code) {
+      await otp.save();
+      return res.status(400).json({ success: false, message: `Incorrect OTP. ${5 - otp.attempts} attempts remaining.` });
+    }
+
+    // OTP correct — mark used, complete login
+    otp.used = true;
+    await otp.save();
+
+    // Mark messages as read
+    user.messages.forEach(m => { m.read = true; });
+    await user.save();
+
+    if (user.role === 'team') {
+      logActivity(user._id.toString(), 'login', null, null, 'Logged in via OTP');
+    }
+
+    const token = signToken(user);
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user._id, name: user.name, email: user.email,
+        phone: user.phone, role: user.role, status: user.status,
+        teamRole: user.teamRole, emailVerified: user.emailVerified,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+//  GET /api/auth/me
+// ══════════════════════════════════════════════════════════
 router.get('/me', userAuth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -99,7 +277,9 @@ router.get('/me', userAuth, async (req, res) => {
   }
 });
 
-// POST /api/auth/me/message  — user sends a message to admin
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/me/message  — user sends message to admin
+// ══════════════════════════════════════════════════════════
 router.post('/me/message', userAuth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -111,7 +291,9 @@ router.post('/me/message', userAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/auth/me  — student deletes own account
+// ══════════════════════════════════════════════════════════
+//  DELETE /api/auth/me
+// ══════════════════════════════════════════════════════════
 router.delete('/me', userAuth, async (req, res) => {
   try {
     await User.findByIdAndDelete(req.user.id);
@@ -121,16 +303,16 @@ router.delete('/me', userAuth, async (req, res) => {
   }
 });
 
-// PATCH /api/auth/me/password  — user/team changes own password
+// ══════════════════════════════════════════════════════════
+//  PATCH /api/auth/me/password
+// ══════════════════════════════════════════════════════════
 router.patch('/me/password', userAuth, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    if (!currentPassword || !newPassword) {
+    if (!currentPassword || !newPassword)
       return res.status(400).json({ success: false, message: 'Current and new password required' });
-    }
-    if (newPassword.length < 6) {
+    if (newPassword.length < 6)
       return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
-    }
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
@@ -140,7 +322,6 @@ router.patch('/me/password', userAuth, async (req, res) => {
 
     user.password = newPassword;
     await user.save();
-
     res.json({ success: true, message: 'Password changed successfully' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

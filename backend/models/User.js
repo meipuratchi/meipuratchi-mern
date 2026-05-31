@@ -57,6 +57,9 @@ const userSchema = new mongoose.Schema({
   // Admin notes (internal, not shown to user)
   adminNotes: { type: String },
 
+  // Email verification
+  emailVerified: { type: Boolean, default: false },
+
   createdAt: { type: Date, default: Date.now },
 });
 

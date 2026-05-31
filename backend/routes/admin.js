@@ -3,6 +3,11 @@ const router  = express.Router();
 const User    = require('../models/User');
 const Contact = require('../models/Contact');
 const { adminAuth, teamAuth, manageAuth, logActivity } = require('../middleware/auth');
+const {
+  sendMessageNotification,
+  sendStatusUpdateEmail,
+  sendBroadcastEmail,
+} = require('../utils/emailService');
 
 // ── Stats ──────────────────────────────────────────────────
 router.get('/stats', adminAuth, async (req, res) => {
@@ -114,6 +119,16 @@ router.patch('/users/:id/status', manageAuth, async (req, res) => {
       logActivity(req.user.id, 'status_update', user._id.toString(), user.name, `${oldStatus} → ${status}`);
     }
 
+    // Send email notification (non-blocking)
+    if (status && user.email) {
+      sendStatusUpdateEmail(
+        user.email,
+        user.name,
+        status,
+        message || autoMsg[status] || `Your status has been updated to: ${status}`
+      ).catch(console.error);
+    }
+
     res.json({ success: true, data: { status: user.status, messages: user.messages } });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -132,6 +147,11 @@ router.post('/users/:id/message', manageAuth, async (req, res) => {
 
     if (req.user?.id) {
       logActivity(req.user.id, 'message_sent', user._id.toString(), user.name, text.slice(0, 60));
+    }
+
+    // Send email notification (non-blocking)
+    if (user.email) {
+      sendMessageNotification(user.email, user.name, text).catch(console.error);
     }
 
     res.json({ success: true, message: 'Message sent', data: user.messages });
@@ -404,26 +424,51 @@ router.get('/users/:id/password', adminAuth, async (req, res) => {
   }
 });
 
-module.exports = router;
-
-// ── View user password (admin only — for audit/recovery) ──
-router.get('/users/:id/password', adminAuth, async (req, res) => {
+// ── Broadcast email (admin only) ──────────────────────────
+// POST /api/admin/broadcast
+// Body: { subject, message, targetRole: 'all'|'student'|'volunteer'|'team' }
+router.post('/broadcast', adminAuth, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('name email role password');
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    // Return hashed password (bcrypt hash) — admin can see it for audit purposes
-    // Note: bcrypt hashes are one-way, so this returns the hash, not plaintext
-    res.json({ 
-      success: true, 
-      data: { 
-        name: user.name, 
-        email: user.email, 
-        role: user.role,
-        passwordHash: user.password,
-        note: 'This is a bcrypt hash. Original password cannot be recovered. Use reset endpoint to set new password.'
-      } 
+    const { subject, message, targetRole = 'all' } = req.body;
+    if (!subject || !message)
+      return res.status(400).json({ success: false, message: 'subject and message are required' });
+
+    const filter = {};
+    if (targetRole !== 'all') filter.role = targetRole;
+
+    const users = await User.find(filter).select('name email role');
+    if (users.length === 0)
+      return res.status(404).json({ success: false, message: 'No users found for this target' });
+
+    // Also push as in-app message to each user
+    const msgText = `📢 ${subject}\n\n${message}`;
+    await User.updateMany(filter, {
+      $push: { messages: { from: 'admin', text: msgText, read: false } }
+    });
+
+    // Send emails in batches of 10 (avoid rate limits)
+    let sent = 0, failed = 0;
+    const batchSize = 10;
+    for (let i = 0; i < users.length; i += batchSize) {
+      const batch = users.slice(i, i + batchSize);
+      await Promise.allSettled(
+        batch.map(u =>
+          sendBroadcastEmail(u.email, u.name, subject, message.replace(/\n/g, '<br/>'))
+            .then(r => { if (r.success) sent++; else failed++; })
+        )
+      );
+      // Small delay between batches
+      if (i + batchSize < users.length) await new Promise(r => setTimeout(r, 500));
+    }
+
+    res.json({
+      success: true,
+      message: `Broadcast complete. Sent: ${sent}, Failed: ${failed}, Total: ${users.length}`,
+      stats: { sent, failed, total: users.length },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
+module.exports = router;

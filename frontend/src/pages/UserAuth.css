@@ -141,3 +141,99 @@
   .auth-btn { padding: 13px; font-size: 0.95rem; }
   .auth-switch { font-size: 0.85rem; margin-top: 16px; }
 }
+
+/* ── OTP UI ── */
+.otp-shield-icon {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, #192441, #1a3a6e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5a623;
+  font-size: 1.6rem;
+  margin: 0 auto 12px;
+  box-shadow: 0 8px 25px rgba(25,36,65,0.3);
+}
+
+.otp-boxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0 12px;
+}
+
+.otp-box {
+  width: 48px; height: 56px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  color: var(--primary);
+  background: #f8f9fa;
+  outline: none;
+  transition: all 0.2s;
+  caret-color: transparent;
+}
+
+.otp-box:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(25,36,65,0.1);
+  transform: scale(1.05);
+}
+
+.otp-box:not(:placeholder-shown) {
+  border-color: var(--primary);
+  background: rgba(25,36,65,0.05);
+}
+
+.otp-hint {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--gray);
+  margin: 0 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.auth-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin: 16px auto 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.auth-back-btn:hover { color: var(--primary); background: rgba(25,36,65,0.05); }
+
+.auth-resend-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+}
+
+.auth-resend-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 400px) {
+  .otp-box { width: 40px; height: 48px; font-size: 1.2rem; border-radius: 10px; }
+  .otp-boxes { gap: 7px; }
+}
