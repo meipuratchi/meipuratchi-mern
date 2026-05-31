@@ -10,10 +10,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Attach worker identity header to every response (visible in DevTools)
+app.use((req, res, next) => {
+  if (process.env.WORKER_NAME) {
+    res.setHeader('X-Worker', process.env.WORKER_NAME);
+    res.setHeader('X-Worker-Port', process.env.PORT);
+  }
+  next();
+});
+
 // Startup check
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('MONGO_URI set:', !!process.env.MONGO_URI);
 console.log('PORT:', process.env.PORT);
+if (process.env.WORKER_NAME) {
+  console.log(`WORKER: ${process.env.WORKER_NAME} (id=${process.env.WORKER_ID})`);
+}
 
 // Routes
 app.use('/api/auth',          require('./routes/auth'));
