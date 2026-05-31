@@ -10,6 +10,21 @@ const {
   sendMessageNotification,
 } = require('../utils/emailService');
 
+// ── Test email endpoint (hit this from browser to verify SMTP works) ──
+// GET /api/auth/test-email?to=your@email.com
+router.get('/test-email', async (req, res) => {
+  const to = req.query.to || process.env.EMAIL_USER;
+  console.log(`[TestEmail] Sending test to: ${to}`);
+  const result = await sendOTPEmail(to, '123456', 'login');
+  console.log(`[TestEmail] Result:`, result);
+  res.json({
+    emailUser: process.env.EMAIL_USER || 'NOT SET',
+    emailPassSet: !!process.env.EMAIL_PASS,
+    to,
+    result,
+  });
+});
+
 // ── Helpers ───────────────────────────────────────────────
 const userAuth = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
