@@ -1,10 +1,9 @@
 /* ========================================
-   MOBILE OPTIMIZATIONS — DISABLED
-   All mobile media queries commented out.
-   Site runs in desktop mode for all devices.
+   MOBILE OPTIMIZATIONS — ENABLED
+   Responsive styles for all screen sizes.
    ======================================== */
 
-/* Base rendering improvements (apply to all) */
+/* ── Base rendering improvements ── */
 html {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -22,7 +21,7 @@ body {
   text-size-adjust: 100%;
 }
 
-/* GPU Acceleration for cards */
+/* ── GPU Acceleration for interactive elements ── */
 .card,
 .btn,
 .hero-stat,
@@ -34,9 +33,40 @@ body {
   backface-visibility: hidden;
 }
 
-/* Optimize Images */
+/* ── Optimize Images ── */
 img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+/* ── Minimum tap target size ── */
+a, button, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ── Utility grid responsive overrides ── */
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-pad { padding: 48px 0; }
+  .section-title { font-size: 1.6rem; }
+  .section-subtitle { font-size: 0.9rem; margin-bottom: 28px; }
+  .container { padding: 0 16px; }
+
+  /* Buttons full-width on very small screens when stacked */
+  .btn { font-size: 0.9rem; padding: 12px 24px; }
+}
+
+/* ── Prevent horizontal overflow ── */
+@media (max-width: 768px) {
+  * { max-width: 100%; }
+  table { word-break: break-word; }
 }

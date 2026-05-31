@@ -1,4 +1,50 @@
 /* ========================================
-   MOBILE SCROLL FIX — DISABLED
-   Replaced with desktop-only mode.
+   MOBILE SCROLL FIX — ENABLED
+   Ensures proper scrolling on all devices.
    ======================================== */
+
+/* iOS momentum scrolling */
+html, body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent horizontal overflow on all screens */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* CSS custom property for real viewport height (set by JS) */
+:root {
+  --vh: 1vh;
+}
+
+/* Use real viewport height where needed */
+.hero,
+.auth-page,
+.portal-loading,
+.ud-loading,
+.admin-login {
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Smooth scrolling for anchor links */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Fix for iOS Safari bottom bar overlap */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pt-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .footer-bottom {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+}
