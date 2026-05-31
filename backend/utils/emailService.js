@@ -1,62 +1,43 @@
 /**
  * ============================================================
  *  MEIPURATCHI — Email Service
- *  Uses Gmail SMTP via port 2525 (Render-compatible)
- *  Ports 465/587 are blocked on Render free tier.
- *  Port 2525 is not blocked.
+ *  Uses Resend SDK (works on Render free tier)
+ *  Set RESEND_API_KEY in Render environment variables.
+ *  Free tier: 100 emails/day, 3000/month
+ *  From address: onboarding@resend.dev (sandbox — sends to any email)
  * ============================================================
  */
 
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// ── Transporter — port 2525 works on Render ──────────────
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 2525,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: { rejectUnauthorized: false },
-});
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 // ── Send helper ───────────────────────────────────────────
 async function send(to, subject, html) {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn('[Email] EMAIL_USER or EMAIL_PASS not set — skipping');
-    return { success: false, error: 'Email not configured' };
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[Email] RESEND_API_KEY not set — skipping');
+    return { success: false, error: 'RESEND_API_KEY not configured' };
   }
+
   try {
-    await transporter.sendMail({
-      from: `"Meipuratchi Team" <${process.env.EMAIL_USER}>`,
+    const resend = getResend();
+    const { data, error } = await resend.emails.send({
+      from: 'Meipuratchi Team <onboarding@resend.dev>',
       to,
       subject,
       html,
     });
-    console.log(`[Email] ✅ Sent to ${to} — "${subject}"`);
-    return { success: true };
-  } catch (err) {
-    console.error(`[Email] ❌ Failed ${to}:`, err.message);
-    // Fallback: try port 587
-    try {
-      const fallback = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-        tls: { rejectUnauthorized: false },
-      });
-      await fallback.sendMail({
-        from: `"Meipuratchi Team" <${process.env.EMAIL_USER}>`,
-        to, subject, html,
-      });
-      console.log(`[Email] ✅ Sent via fallback port 587 to ${to}`);
-      return { success: true };
-    } catch (err2) {
-      console.error(`[Email] ❌ Fallback also failed ${to}:`, err2.message);
-      return { success: false, error: err2.message };
+
+    if (error) {
+      console.error(`[Email] ❌ Failed ${to}:`, error.message);
+      return { success: false, error: error.message };
     }
+
+    console.log(`[Email] ✅ Sent to ${to} — "${subject}" (id: ${data?.id})`);
+    return { success: true, id: data?.id };
+  } catch (err) {
+    console.error(`[Email] ❌ Error ${to}:`, err.message);
+    return { success: false, error: err.message };
   }
 }
 
