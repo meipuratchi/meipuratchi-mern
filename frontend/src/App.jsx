@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
 import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
+import AppPreloader from './components/AppPreloader';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 import Engineering from './pages/Engineering';
@@ -79,6 +80,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <AppPreloader />
       <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <AnimatedRoutes />
     </BrowserRouter>

@@ -221,6 +221,11 @@ tr:hover td { background: #fafafa; }
   .td-body  { padding: 16px; }
 }
 
+.td-stat { display: flex; align-items: center; gap: 12px; }
+.td-stat > div { display: flex; flex-direction: column; }
+
+.td-stat-alert { border-top: 3px solid #f5a623; }
+
 /* ── Mobile Team Dashboard Fixes ── */
 @media (max-width: 768px) {
   .td-header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }

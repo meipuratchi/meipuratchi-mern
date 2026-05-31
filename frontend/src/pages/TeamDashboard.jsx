@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 import {
   FaSignOutAlt, FaUsers, FaGraduationCap, FaHandsHelping,
-  FaSearch, FaEdit, FaGlobe, FaBell, FaComments
+  FaSearch, FaEdit, FaGlobe, FaBell, FaComments,
+  FaFilter, FaChevronDown, FaCircle
 } from 'react-icons/fa';
 import './TeamDashboard.css';
 
@@ -111,10 +113,18 @@ export default function TeamDashboard() {
 
         {/* Stats bar */}
         <div className="td-stats">
-          <div className="td-stat"><FaUsers /><span>{total}</span><p>Total Users</p></div>
-          <div className="td-stat"><FaGraduationCap /><span>{users.filter(u => u.role === 'student').length}</span><p>Students</p></div>
-          <div className="td-stat"><FaHandsHelping /><span>{users.filter(u => u.role === 'volunteer').length}</span><p>Volunteers</p></div>
-          <div className="td-stat"><FaBell /><span>{users.filter(u => u.status === 'submitted').length}</span><p>Pending</p></div>
+          <motion.div className="td-stat" whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+            <FaUsers /><div><span>{total}</span><p>Total Users</p></div>
+          </motion.div>
+          <motion.div className="td-stat" whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+            <FaGraduationCap /><div><span>{users.filter(u => u.role === 'student').length}</span><p>Students</p></div>
+          </motion.div>
+          <motion.div className="td-stat" whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+            <FaHandsHelping /><div><span>{users.filter(u => u.role === 'volunteer').length}</span><p>Volunteers</p></div>
+          </motion.div>
+          <motion.div className="td-stat td-stat-alert" whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+            <FaBell /><div><span>{users.filter(u => u.status === 'submitted').length}</span><p>Pending</p></div>
+          </motion.div>
         </div>
 
         {/* Toolbar */}
