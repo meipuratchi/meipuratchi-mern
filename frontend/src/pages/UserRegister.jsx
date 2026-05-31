@@ -229,7 +229,6 @@ export default function UserRegister() {
         <p className="auth-switch">
           Already have an account? <Link to="/portal/login">Login →</Link>
         </p>
-      </div>
       </motion.div>
       )}
 

@@ -93,6 +93,7 @@ async function sendOTPEmail(toEmail, otpCode, purpose = 'verification') {
     login:    'Login Verification',
     register: 'Account Verification',
     verify:   'Email Verification',
+    reset:    'Password Reset',
   }[purpose] || 'Verification';
 
   const body = `

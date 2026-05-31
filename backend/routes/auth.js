@@ -328,4 +328,82 @@ router.patch('/me/password', userAuth, async (req, res) => {
   }
 });
 
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/forgot-password
+//  Send OTP to email for password reset
+// ══════════════════════════════════════════════════════════
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { identifier } = req.body;
+    if (!identifier) return res.status(400).json({ success: false, message: 'Email or phone required' });
+
+    const user = await User.findOne({
+      $or: [{ email: identifier.toLowerCase().trim() }, { phone: identifier.trim() }]
+    });
+    // Always respond success to prevent user enumeration
+    if (!user) return res.json({ success: true, message: 'If an account exists, an OTP has been sent.' });
+
+    const code = generateOTP();
+    await OTP.deleteMany({ identifier: user.email.toLowerCase(), purpose: 'reset' });
+    await OTP.create({ identifier: user.email.toLowerCase(), code, purpose: 'reset' });
+
+    sendOTPEmail(user.email, code, 'reset').catch(console.error);
+
+    res.json({
+      success: true,
+      message: 'OTP sent to your registered email.',
+      maskedEmail: user.email.replace(/(.{2})(.*)(@.*)/, '$1***$3'),
+      userId: user._id,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+//  POST /api/auth/reset-password
+//  Verify OTP + set new password
+// ══════════════════════════════════════════════════════════
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { userId, code, newPassword } = req.body;
+    if (!userId || !code || !newPassword)
+      return res.status(400).json({ success: false, message: 'userId, code and newPassword required' });
+    if (newPassword.length < 6)
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const otp = await OTP.findOne({
+      identifier: user.email.toLowerCase(),
+      purpose: 'reset',
+      used: false,
+    });
+
+    if (!otp) return res.status(400).json({ success: false, message: 'OTP expired. Request a new one.' });
+
+    otp.attempts += 1;
+    if (otp.attempts > 5) {
+      await otp.deleteOne();
+      return res.status(429).json({ success: false, message: 'Too many attempts. Request a new OTP.' });
+    }
+
+    if (otp.code !== code) {
+      await otp.save();
+      return res.status(400).json({ success: false, message: `Incorrect OTP. ${5 - otp.attempts} attempts remaining.` });
+    }
+
+    otp.used = true;
+    await otp.save();
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ success: true, message: 'Password reset successfully! You can now login.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

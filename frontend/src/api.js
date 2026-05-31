@@ -22,6 +22,8 @@ export const loginUser       = (data) => API.post('/auth/login', data);
 export const loginVerifyOTP  = (data) => API.post('/auth/login/verify-otp', data);
 export const sendOTP         = (data) => API.post('/auth/send-otp', data);
 export const verifyEmailOTP  = (data) => API.post('/auth/verify-otp', data);
+export const forgotPassword  = (data) => API.post('/auth/forgot-password', data);
+export const resetPassword   = (data) => API.post('/auth/reset-password', data);
 export const getMe           = ()     => API.get('/auth/me');
 export const sendUserMsg     = (text) => API.post('/auth/me/message', { text });
 export const deleteAccount   = ()     => API.delete('/auth/me');

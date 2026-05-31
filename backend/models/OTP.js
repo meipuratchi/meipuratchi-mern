@@ -13,8 +13,8 @@ const otpSchema = new mongoose.Schema({
   // The 6-digit code
   code: { type: String, required: true },
 
-  // Purpose: 'login' | 'register' | 'verify'
-  purpose: { type: String, enum: ['login', 'register', 'verify'], default: 'login' },
+  // Purpose: 'login' | 'register' | 'verify' | 'reset'
+  purpose: { type: String, enum: ['login', 'register', 'verify', 'reset'], default: 'login' },
 
   // How many times it has been attempted (prevent brute force)
   attempts: { type: Number, default: 0 },
