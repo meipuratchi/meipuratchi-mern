@@ -77,18 +77,18 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-badge">
               <span className="dot" />
-              We&apos;re Hiring — Join Meipuratchi
+              We&apos;re Hiring — Software Internships
             </div>
-            <h1>Build careers.<br /><span>Guide students.</span><br />Change Tamil Nadu.</h1>
-            <p>We're looking for passionate students and developers to join our mission of providing free career guidance to every government school student in Tamil Nadu.</p>
+            <h1>Build real software.<br /><span>Ship real products.</span><br />Make real impact.</h1>
+            <p>We&apos;re looking for full stack developers and app developers to build and scale the Meipuratchi platform — a live product serving thousands of Tamil Nadu students.</p>
             <div className="hero-actions">
               <a href="#jobs" className="btn btn-accent"><FaBriefcase /> View Open Positions</a>
               <Link to="/register" className="btn btn-outline">Create Account →</Link>
             </div>
             <div className="hero-stats">
-              <div className="hero-stat"><strong>500+</strong><span>Students Guided</span></div>
-              <div className="hero-stat"><strong>8+</strong><span>Departments</span></div>
-              <div className="hero-stat"><strong>100%</strong><span>Free &amp; Mission-Driven</span></div>
+              <div className="hero-stat"><strong>Live</strong><span>Production Platform</span></div>
+              <div className="hero-stat"><strong>MERN</strong><span>Stack</span></div>
+              <div className="hero-stat"><strong>100%</strong><span>Remote Friendly</span></div>
             </div>
           </div>
         </div>
@@ -98,15 +98,15 @@ export default function Home() {
       <section className="why-section">
         <div className="container">
           <h2>Why Join <span>Meipuratchi?</span></h2>
-          <p className="why-sub">More than an internship — a mission that matters.</p>
+          <p className="why-sub">Work on a real, live platform — not a tutorial project.</p>
           <div className="why-grid">
             {[
-              { icon: '🎓', title: 'Real Impact', desc: 'Your work directly helps Tamil Nadu students discover their career paths. Every line of code, every design counts.' },
-              { icon: '📜', title: 'Official Certificate', desc: 'Get a Meipuratchi internship completion letter and offer letter — recognized proof of your contribution.' },
-              { icon: '💡', title: 'Learn & Grow', desc: 'Work on a live production platform with real users. Build skills in React, Node.js, MongoDB, design, and more.' },
-              { icon: '🤝', title: 'Great Team', desc: 'Work alongside 8 departments — Design, Tech, Counseling, Social Media, and more.' },
-              { icon: '🌐', title: 'Remote Friendly', desc: 'Most roles are fully remote. Work from anywhere across Tamil Nadu and India.' },
-              { icon: '🚀', title: 'Fast Growth', desc: 'Small team means big responsibility. Take ownership, ship features, and grow faster.' },
+              { icon: '⚡', title: 'Live Production App', desc: 'You ship code to a real platform used by thousands of Tamil Nadu students — not a dummy project. Your work matters from day one.' },
+              { icon: '🛠️', title: 'Full MERN Stack', desc: 'Work across the full stack — React, Node.js, Express, MongoDB. Mobile app interns work with React Native.' },
+              { icon: '📜', title: 'Official Letters', desc: 'Receive an official Meipuratchi Internship Offer Letter and Completion Certificate — solid proof for your resume.' },
+              { icon: '🚀', title: 'Own Your Features', desc: 'Small team means you own entire features end-to-end. No bottlenecks, no waiting — just build and ship.' },
+              { icon: '🌐', title: 'Fully Remote', desc: 'Work from anywhere. All you need is a laptop and a reliable internet connection.' },
+              { icon: '💡', title: 'Real Code Review', desc: 'Get feedback on your code from the core team. Learn industry practices — Git workflow, REST APIs, deployment.' },
             ].map(c => (
               <div key={c.title} className="why-card">
                 <div className="why-icon">{c.icon}</div>
@@ -171,8 +171,8 @@ export default function Home() {
       {/* ── Mission CTA ── */}
       <section className="mission-banner">
         <div className="container">
-          <h2>Don&apos;t see a role for you?</h2>
-          <p>We&apos;re always growing. Drop us a message on our contact page — we&apos;d love to hear from passionate people who want to help Tamil Nadu students.</p>
+          <h2>Don&apos;t see the right role?</h2>
+          <p>We&apos;re actively looking for full stack developers and mobile app developers. If you have the skills and the drive, reach out — we&apos;ll find a fit.</p>
           <a href="https://meipuratchi.in/contact" target="_blank" rel="noreferrer" className="btn btn-primary">Get In Touch</a>
         </div>
       </section>

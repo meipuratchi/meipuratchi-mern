@@ -11,33 +11,34 @@ export default function Terms() {
           <section>
             <h2>1. About Meipuratchi Careers</h2>
             <p>
-              Meipuratchi (மெய் புரட்சி) is a non-commercial student career guidance initiative
-              serving Tamil Nadu government school students. This Careers portal allows volunteers
-              and interns to apply for open roles within the Meipuratchi team.
+              Meipuratchi (மெய் புரட்சி) is a student career guidance initiative serving Tamil Nadu.
+              This Careers portal is for <strong>software internships only</strong> — full stack development,
+              mobile app development, UI/UX design, and related technical roles.
+              Guidance and counseling roles are not listed here and will be handled separately.
             </p>
           </section>
 
           <section>
             <h2>2. Eligibility</h2>
-            <p>To apply for positions listed on this portal, you must:</p>
+            <p>To apply for software internship positions listed on this portal, you must:</p>
             <ul>
               <li>Be at least 16 years of age.</li>
-              <li>Provide accurate personal and professional information.</li>
-              <li>Have access to the tools required for the role (e.g., internet connection, laptop).</li>
+              <li>Have relevant technical skills for the role (e.g., React, Node.js, React Native, Flutter, etc.).</li>
+              <li>Provide accurate personal, academic, and professional information.</li>
+              <li>Have access to a laptop/PC and a reliable internet connection.</li>
             </ul>
           </section>
 
           <section>
             <h2>3. Internship Nature</h2>
             <p>
-              Most roles listed are unpaid or stipend-based internships. Unless explicitly stated,
-              applying does not guarantee selection. All positions are voluntary contributions
-              to a social initiative. Interns will receive:
+              All software roles are internship positions (paid or unpaid as specified per role).
+              Applying does not guarantee selection. Interns will receive:
             </p>
             <ul>
               <li>An official <strong>Internship Offer Letter</strong> upon selection.</li>
-              <li>An <strong>Internship Completion Letter</strong> upon successful completion of the agreed duration.</li>
-              <li>Mentorship and real-world project experience on a live platform.</li>
+              <li>An <strong>Internship Completion Letter</strong> upon successful completion.</li>
+              <li>Real-world experience on a live, production MERN stack platform.</li>
             </ul>
           </section>
 
@@ -52,15 +53,16 @@ export default function Terms() {
 
           <section>
             <h2>5. Code of Conduct</h2>
-            <p>All interns and volunteers are expected to:</p>
+            <p>All software interns are expected to:</p>
             <ul>
-              <li>Maintain professional conduct in all communications.</li>
-              <li>Respect student privacy — never share student data outside the platform.</li>
-              <li>Complete agreed tasks within the committed timeline.</li>
-              <li>Notify the team in advance if unable to continue the internship.</li>
+              <li>Maintain professional conduct in all communications with the team.</li>
+              <li>Keep any internal code, data, or platform access confidential.</li>
+              <li>Complete agreed tasks and raise blockers early — don&apos;t go silent.</li>
+              <li>Follow Git workflow and code review guidelines set by the team.</li>
+              <li>Notify the team at least 3 days in advance if unable to continue.</li>
             </ul>
             <p>
-              Violation of these norms may result in removal from the team without a completion letter.
+              Violation of these norms may result in removal from the program without a completion letter.
             </p>
           </section>
 
