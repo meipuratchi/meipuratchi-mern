@@ -11,7 +11,8 @@ import {
   FaPlus, FaLock, FaUserTie, FaChartLine
 } from 'react-icons/fa';
 import './AdminDashboard.css';
-import AdminCMS from './AdminCMS';
+import AdminCMS     from './AdminCMS';
+import AdminCareers from './AdminCareers';
 
 import API_URL from '../config';
 const API = `${API_URL}/api/admin`;
@@ -612,6 +613,7 @@ export default function AdminDashboard() {
     { id: 'users',    label: 'All Users',    icon: <FaUsers /> },
     { id: 'team',     label: 'Team Members', icon: <FaUserTie /> },
     { id: 'contacts', label: 'Messages',     icon: <FaEnvelope /> },
+    { id: 'careers',  label: 'Careers',      icon: <FaGraduationCap /> },
     { id: 'cms',      label: 'CMS / Pages',  icon: <FaPalette /> },
   ];
 
@@ -663,6 +665,7 @@ export default function AdminDashboard() {
         {activeTab === 'users'    && <UsersTab    adminKey={adminKey} />}
         {activeTab === 'team'     && <TeamMembersTab adminKey={adminKey} />}
         {activeTab === 'contacts' && <ContactsTab adminKey={adminKey} />}
+        {activeTab === 'careers'  && <AdminCareers adminKey={adminKey} />}
         {activeTab === 'cms'      && <AdminCMS    adminKey={adminKey} />}
       </main>
 
