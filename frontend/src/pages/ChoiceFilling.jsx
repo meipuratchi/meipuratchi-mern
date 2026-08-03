@@ -222,20 +222,22 @@ function OrderItem({ item, index, total, category, onMove, onRemove, onDragStart
       onDrop={() => onDrop(index)}
     >
       <span className="cf-order-num">{index + 1}</span>
-      <div className="cf-order-info">
-        <p className="cf-order-college">{item.shortName || item.collegeName}</p>
-        <p className="cf-order-course">{item.name}</p>
-        <p className="cf-order-meta">{item.collegeCode} · {item.district}</p>
-      </div>
-      <div className="cf-order-item-bottom">
-        <div className="cf-order-cutoff">
-          <span className="cf-order-cutoff-label">{category}</span>
-          <span className="cf-order-cutoff-val">{cutoffVal != null ? cutoffVal : '—'}</span>
+      <div className="cf-order-main">
+        <div className="cf-order-info">
+          <p className="cf-order-college">{item.shortName || item.collegeName}</p>
+          <p className="cf-order-course">{item.name}</p>
+          <p className="cf-order-meta">{item.collegeCode} · {item.district}</p>
         </div>
-        <div className="cf-order-controls">
-          <button className="cf-ctrl-btn" onClick={() => onMove(index, index - 1)} disabled={index === 0} title="Move up">▲</button>
-          <button className="cf-ctrl-btn" onClick={() => onMove(index, index + 1)} disabled={index === total - 1} title="Move down">▼</button>
-          <button className="cf-ctrl-btn cf-ctrl-btn--remove" onClick={() => onRemove(item.id)} title="Remove">✕</button>
+        <div className="cf-order-item-bottom">
+          <div className="cf-order-cutoff">
+            <span className="cf-order-cutoff-label">{category}</span>
+            <span className="cf-order-cutoff-val">{cutoffVal != null ? cutoffVal : '—'}</span>
+          </div>
+          <div className="cf-order-controls">
+            <button className="cf-ctrl-btn" onClick={() => onMove(index, index - 1)} disabled={index === 0} title="Move up">▲</button>
+            <button className="cf-ctrl-btn" onClick={() => onMove(index, index + 1)} disabled={index === total - 1} title="Move down">▼</button>
+            <button className="cf-ctrl-btn cf-ctrl-btn--remove" onClick={() => onRemove(item.id)} title="Remove">✕</button>
+          </div>
         </div>
       </div>
     </div>
