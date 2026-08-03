@@ -325,6 +325,8 @@ export default function ChoiceFilling() {
 
   return (
     <div className="cf-page">
+      {/* Spacer to push content below fixed navbar */}
+      <div className="cf-nav-spacer" />
       {/* Page header */}
       <div className="cf-header">
         <div className="cf-header-inner">
