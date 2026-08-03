@@ -467,6 +467,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Bottom row wrapper (desktop: just a flex passthrough) */
+.cf-order-item-bottom {
+  display: contents; /* on desktop, children slot directly into the grid */
+}
+
 .cf-order-controls {
   display: flex;
   flex-direction: column;
@@ -577,10 +582,50 @@
   /* Add button stays in its grid column */
   .cf-add-btn { width: 34px; height: 34px; font-size: 18px; }
 
-  /* Order item */
-  .cf-order-item { padding: 8px 10px; gap: 5px; }
-  .cf-order-cutoff { min-width: 34px; padding: 3px 5px; }
-  .cf-order-cutoff-val { font-size: 11px; }
-  .cf-order-controls { flex-direction: row; gap: 4px; }
-  .cf-ctrl-btn { width: 28px; height: 28px; font-size: 11px; }
+  /* Order item — 2-row layout on mobile for full visibility */
+  .cf-order-item {
+    grid-template-columns: 26px 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "num  info"
+      "num  bottom";
+    padding: 10px 12px;
+    gap: 4px 8px;
+    align-items: start;
+  }
+  .cf-order-num {
+    grid-area: num;
+    align-self: center;
+  }
+  .cf-order-info {
+    grid-area: info;
+  }
+  .cf-order-college {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .cf-order-course {
+    white-space: normal;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .cf-order-item-bottom {
+    grid-area: bottom;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .cf-order-cutoff {
+    min-width: 46px;
+    padding: 4px 8px;
+  }
+  .cf-order-cutoff-val { font-size: 13px; }
+  .cf-order-controls {
+    flex-direction: row;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .cf-ctrl-btn { width: 32px; height: 32px; font-size: 13px; }
 }
