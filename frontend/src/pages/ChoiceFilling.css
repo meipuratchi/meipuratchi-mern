@@ -564,10 +564,18 @@
   .cf-category-row { gap: 4px; }
   .cf-cat-btn { padding: 5px 8px; font-size: 10px; }
 
-  /* Search result card */
+  /* Search result card — allow full names to wrap */
   .cf-result-item { padding: 10px 10px; gap: 6px; }
-  .cf-result-college { font-size: 12px; }
-  .cf-result-course { font-size: 11px; }
+  .cf-result-college {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .cf-result-course {
+    white-space: normal;
+    font-size: 12px;
+    line-height: 1.3;
+  }
 
   /* Cutoff pills: horizontal scroll so they don't wrap and push layout */
   .cf-result-cutoffs {
