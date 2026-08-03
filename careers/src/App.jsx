@@ -10,6 +10,7 @@ import Login     from './pages/Login';
 import Portal    from './pages/Portal';
 import Terms     from './pages/Terms';
 import Privacy   from './pages/Privacy';
+import EmployeeTickets from './pages/EmployeeTickets';
 
 function PublicLayout({ children }) {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
         <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
         <Route path="/portal" element={<Portal />} />
+        <Route path="/tickets" element={<EmployeeTickets />} />
         <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
         <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
         <Route path="*" element={<Navigate to="/" replace />} />

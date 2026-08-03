@@ -126,31 +126,129 @@
 
 .college-count { color: var(--gray); font-size: 0.9rem; margin-bottom: 20px; }
 
+.college-filters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+.college-filters select, .college-filters input { min-width: 0; padding: 10px; border: 1px solid #dce3eb; border-radius: 7px; font: inherit; background: white; }
+.college-list-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.choice-fill-link { color: var(--primary); font-size: .88rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.college-course { color: #28709f !important; font-weight: 600; margin-bottom: 5px !important; }
+.college-info a { color: var(--primary); text-decoration: none; font-size: .78rem; font-weight: 700; display: inline-block; margin-top: 7px; }
+.catalogue-limit { text-align: center; font-size: .84rem; color: var(--gray); margin-top: 16px; }
+
 .college-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 16px;
 }
 
 .college-card {
   display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.college-card-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #eef1f6;
 }
 
 .college-code {
   background: var(--primary);
   color: white;
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 5px 12px;
+  border-radius: 6px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   flex-shrink: 0;
 }
 
-.college-info h4 { font-size: 0.95rem; color: var(--primary); margin-bottom: 4px; }
-.college-info p { font-size: 0.8rem; color: var(--gray); margin: 0; }
+.add-choice-btn {
+  background: #e5a100;
+  color: #fff !important;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.add-choice-btn:hover { background: #c78c00 !important; }
+
+.college-info {
+  padding: 12px 16px 14px;
+}
+
+.college-info h4 {
+  font-size: 0.88rem;
+  color: var(--primary);
+  margin-bottom: 3px;
+  line-height: 1.4;
+}
+
+.college-course {
+  color: #28709f !important;
+  font-weight: 600;
+  font-size: 0.82rem;
+  margin-bottom: 3px !important;
+}
+
+.college-location {
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin: 0 0 10px !important;
+}
+
+/* All-caste cutoff grid */
+.cutoff-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.cutoff-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 2px;
+  border-radius: 6px;
+  background: #f4f6f9;
+  border: 1px solid #eef1f6;
+  transition: all 0.15s;
+}
+
+.cutoff-cell--active {
+  background: #fff8e0;
+  border-color: #e5a100;
+}
+
+.cutoff-cell--na .cutoff-val { color: #bcc4d0; }
+
+.cutoff-cat {
+  font-size: 9px;
+  font-weight: 700;
+  color: #6b7f9e;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.cutoff-cell--active .cutoff-cat { color: #b37000; }
+
+.cutoff-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e2a3a;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cutoff-cell--active .cutoff-val { color: #b37000; }
 
 .doc-grid {
   display: grid;
@@ -187,8 +285,8 @@
   .eng-section h2 { font-size: 1.1rem; gap: 8px; }
   .calc-form { grid-template-columns: 1fr; gap: 12px; }
   .college-grid { grid-template-columns: 1fr; }
-  .college-card { flex-direction: row; gap: 12px; padding: 12px 14px; }
-  .college-code { padding: 6px 10px; font-size: 0.82rem; }
+  .college-card { flex-direction: column; gap: 0; padding: 0; }
+  .cutoff-grid { grid-template-columns: repeat(7, 1fr); gap: 3px; }
   .college-info h4 { font-size: 0.88rem; }
   .doc-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .doc-card { padding: 16px 12px; }
@@ -197,5 +295,7 @@
   .cutoff-result { padding: 18px; }
   .cutoff-score { font-size: 2rem; }
   .college-search { padding: 10px 14px; }
+  .college-filters { grid-template-columns: 1fr; }
+  .college-list-actions { align-items: flex-start; flex-direction: column; }
   .announcement-scroll { font-size: 0.82rem; }
 }

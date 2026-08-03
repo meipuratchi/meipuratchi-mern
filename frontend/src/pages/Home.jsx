@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 import { FaGraduationCap, FaFlask, FaPaintBrush, FaMusic, FaArrowRight, FaUsers, FaStar, FaHeart, FaCheckCircle, FaUserCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -7,7 +9,81 @@ import { getStats } from '../api';
 import { useCMS } from '../hooks/useCMS';
 import AnimatedSection, { AnimatedStagger, AnimatedItem } from '../components/AnimatedSection';
 import AnimatedBackground from '../components/AnimatedBackground';
+import API_URL from '../config';
 import './Home.css';
+
+// ── Raise a Ticket inline form ───────────────────────────────
+function RaiseTicketForm() {
+  const [form, setForm] = useState({ title: '', description: '', raisedBy: '', email: '', phone: '', type: 'query' });
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!form.title || !form.description || !form.raisedBy) return toast.error('Name, subject and message are required');
+    setLoading(true);
+    try {
+      await axios.post(`${API_URL}/api/tickets/public`, form);
+      setDone(true);
+      toast.success('Ticket raised! We will get back to you soon.');
+    } catch {
+      toast.error('Failed to submit. Please try again.');
+    } finally { setLoading(false); }
+  };
+
+  if (done) {
+    return (
+      <div className="ticket-form-success">
+        <span>✅</span>
+        <p>Your ticket has been raised successfully! Our team will respond shortly.</p>
+        <button onClick={() => { setDone(false); setForm({ title: '', description: '', raisedBy: '', email: '', phone: '', type: 'query' }); }}>
+          Raise another
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form className="ticket-form" onSubmit={submit}>
+      <div className="ticket-form-row">
+        <div className="ticket-form-field">
+          <label>Your Name *</label>
+          <input value={form.raisedBy} onChange={set('raisedBy')} placeholder="Your full name" required />
+        </div>
+        <div className="ticket-form-field">
+          <label>Type</label>
+          <select value={form.type} onChange={set('type')}>
+            <option value="query">General Query</option>
+            <option value="support">Support</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div className="ticket-form-row">
+        <div className="ticket-form-field">
+          <label>Email</label>
+          <input type="email" value={form.email} onChange={set('email')} placeholder="your@email.com" />
+        </div>
+        <div className="ticket-form-field">
+          <label>Phone</label>
+          <input type="tel" value={form.phone} onChange={set('phone')} placeholder="9876543210" />
+        </div>
+      </div>
+      <div className="ticket-form-field">
+        <label>Subject *</label>
+        <input value={form.title} onChange={set('title')} placeholder="Brief subject of your issue" required />
+      </div>
+      <div className="ticket-form-field">
+        <label>Message *</label>
+        <textarea value={form.description} onChange={set('description')} placeholder="Describe your query or issue in detail…" rows={4} required />
+      </div>
+      <button type="submit" className="ticket-form-btn" disabled={loading}>
+        {loading ? 'Submitting…' : '🎫 Raise Ticket'}
+      </button>
+    </form>
+  );
+}
 
 export default function Home() {
   const { c } = useCMS('home');
@@ -310,6 +386,22 @@ export default function Home() {
           </AnimatedStagger>
         </div>
       </section>
+
+      {/* Raise a Ticket */}
+      <AnimatedSection variant="fadeInUp">
+        <section className="section-pad bg-light">
+          <div className="container">
+            <div className="ticket-widget">
+              <div className="ticket-widget-info">
+                <span className="ticket-widget-badge">🎫 Support</span>
+                <h2>Have a Question or Need Help?</h2>
+                <p>Raise a support ticket and our team will get back to you. You can track your ticket status on the <Link to="/tickets" className="ticket-link">tickets page</Link>.</p>
+              </div>
+              <RaiseTicketForm />
+            </div>
+          </div>
+        </section>
+      </AnimatedSection>
 
       {/* CTA Banner */}
       <AnimatedSection variant="scaleIn">

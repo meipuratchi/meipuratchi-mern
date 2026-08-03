@@ -11,6 +11,7 @@ import AppPreloader from './components/AppPreloader';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 import Engineering from './pages/Engineering';
+import ChoiceFilling from './pages/ChoiceFilling';
 import Paramedical from './pages/Paramedical';
 import Team from './pages/Team';
 import Volunteer from './pages/Volunteer';
@@ -23,6 +24,7 @@ import UserPortal from './pages/UserPortal';
 import TeamLogin from './pages/TeamLogin';
 import TeamDashboard from './pages/TeamDashboard';
 import UserDetail from './pages/UserDetail';
+import Tickets from './pages/Tickets';
 import { initMobileScrollFix } from './utils/mobileScrollFix';
 
 function PublicLayout({ children }) {
@@ -63,10 +65,12 @@ function AnimatedRoutes() {
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/registration" element={<PublicLayout><Registration /></PublicLayout>} />
         <Route path="/engineering" element={<PublicLayout><Engineering /></PublicLayout>} />
+        <Route path="/engineering/choice-filling" element={<PublicLayout><ChoiceFilling /></PublicLayout>} />
         <Route path="/paramedical" element={<PublicLayout><Paramedical /></PublicLayout>} />
         <Route path="/our-team" element={<PublicLayout><Team /></PublicLayout>} />
         <Route path="/volunteer" element={<PublicLayout><Volunteer /></PublicLayout>} />
         <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/tickets" element={<PublicLayout><Tickets /></PublicLayout>} />
       </Routes>
     </AnimatePresence>
   );

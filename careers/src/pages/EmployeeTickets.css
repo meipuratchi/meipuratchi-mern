@@ -1,0 +1,78 @@
+.et-page { min-height:100vh; background:#f2f5f9; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+
+/* Login */
+.et-login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+.et-login-card { background:#fff; border-radius:16px; padding:40px 36px; width:100%; max-width:400px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.1); border:1px solid #dde3ec; }
+.et-logo { width:64px; height:64px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:2px solid #eef1f6; }
+.et-login-card h1 { font-size:20px; font-weight:700; color:#16213e; margin:0 0 8px; }
+.et-login-card>p { font-size:13px; color:#6b7f9e; margin:0 0 24px; line-height:1.5; }
+.et-login-form { display:flex; flex-direction:column; gap:12px; text-align:left; }
+.et-field { display:flex; flex-direction:column; gap:5px; }
+.et-field label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#6b7f9e; }
+.et-field input, .et-field select { padding:10px 13px; border:1.5px solid #d0d8e2; border-radius:8px; font-size:13px; font-family:inherit; background:#f8fafc; color:#1e2a3a; outline:none; transition:border-color .2s; }
+.et-field input:focus, .et-field select:focus { border-color:#16213e; background:#fff; }
+.et-login-form>button { background:#16213e; color:#fff; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:background .2s; margin-top:4px; }
+.et-login-form>button:hover { background:#0f1a30; }
+.et-login-form>button:disabled { opacity:.6; cursor:not-allowed; }
+.et-login-err { color:#dc3545; font-size:13px; margin:0; text-align:center; }
+.et-login-hint { font-size:12px; color:#9aaabf; margin:16px 0 0; }
+
+/* Header */
+.et-header { background:linear-gradient(135deg,#16213e 0%,#0f3460 100%); padding:18px 0; }
+.et-header-inner { max-width:900px; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.et-header-user { display:flex; align-items:center; gap:12px; }
+.et-avatar { width:42px; height:42px; background:#e5a100; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0; }
+.et-emp-name { font-size:15px; font-weight:700; color:#fff; margin:0 0 2px; }
+.et-emp-meta { font-size:12px; color:rgba(255,255,255,.6); margin:0; }
+.et-logout-btn { background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.25); padding:8px 16px; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s; font-family:inherit; }
+.et-logout-btn:hover { background:rgba(255,255,255,.2); }
+
+/* Body */
+.et-body { max-width:900px; margin:0 auto; padding:24px 20px; }
+
+/* Stats */
+.et-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.et-stat-card { background:#fff; border:1px solid #dde3ec; border-top:3px solid; border-radius:10px; padding:14px; text-align:center; }
+.et-stat-num { display:block; font-size:26px; font-weight:800; }
+.et-stat-label { display:block; font-size:11px; color:#6b7f9e; margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+
+/* Filter row */
+.et-filter-row { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+.et-filter-row h2 { font-size:15px; font-weight:700; color:#16213e; margin:0; }
+.et-filter-right { display:flex; gap:8px; align-items:center; }
+.et-select { padding:8px 12px; border:1px solid #d0d8e2; border-radius:7px; font-size:13px; font-family:inherit; background:#fff; outline:none; }
+.et-refresh-btn { padding:8px 14px; background:#fff; border:1px solid #d0d8e2; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; white-space:nowrap; }
+.et-refresh-btn:hover { background:#f0f4ff; border-color:#16213e; }
+
+/* Ticket cards */
+.et-list { display:flex; flex-direction:column; gap:10px; }
+.et-ticket { background:#fff; border:1px solid #dde3ec; border-left:4px solid; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.05); transition:box-shadow .2s; }
+.et-ticket:hover { box-shadow:0 3px 12px rgba(0,0,0,.09); }
+.et-ticket-head { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; gap:12px; }
+.et-ticket-left { display:flex; align-items:flex-start; gap:12px; flex:1; min-width:0; }
+.et-type-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+.et-title { font-size:14px; font-weight:600; color:#16213e; margin:0 0 6px; }
+.et-meta { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.et-badge { display:inline-block; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; }
+.et-meta-text { font-size:12px; color:#6b7f9e; }
+.et-deadline { font-size:12px; color:#ef5350; font-weight:600; }
+.et-ticket-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.et-date { font-size:11px; color:#9aaabf; }
+.et-chevron { font-size:11px; color:#9aaabf; }
+
+.et-ticket-body { padding:12px 18px 16px; border-top:1px solid #eef1f6; background:#f9fbfd; }
+.et-desc { font-size:13px; color:#4a5a73; line-height:1.6; margin:0 0 14px; }
+.et-update-row { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+.et-field-grow { flex:1 1 200px; }
+.et-save-btn { background:#16213e; color:#fff; border:none; padding:10px 20px; border-radius:7px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background .2s; flex-shrink:0; align-self:flex-end; }
+.et-save-btn:hover { background:#0f1a30; }
+.et-save-btn:disabled { opacity:.6; cursor:not-allowed; }
+
+.et-empty { text-align:center; padding:48px; color:#9aaabf; font-size:14px; background:#fff; border-radius:10px; border:1px solid #dde3ec; }
+
+@media(max-width:600px){
+  .et-stats { grid-template-columns:repeat(2,1fr); }
+  .et-ticket-head { flex-direction:column; align-items:flex-start; }
+  .et-update-row { flex-direction:column; }
+  .et-save-btn { width:100%; }
+}

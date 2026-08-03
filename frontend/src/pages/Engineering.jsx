@@ -1,29 +1,12 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FaCalculator, FaUniversity, FaExternalLinkAlt, FaSearch } from 'react-icons/fa';
 import { useCMS } from '../hooks/useCMS';
+import collegeData from '../data/engineeringColleges2025.json';
 import './Engineering.css';
 
-const topColleges = [
-  { code: '1315', name: 'Sri Sivasubramaniya Nadar College of Engineering', district: 'Kanchipuram' },
-  { code: '1399', name: 'Chennai Institute of Technology', district: 'Chennai' },
-  { code: '1211', name: 'Rajalakshmi Engineering College', district: 'Kanchipuram' },
-  { code: '1116', name: 'Sri Venkateswara College of Engineering and Technology', district: 'Thiruvallur' },
-  { code: '1309', name: 'Meenakshi Sundararajan Engineering College', district: 'Chennai' },
-  { code: '1324', name: 'Sri Sai Ram Institute of Technology', district: 'Kanchipuram' },
-  { code: '1432', name: 'Rajalakshmi Institute of Technology', district: 'Chennai' },
-  { code: '1450', name: 'Loyola-ICAM College of Engineering and Technology', district: 'Chennai' },
-  { code: '1304', name: 'Easwari Engineering College', district: 'Chennai' },
-  { code: '1210', name: 'Panimalar Engineering College', district: 'Thiruvallur' },
-  { code: '1216', name: 'Saveetha Engineering College', district: 'Kancheepuram' },
-  { code: '1405', name: 'Dhanalakshmi College of Engineering', district: 'Kancheepuram' },
-  { code: '1422', name: 'SRM Valliammai Engineering College', district: 'Kancheepuram' },
-  { code: '1317', name: 'St. Joseph\'s College of Engineering', district: 'Kanchipuram' },
-  { code: '1120', name: 'Velammal Engineering College', district: 'Thiruvallur' },
-  { code: '1149', name: 'St. Joseph\'s Institute of Technology', district: 'Kanchipuram' },
-  { code: '1311', name: 'KCG College of Technology', district: 'Chennai' },
-  { code: '5008', name: 'Thiagarajar College of Engineering', district: 'Madurai' },
-  { code: '5986', name: 'Velammal College of Engineering and Technology', district: 'Madurai' },
-];
+const categories = ['OC', 'BC', 'BCM', 'MBC', 'SC', 'SCA', 'ST'];
+const catalogue = collegeData.flatMap(college => college.courses.map(course => ({ ...course, collegeCode: college.code, collegeName: college.name, district: college.district, pincode: college.pincode, id: `${college.code}-${course.code || course.name}` })));
 
 export default function Engineering() {
   const { c } = useCMS('engineering');
@@ -32,10 +15,10 @@ export default function Engineering() {
   const [maths, setMaths] = useState('');
   const [cutoff, setCutoff] = useState(null);
   const [search, setSearch] = useState('');
-
-  // CMS-driven colleges list (falls back to hardcoded)
-  const cmsColleges = c('colleges_list', null);
-  const colleges = cmsColleges && Array.isArray(cmsColleges) ? cmsColleges : topColleges;
+  const [district, setDistrict] = useState('');
+  const [course, setCourse] = useState('');
+  const [category, setCategory] = useState('OC');
+  const [filterCutoff, setFilterCutoff] = useState('');
 
   const calculate = e => {
     e.preventDefault();
@@ -45,21 +28,27 @@ export default function Engineering() {
     setCutoff(result.toFixed(2));
   };
 
-  const filtered = colleges.filter(col =>
-    col.name.toLowerCase().includes(search.toLowerCase()) ||
-    col.code.includes(search) ||
-    col.district.toLowerCase().includes(search.toLowerCase())
-  );
+  const districts = [...new Set(collegeData.map(col => col.district))].sort();
+  const courses = [...new Set(catalogue.map(item => item.name))].sort();
+  const filtered = catalogue.filter(item => {
+    const q = search.toLowerCase().trim();
+    const mark = item.cutoffs[category];
+    return (!q || [item.collegeName, item.collegeCode, item.district, item.pincode, item.name].join(' ').toLowerCase().includes(q))
+      && (!district || item.district === district)
+      && (!course || item.name === course)
+      && (!filterCutoff || (mark !== null && mark <= Number(filterCutoff)));
+  });
 
   return (
     <div className="eng-page">
       <div className="eng-hero">
         <div className="container">
-          <h1>{c('hero_title','Tamil Nadu Engineering Counselling 2026')}</h1>
+          <h1>Tamil Nadu Engineering Counselling 2025</h1>
           <p>{c('hero_quote','"Design is the art of turning constraints into opportunities." – Aza Raskin')}</p>
           <div className="eng-hero-actions">
             <a href="#calculator" className="btn btn-accent"><FaCalculator /> {c('calc_btn','Calculate Cutoff')}</a>
-            <a href="#colleges" className="btn btn-outline"><FaUniversity /> {c('colleges_btn','Explore Colleges')}</a>
+            <a href="#colleges" className="btn btn-outline"><FaUniversity /> Explore Colleges</a>
+            <Link to="/engineering/choice-filling" className="btn btn-accent">Build Choice Order</Link>
           </div>
         </div>
       </div>
@@ -114,28 +103,50 @@ export default function Engineering() {
 
         {/* Colleges */}
         <section id="colleges" className="eng-section">
-          <h2><FaUniversity /> {c('colleges_title','Engineering Colleges in Tamil Nadu')}</h2>
+          <h2><FaUniversity /> Engineering Colleges &amp; Course Cutoffs — 2025</h2>
           <div className="college-search">
             <FaSearch />
             <input
               type="text"
-              placeholder="Search by college name, code or district..."
+              placeholder="Search college, code, pincode, district or course..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
           </div>
-          <p className="college-count">Showing <strong>{filtered.length}</strong> autonomous engineering colleges</p>
+          <div className="college-filters">
+            <select value={district} onChange={e => setDistrict(e.target.value)}><option value="">All districts</option>{districts.map(item => <option key={item}>{item}</option>)}</select>
+            <select value={course} onChange={e => setCourse(e.target.value)}><option value="">All courses</option>{courses.map(item => <option key={item}>{item}</option>)}</select>
+            <select value={category} onChange={e => setCategory(e.target.value)}>{categories.map(item => <option key={item}>{item} cutoff</option>)}</select>
+            <input type="number" min="0" max="200" step="0.5" placeholder="Your cutoff" value={filterCutoff} onChange={e => setFilterCutoff(e.target.value)} />
+          </div>
+          <div className="college-list-actions"><p className="college-count">Showing <strong>{filtered.length.toLocaleString()}</strong> course choices. {filterCutoff && `Eligible at ${filterCutoff} or below for ${category}.`}</p><Link to="/engineering/choice-filling" className="choice-fill-link">Choose &amp; order colleges →</Link></div>
           <div className="college-grid">
-            {filtered.map(col => (
-              <div key={col.code} className="college-card card">
-                <div className="college-code">{col.code}</div>
+            {filtered.slice(0, 120).map(col => (
+              <div key={col.id} className="college-card card">
+                <div className="college-card-header">
+                  <div className="college-code">{col.collegeCode}</div>
+                  <Link to={`/engineering/choice-filling?add=${encodeURIComponent(col.id)}`} className="add-choice-btn">+ Add</Link>
+                </div>
                 <div className="college-info">
-                  <h4>{col.name}</h4>
-                  <p>📍 {col.district}</p>
+                  <h4>{col.collegeName}</h4>
+                  <p className="college-course">{col.name}</p>
+                  <p className="college-location">📍 {col.district}{col.pincode && ` · ${col.pincode}`}</p>
+                  <div className="cutoff-grid">
+                    {categories.map(cat => {
+                      const val = col.cutoffs[cat];
+                      return (
+                        <div key={cat} className={`cutoff-cell ${cat === category ? 'cutoff-cell--active' : ''} ${val == null ? 'cutoff-cell--na' : ''}`}>
+                          <span className="cutoff-cat">{cat}</span>
+                          <span className="cutoff-val">{val ?? '—'}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+          {filtered.length > 120 && <p className="catalogue-limit">Showing the first 120 matches. Narrow the filters or use the choice-filling page to search all results.</p>}
         </section>
 
         {/* PDFs */}

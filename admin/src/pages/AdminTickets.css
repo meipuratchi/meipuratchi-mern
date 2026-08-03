@@ -1,0 +1,207 @@
+/* AdminTickets.css */
+.at-container { padding: 0; }
+
+/* Subtabs */
+.at-subtabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #eef1f6;
+}
+.at-subtab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7f9e;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.at-subtab.active { color: #192441; border-bottom-color: #192441; }
+.at-subtab:hover:not(.active) { color: #192441; }
+
+/* Form */
+.at-form {
+  background: #f8fafc;
+  border: 1px solid #dde3ec;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.at-form-title { font-size: 15px; font-weight: 700; color: #192441; margin: 0 0 16px; }
+.at-form-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.at-form-field { flex: 1 1 180px; display: flex; flex-direction: column; gap: 5px; }
+.at-form-field label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: #6b7f9e;
+}
+.at-form-field input,
+.at-form-field select,
+.at-form-field textarea {
+  padding: 9px 12px; border: 1px solid #d0d8e2; border-radius: 7px;
+  font-size: 13px; font-family: inherit; background: #fff; color: #1e2a3a;
+  outline: none; transition: border-color 0.2s; width: 100%; box-sizing: border-box;
+}
+.at-form-field input:focus,
+.at-form-field select:focus,
+.at-form-field textarea:focus { border-color: #192441; }
+.at-form-field textarea { resize: vertical; }
+
+/* Buttons */
+.at-btn-primary {
+  background: #192441; color: #fff; border: none; padding: 10px 20px;
+  border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.2s; margin-top: 8px; font-family: inherit;
+}
+.at-btn-primary:hover { background: #0f1a30; }
+.at-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.at-btn-ghost {
+  background: #fff; color: #192441; border: 1.5px solid #d0d8e2;
+  padding: 9px 18px; border-radius: 7px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.at-btn-ghost:hover { border-color: #192441; }
+
+.at-btn-sm {
+  padding: 6px 12px; background: #eef1f6; border: 1px solid #d0d8e2;
+  border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s; font-family: inherit;
+}
+.at-btn-sm:hover { background: #dde3ec; }
+.at-btn-sm.danger { color: #dc3545; }
+.at-btn-sm.danger:hover { background: #fde8ea; border-color: #dc3545; }
+
+.at-btn-icon {
+  background: none; border: none; cursor: pointer; font-size: 15px;
+  padding: 4px 6px; border-radius: 4px;
+}
+.at-btn-icon:hover { background: #eef1f6; }
+.at-btn-icon.danger:hover { background: #fde8ea; }
+
+/* Filters */
+.at-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.at-search {
+  flex: 1 1 220px; padding: 9px 12px; border: 1px solid #d0d8e2;
+  border-radius: 7px; font-size: 13px; font-family: inherit;
+  background: #fff; outline: none;
+}
+.at-search:focus { border-color: #192441; }
+.at-select {
+  padding: 9px 12px; border: 1px solid #d0d8e2; border-radius: 7px;
+  font-size: 13px; font-family: inherit; background: #fff; outline: none;
+}
+
+/* Tickets list */
+.at-tickets-list { display: flex; flex-direction: column; gap: 10px; }
+
+.at-ticket-card {
+  background: #fff; border: 1px solid #dde3ec; border-radius: 10px;
+  padding: 14px 18px; transition: box-shadow 0.2s;
+}
+.at-ticket-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+
+.at-ticket-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px; gap: 8px;
+}
+.at-ticket-meta-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.at-ticket-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.at-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.at-type-tag {
+  font-size: 11px; color: #6b7f9e; background: #eef1f6;
+  padding: 3px 8px; border-radius: 4px;
+}
+
+.at-ticket-title { font-size: 14px; font-weight: 600; color: #192441; margin: 0 0 6px; }
+.at-ticket-desc  { font-size: 13px; color: #4a5a73; margin: 0 0 10px; line-height: 1.5; }
+.at-ticket-footer {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  font-size: 12px; color: #6b7f9e; align-items: center;
+}
+.at-ticket-footer em { color: #9aaabf; }
+.at-ticket-date { margin-left: auto; }
+.at-ticket-note {
+  font-size: 12px; color: #4a5a73; background: #fffde7;
+  border-left: 3px solid #f5a623; padding: 6px 10px;
+  border-radius: 0 5px 5px 0; margin-top: 8px;
+}
+
+/* Employees */
+.at-emp-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+
+.at-emp-card {
+  background: #fff; border: 1px solid #dde3ec; border-radius: 10px;
+  padding: 14px 18px; display: flex; justify-content: space-between;
+  align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.at-emp-card.inactive { opacity: 0.55; }
+.at-emp-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.at-emp-avatar {
+  width: 40px; height: 40px; background: #192441; color: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; flex-shrink: 0;
+}
+.at-emp-name { font-size: 14px; font-weight: 600; color: #192441; margin: 0 0 2px; }
+.at-emp-inactive-tag { font-size: 11px; color: #dc3545; font-weight: 400; }
+.at-emp-meta { font-size: 12px; color: #6b7f9e; margin: 0; }
+.at-emp-last { font-size: 11px; color: #9aaabf; margin: 2px 0 0; }
+.at-emp-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+
+/* Key modal */
+.at-key-modal { max-width: 480px !important; }
+.at-key-box {
+  background: #f4f6f9; border-radius: 8px; padding: 16px; margin: 16px 0;
+  border: 1px solid #dde3ec;
+}
+.at-key-row {
+  display: flex; gap: 12px; align-items: center; margin-bottom: 8px; font-size: 13px;
+}
+.at-key-row:last-child { margin-bottom: 0; }
+.at-key-row span { color: #6b7f9e; min-width: 80px; font-weight: 600; }
+.at-key-row code {
+  background: #fff; padding: 4px 10px; border-radius: 5px;
+  border: 1px solid #d0d8e2; font-family: monospace; font-size: 13px; color: #192441;
+}
+.at-key-value { color: #28a745 !important; font-weight: 700; font-size: 16px !important; letter-spacing: 0.1em; }
+.at-key-note { font-size: 12px; color: #e09520; margin: 0; }
+
+/* Modal */
+.at-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000; padding: 20px;
+}
+.at-modal {
+  background: #fff; border-radius: 12px; padding: 24px;
+  width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+}
+.at-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.at-modal-header h3 { margin: 0; font-size: 16px; color: #192441; }
+.at-modal-close {
+  background: none; border: none; font-size: 18px; cursor: pointer;
+  color: #6b7f9e; padding: 4px 8px; border-radius: 4px;
+}
+.at-modal-close:hover { background: #eef1f6; }
+.at-modal-sub { font-size: 13px; color: #4a5a73; margin: 0 0 16px; }
+.at-modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+
+/* Misc */
+.at-loading { color: #6b7f9e; font-size: 14px; padding: 16px 0; }
+.at-empty   { color: #9aaabf; font-size: 14px; padding: 16px 0; }
+.at-divider { border: none; border-top: 1px solid #eef1f6; margin: 24px 0; }
+.at-section-title { font-size: 15px; font-weight: 700; color: #192441; margin: 0 0 16px; }
+
+@media (max-width: 600px) {
+  .at-emp-card { flex-direction: column; align-items: flex-start; }
+  .at-ticket-top { flex-direction: column; align-items: flex-start; }
+  .at-form-field { flex: 1 1 100%; }
+}

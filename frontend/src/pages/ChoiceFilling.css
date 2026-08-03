@@ -1,0 +1,521 @@
+/* ======================================================
+   ChoiceFilling.css  —  TNEA 2025 Choice Filling Page
+   ====================================================== */
+
+/* ── Page Shell ── */
+.cf-page {
+  min-height: 100vh;
+  background: #f2f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding-top: 70px; /* navbar height */
+}
+
+/* ── Header ── */
+.cf-header {
+  background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+  padding: 20px 0;
+  position: sticky;
+  top: 70px;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.cf-header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cf-title {
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 3px;
+}
+.cf-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+}
+.cf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cf-back-link {
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.cf-back-link:hover { color: #fff; }
+.cf-pdf-btn {
+  background: #e5a100;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.cf-pdf-btn:hover { background: #c78c00; }
+.cf-pdf-btn--disabled,
+.cf-pdf-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Body: two-column layout ── */
+.cf-body {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Panel heads ── */
+.cf-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 8px;
+}
+.cf-panel-head h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #16213e;
+  margin: 0;
+}
+.cf-result-count {
+  font-size: 12px;
+  color: #6b7f9e;
+  background: #eef1f6;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Search Panel ── */
+.cf-search-panel {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dde3ec;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 18px;
+  min-width: 0;
+}
+
+/* Filters */
+.cf-filters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+.cf-input {
+  padding: 9px 13px;
+  border: 1px solid #d0d8e2;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fff;
+  color: #1e2a3a;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.cf-input:focus { border-color: #0f3460; }
+.cf-input--full { width: 100%; }
+.cf-input--cutoff { width: 110px; flex-shrink: 0; }
+
+.cf-filter-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cf-select {
+  flex: 1 1 140px;
+  padding: 9px 12px;
+  border: 1px solid #d0d8e2;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fff;
+  color: #1e2a3a;
+  outline: none;
+  min-width: 0;
+  transition: border-color 0.2s;
+}
+.cf-select:focus { border-color: #0f3460; }
+
+.cf-category-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.cf-cat-btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #d0d8e2;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4a5a73;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.cf-cat-btn:hover { border-color: #0f3460; color: #0f3460; }
+.cf-cat-btn--active { background: #0f3460; color: #fff; border-color: #0f3460; }
+
+/* ── Search Results ── */
+.cf-results {
+  max-height: calc(100vh - 340px);
+  min-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eef1f6;
+  border-radius: 8px;
+}
+
+.cf-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #eef1f6;
+  transition: background 0.1s;
+}
+.cf-result-item:last-child { border-bottom: none; }
+.cf-result-item:hover { background: #f8fafc; }
+.cf-result-item--added { background: #f0fff4; }
+
+.cf-result-info { flex: 1; min-width: 0; }
+.cf-result-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.cf-result-code {
+  background: #eef3ff;
+  color: #0f3460;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.cf-result-district {
+  font-size: 11px;
+  color: #6b7f9e;
+}
+.cf-result-college {
+  font-size: 13px;
+  font-weight: 600;
+  color: #16213e;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cf-result-course {
+  font-size: 12px;
+  color: #28709f;
+  font-weight: 500;
+  margin: 0 0 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* All-caste cutoff pills in search results */
+.cf-result-cutoffs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.cf-cut-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 5px;
+  border-radius: 5px;
+  background: #f4f6f9;
+  border: 1px solid #eef1f6;
+  min-width: 30px;
+}
+.cf-cut-pill--hl {
+  background: #fff8e0;
+  border-color: #e5a100;
+}
+.cf-cut-pill--na .cf-cut-num { color: #bcc4d0; }
+.cf-cut-label {
+  font-size: 8px;
+  font-weight: 700;
+  color: #6b7f9e;
+  text-transform: uppercase;
+}
+.cf-cut-pill--hl .cf-cut-label { color: #b37000; }
+.cf-cut-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #1e2a3a;
+  font-variant-numeric: tabular-nums;
+}
+.cf-cut-pill--hl .cf-cut-num { color: #b37000; }
+
+/* Add button */
+.cf-add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #0f3460;
+  background: #fff;
+  color: #0f3460;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.15s;
+}
+.cf-add-btn:hover:not(:disabled) {
+  background: #0f3460;
+  color: #fff;
+}
+.cf-add-btn--added {
+  background: #e6f9ee;
+  border-color: #28a745;
+  color: #28a745;
+  cursor: default;
+  font-size: 16px;
+}
+
+.cf-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: #9aaabf;
+  font-size: 13px;
+}
+.cf-limit-note {
+  text-align: center;
+  font-size: 11px;
+  color: #9aaabf;
+  padding: 10px;
+  border-top: 1px solid #eef1f6;
+}
+
+/* ── Order Panel ── */
+.cf-order-panel {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dde3ec;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 18px;
+  position: sticky;
+  top: 130px;
+  max-height: calc(100vh - 150px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cf-order-sub {
+  font-size: 12px;
+  color: #6b7f9e;
+  display: block;
+  margin-top: 2px;
+}
+.cf-order-head-actions { display: flex; gap: 8px; align-items: center; }
+.cf-clear-btn {
+  background: none;
+  border: 1.5px solid #e0313a;
+  color: #e0313a;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.cf-clear-btn:hover { background: #e0313a; color: #fff; }
+
+.cf-drag-hint {
+  font-size: 11px;
+  color: #9aaabf;
+  margin: 0 0 10px;
+}
+
+.cf-order-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 2px;
+}
+
+.cf-order-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #dde3ec;
+  border-radius: 8px;
+  background: #f9fbfd;
+  cursor: grab;
+  transition: box-shadow 0.15s, background 0.15s;
+  user-select: none;
+}
+.cf-order-item:active { cursor: grabbing; }
+.cf-order-item:hover { background: #f0f4ff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+.cf-order-num {
+  min-width: 26px;
+  height: 26px;
+  background: #0f3460;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cf-order-info { flex: 1; min-width: 0; }
+.cf-order-college {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16213e;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cf-order-course {
+  font-size: 11px;
+  color: #28709f;
+  font-weight: 500;
+  margin: 0 0 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cf-order-meta {
+  font-size: 10px;
+  color: #9aaabf;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-order-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.cf-ctrl-btn {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #d0d8e2;
+  border-radius: 4px;
+  background: #fff;
+  color: #4a5a73;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+}
+.cf-ctrl-btn:hover:not(:disabled) { background: #eef1f6; border-color: #0f3460; color: #0f3460; }
+.cf-ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.cf-ctrl-btn--remove { color: #e0313a; border-color: #e0313a; }
+.cf-ctrl-btn--remove:hover:not(:disabled) { background: #fde8ea; }
+
+/* PDF button at bottom of order panel */
+.cf-pdf-btn-bottom {
+  margin-top: 12px;
+  width: 100%;
+  background: #e5a100;
+  color: #fff;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.cf-pdf-btn-bottom:hover { background: #c78c00; }
+.cf-pdf-btn-bottom:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Empty state */
+.cf-order-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  color: #6b7f9e;
+  border: 1px dashed #d0d8e2;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.cf-order-empty-icon { font-size: 36px; margin-bottom: 12px; }
+.cf-order-empty p { font-size: 13px; margin: 0 0 6px; line-height: 1.5; }
+.cf-order-empty-hint { font-size: 11px; color: #9aaabf; }
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+  .cf-body { grid-template-columns: 1fr; }
+  .cf-order-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .cf-order-list { max-height: 400px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .cf-page { padding-top: 60px; }
+  .cf-header { top: 60px; }
+  .cf-header-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .cf-header-actions { width: 100%; justify-content: space-between; }
+  .cf-body { padding: 12px; gap: 14px; }
+  .cf-search-panel, .cf-order-panel { padding: 14px; border-radius: 10px; }
+  .cf-results { max-height: 60vh; }
+  .cf-filter-row { flex-wrap: wrap; }
+  .cf-input--cutoff { width: 100%; }
+  .cf-category-row { gap: 4px; }
+  .cf-cat-btn { padding: 5px 8px; font-size: 10px; }
+  .cf-result-item { gap: 8px; padding: 10px 12px; }
+  /* On mobile, show cutoff pills in a scrollable row */
+  .cf-result-cutoffs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+  .cf-cut-pill { min-width: 28px; }
+  .cf-order-item { gap: 8px; padding: 8px 10px; }
+  .cf-order-controls { flex-direction: row; }
+  .cf-ctrl-btn { width: 28px; height: 28px; font-size: 11px; }
+}
