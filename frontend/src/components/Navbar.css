@@ -17,6 +17,15 @@
   backdrop-filter: blur(10px);
 }
 
+/* Force solid navbar on pages with light backgrounds */
+.navbar.navbar--solid,
+.navbar.navbar--solid.scrolled {
+  background: rgba(25, 36, 65, 0.97);
+  padding: 10px 0;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+}
+
 .navbar-inner {
   display: flex;
   align-items: center;

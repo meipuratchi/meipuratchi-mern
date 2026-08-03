@@ -41,9 +41,13 @@ export default function Navbar() {
     navigate('/');
   };
 
+  // Pages where navbar should always be solid (light/white background)
+  const solidPages = ['/engineering/choice-filling', '/engineering', '/our-team', '/volunteer', '/contact', '/registration', '/paramedical', '/tickets'];
+  const isSolid = solidPages.some(p => location.pathname.startsWith(p));
+
   return (
     <motion.nav 
-      className={`navbar ${scrolled ? 'scrolled' : ''}`}
+      className={`navbar ${scrolled ? 'scrolled' : ''} ${isSolid ? 'navbar--solid' : ''}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
