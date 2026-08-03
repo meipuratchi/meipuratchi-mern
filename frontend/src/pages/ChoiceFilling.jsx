@@ -21,20 +21,18 @@ const districts = [...new Set(colleges.map(c => c.district))].sort();
 const courseNames = [...new Set(allChoices.map(c => c.name))].sort();
 
 // ── PDF Generation ───────────────────────────────────────────
-async function generatePDF(order) {
+async function generatePDF(order, category) {
   if (!order.length) return;
 
   const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, margin = 14;
 
   // ── Header ──
-  // Try to load logo as circle
   try {
     await new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
-        // Draw circular clip via canvas
         const canvas = document.createElement('canvas');
         canvas.width = 120; canvas.height = 120;
         const ctx = canvas.getContext('2d');
@@ -51,7 +49,6 @@ async function generatePDF(order) {
       img.src = '/mei_logo.png';
     });
   } catch {
-    // Fallback: draw a filled circle with text
     pdf.setFillColor(26, 58, 110);
     pdf.circle(margin + 9, 17, 9, 'F');
     pdf.setTextColor(255, 255, 255);
@@ -69,7 +66,7 @@ async function generatePDF(order) {
   pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(9);
   pdf.setTextColor(80, 100, 130);
-  pdf.text('Tamil Nadu Engineering Counselling 2025 — Sample Choice Filling Order', margin + 22, 20);
+  pdf.text(`Tamil Nadu Engineering Counselling 2025 — Choice Filling Order (${category} Category)`, margin + 22, 20);
 
   // Gold line
   pdf.setDrawColor(229, 161, 0);
@@ -83,12 +80,13 @@ async function generatePDF(order) {
   pdf.text(`Total Choices: ${order.length}`, W - margin - 30, 32);
 
   // ── Table ──
+  // Columns: #(10), Code(18), College Name(80), Course(52), Cutoff(22)
   const tableTop = 37;
-  const colWidths = [13, 22, 87, 55]; // #, Code, College Name, Course
+  const colWidths = [10, 18, 80, 52, 22];
   const colX = [margin];
   colWidths.slice(0, -1).forEach((w, i) => colX.push(colX[i] + w));
   const rowH = 8;
-  const headers = ['#', 'Code', 'College Name', 'Course'];
+  const headers = ['#', 'Code', 'College Name', 'Course', `${category} 2025`];
 
   // Header row
   pdf.setFillColor(26, 58, 110);
@@ -114,13 +112,11 @@ async function generatePDF(order) {
   };
 
   order.forEach((item, idx) => {
-    // New page if needed (leave 14mm for footer)
     if (y > 276) {
       addPageFooter();
       pdf.addPage();
       pageNum++;
       y = 18;
-      // Repeat header on new page
       pdf.setFillColor(26, 58, 110);
       pdf.rect(margin, y - rowH, W - 2 * margin, rowH, 'F');
       pdf.setTextColor(255, 255, 255);
@@ -129,44 +125,50 @@ async function generatePDF(order) {
       headers.forEach((h, i) => pdf.text(h, colX[i] + 2, y - 2.5));
     }
 
-    // Alternating row background
     if (idx % 2 === 0) {
       pdf.setFillColor(245, 248, 252);
       pdf.rect(margin, y, W - 2 * margin, rowH, 'F');
     }
 
-    // Row border
     pdf.setDrawColor(220, 227, 235);
     pdf.setLineWidth(0.2);
     pdf.rect(margin, y, W - 2 * margin, rowH);
 
-    // Cell text
+    // # 
     pdf.setTextColor(30, 42, 58);
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(8);
     pdf.text(String(idx + 1), colX[0] + 2, y + 5.5);
 
+    // Code
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(26, 58, 110);
     pdf.text(item.collegeCode, colX[1] + 2, y + 5.5);
 
-    // College name — truncate if too long
+    // College name
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(30, 42, 58);
     const nameTrunc = pdf.splitTextToSize(item.shortName || item.collegeName, colWidths[2] - 4)[0];
     pdf.text(nameTrunc, colX[2] + 2, y + 5.5);
 
-    // Course — truncate
+    // Course
     pdf.setFontSize(7.5);
     pdf.setTextColor(40, 100, 160);
     const courseTrunc = pdf.splitTextToSize(item.name, colWidths[3] - 4)[0];
     pdf.text(courseTrunc, colX[3] + 2, y + 5.5);
 
+    // Cutoff for selected category
+    const cutoffVal = item.cutoffs?.[category];
+    pdf.setFontSize(8);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(cutoffVal ? 26, 58, 110 : 180, 180, 180);
+    pdf.text(cutoffVal != null ? String(cutoffVal) : '—', colX[4] + 2, y + 5.5);
+
     y += rowH;
   });
 
   addPageFooter();
-  pdf.save('meipuratchi-tnea-2025-choice-order.pdf');
+  pdf.save(`meipuratchi-tnea-2025-${category.toLowerCase()}-choices.pdf`);
 }
 
 // ── Search Result Item ───────────────────────────────────────
@@ -205,7 +207,8 @@ function SearchItem({ item, isAdded, onAdd, filterCategory }) {
 }
 
 // ── Choice Order Item ────────────────────────────────────────
-function OrderItem({ item, index, total, onMove, onRemove, onDragStart, onDragOver, onDrop }) {
+function OrderItem({ item, index, total, category, onMove, onRemove, onDragStart, onDragOver, onDrop }) {
+  const cutoffVal = item.cutoffs?.[category];
   return (
     <div
       className="cf-order-item"
@@ -219,6 +222,10 @@ function OrderItem({ item, index, total, onMove, onRemove, onDragStart, onDragOv
         <p className="cf-order-college">{item.shortName || item.collegeName}</p>
         <p className="cf-order-course">{item.name}</p>
         <p className="cf-order-meta">{item.collegeCode} · {item.district}</p>
+      </div>
+      <div className="cf-order-cutoff">
+        <span className="cf-order-cutoff-label">{category}</span>
+        <span className="cf-order-cutoff-val">{cutoffVal != null ? cutoffVal : '—'}</span>
       </div>
       <div className="cf-order-controls">
         <button className="cf-ctrl-btn" onClick={() => onMove(index, index - 1)} disabled={index === 0} title="Move up">▲</button>
@@ -294,7 +301,7 @@ export default function ChoiceFilling() {
 
   const handlePDF = async () => {
     setGenerating(true);
-    try { await generatePDF(order); }
+    try { await generatePDF(order, category); }
     finally { setGenerating(false); }
   };
 
@@ -420,6 +427,7 @@ export default function ChoiceFilling() {
                     item={item}
                     index={idx}
                     total={order.length}
+                    category={category}
                     onMove={move}
                     onRemove={remove}
                     onDragStart={(i) => setDragFrom(i)}

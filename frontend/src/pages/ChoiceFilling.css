@@ -381,7 +381,7 @@
 
 .cf-order-item {
   display: grid;
-  grid-template-columns: 26px 1fr auto;
+  grid-template-columns: 26px 1fr auto auto;
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
@@ -438,6 +438,33 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Cutoff badge in order list */
+.cf-order-cutoff {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff8e0;
+  border: 1.5px solid #e5a100;
+  border-radius: 6px;
+  padding: 4px 7px;
+  flex-shrink: 0;
+  min-width: 38px;
+}
+.cf-order-cutoff-label {
+  font-size: 8px;
+  font-weight: 700;
+  color: #b37000;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.cf-order-cutoff-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: #b37000;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
 }
 
 .cf-order-controls {
@@ -551,7 +578,9 @@
   .cf-add-btn { width: 34px; height: 34px; font-size: 18px; }
 
   /* Order item */
-  .cf-order-item { padding: 8px 10px; gap: 6px; }
+  .cf-order-item { padding: 8px 10px; gap: 5px; }
+  .cf-order-cutoff { min-width: 34px; padding: 3px 5px; }
+  .cf-order-cutoff-val { font-size: 11px; }
   .cf-order-controls { flex-direction: row; gap: 4px; }
   .cf-ctrl-btn { width: 28px; height: 28px; font-size: 11px; }
 }
