@@ -253,9 +253,35 @@ function OrderItem({ item, index, total, category, onMove, onRemove, onDragStart
 }
 
 // ── Main Component ───────────────────────────────────────────
+const STORAGE_KEY = 'tnea2025-choice-order';
+
+// Encode order to a compact URL-safe string (just the IDs)
+function encodeOrder(order) {
+  return btoa(order.map(i => i.id).join(','));
+}
+
+// Decode order IDs from URL param and resolve to full items
+function decodeOrder(encoded) {
+  try {
+    const ids = atob(encoded).split(',').filter(Boolean);
+    return ids.map(id => allChoices.find(c => c.id === id)).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 export default function ChoiceFilling() {
-  const [params] = useSearchParams();
-  const [order, setOrder]       = useState([]);
+  const [params, setParams] = useSearchParams();
+  const [order, setOrder]       = useState(() => {
+    // 1. Try loading from URL share param first
+    const shared = params.get('order');
+    if (shared) return decodeOrder(shared);
+    // 2. Fall back to localStorage
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? decodeOrder(saved) : [];
+    } catch { return []; }
+  });
   const [search, setSearch]     = useState('');
   const [district, setDistrict] = useState('');
   const [course, setCourse]     = useState('');
@@ -263,14 +289,42 @@ export default function ChoiceFilling() {
   const [cutoff, setCutoff]     = useState('');
   const [dragFrom, setDragFrom] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [shareToast, setShareToast] = useState(''); // 'copied' | 'error' | ''
 
-  // Auto-add from URL param
+  // Persist to localStorage whenever order changes
+  useEffect(() => {
+    try {
+      if (order.length > 0) {
+        localStorage.setItem(STORAGE_KEY, encodeOrder(order));
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {}
+  }, [order]);
+
+  // Auto-add single item from URL ?add= param
   useEffect(() => {
     const id = params.get('add');
     if (!id) return;
     const item = allChoices.find(c => c.id === id);
     if (item) setOrder(prev => prev.some(c => c.id === item.id) ? prev : [...prev, item]);
   }, [params]);
+
+  // Share handler — build URL with encoded order and copy to clipboard
+  const handleShare = useCallback(() => {
+    if (!order.length) return;
+    const encoded = encodeOrder(order);
+    const url = `${window.location.origin}${window.location.pathname}?order=${encoded}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        setShareToast('✅ Link copied! Share it with anyone.');
+        setTimeout(() => setShareToast(''), 3000);
+      })
+      .catch(() => {
+        setShareToast('❌ Could not copy. Please copy the URL manually.');
+        setTimeout(() => setShareToast(''), 4000);
+      });
+  }, [order]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -423,11 +477,18 @@ export default function ChoiceFilling() {
               <span className="cf-order-sub">{order.length} college{order.length !== 1 ? 's' : ''} selected</span>
             </div>
             <div className="cf-order-head-actions">
-              {order.length > 0 && (
+              {order.length > 0 && (<>
+                <button className="cf-share-btn" onClick={handleShare} title="Share this order">
+                  🔗 Share
+                </button>
                 <button className="cf-clear-btn" onClick={() => setOrder([])}>Clear all</button>
-              )}
+              </>)}
             </div>
           </div>
+
+          {shareToast && (
+            <div className="cf-share-toast">{shareToast}</div>
+          )}
 
           {order.length === 0 ? (
             <div className="cf-order-empty">
