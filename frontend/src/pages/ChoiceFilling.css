@@ -511,10 +511,35 @@
   .cf-input--cutoff { width: 100%; }
   .cf-category-row { gap: 4px; }
   .cf-cat-btn { padding: 5px 8px; font-size: 10px; }
-  .cf-result-item { gap: 8px; padding: 10px 12px; }
+
+  /* Result item: stack info above, add button stays visible */
+  .cf-result-item {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+    align-items: flex-start;
+  }
+  .cf-result-info {
+    width: calc(100% - 48px); /* leave space for the add button */
+    min-width: 0;
+  }
   /* On mobile, show cutoff pills in a scrollable row */
-  .cf-result-cutoffs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
-  .cf-cut-pill { min-width: 28px; }
+  .cf-result-cutoffs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cf-cut-pill { min-width: 28px; flex-shrink: 0; }
+
+  /* Keep add button in top-right, always visible */
+  .cf-add-btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+
   .cf-order-item { gap: 8px; padding: 8px 10px; }
   .cf-order-controls { flex-direction: row; }
   .cf-ctrl-btn { width: 28px; height: 28px; font-size: 11px; }
