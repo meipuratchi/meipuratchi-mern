@@ -188,18 +188,20 @@
 }
 
 .cf-result-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 44px;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   padding: 12px 14px;
   border-bottom: 1px solid #eef1f6;
   transition: background 0.1s;
+  overflow: hidden;
 }
 .cf-result-item:last-child { border-bottom: none; }
 .cf-result-item:hover { background: #f8fafc; }
 .cf-result-item--added { background: #f0fff4; }
 
-.cf-result-info { flex: 1; min-width: 0; }
+.cf-result-info { min-width: 0; overflow: hidden; }
 .cf-result-top {
   display: flex;
   align-items: center;
@@ -511,18 +513,7 @@
   .cf-input--cutoff { width: 100%; }
   .cf-category-row { gap: 4px; }
   .cf-cat-btn { padding: 5px 8px; font-size: 10px; }
-
-  /* Result item: stack info above, add button stays visible */
-  .cf-result-item {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px 12px;
-    align-items: flex-start;
-  }
-  .cf-result-info {
-    width: calc(100% - 48px); /* leave space for the add button */
-    min-width: 0;
-  }
+  .cf-result-item { padding: 10px 12px; }
   /* On mobile, show cutoff pills in a scrollable row */
   .cf-result-cutoffs {
     flex-wrap: nowrap;
@@ -531,15 +522,6 @@
     -webkit-overflow-scrolling: touch;
   }
   .cf-cut-pill { min-width: 28px; flex-shrink: 0; }
-
-  /* Keep add button in top-right, always visible */
-  .cf-add-btn {
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-    align-self: flex-start;
-  }
-
   .cf-order-item { gap: 8px; padding: 8px 10px; }
   .cf-order-controls { flex-direction: row; }
   .cf-ctrl-btn { width: 28px; height: 28px; font-size: 11px; }
