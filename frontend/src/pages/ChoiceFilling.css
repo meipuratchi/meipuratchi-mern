@@ -8,6 +8,8 @@
   background: #f2f5f9;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding-top: 70px; /* navbar height */
+  overflow-x: hidden; /* prevent horizontal scroll on mobile */
+  box-sizing: border-box;
 }
 
 /* ── Header ── */
@@ -81,6 +83,8 @@
   grid-template-columns: 1fr 420px;
   gap: 20px;
   align-items: start;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* ── Panel heads ── */
@@ -114,6 +118,8 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 18px;
   min-width: 0;
+  overflow: hidden; /* prevent blowing out container */
+  box-sizing: border-box;
 }
 
 /* Filters */
@@ -332,7 +338,9 @@
   max-height: calc(100vh - 150px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .cf-order-sub {
@@ -372,9 +380,10 @@
 }
 
 .cf-order-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 10px 12px;
   border: 1px solid #dde3ec;
   border-radius: 8px;
@@ -382,6 +391,9 @@
   cursor: grab;
   transition: box-shadow 0.15s, background 0.15s;
   user-select: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
 }
 .cf-order-item:active { cursor: grabbing; }
 .cf-order-item:hover { background: #f0f4ff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -400,7 +412,7 @@
   flex-shrink: 0;
 }
 
-.cf-order-info { flex: 1; min-width: 0; }
+.cf-order-info { min-width: 0; overflow: hidden; }
 .cf-order-college {
   font-size: 12px;
   font-weight: 600;
@@ -495,7 +507,8 @@
   .cf-order-panel {
     position: static;
     max-height: none;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
   .cf-order-list { max-height: 400px; }
 }
@@ -506,23 +519,39 @@
   .cf-header { top: 60px; }
   .cf-header-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
   .cf-header-actions { width: 100%; justify-content: space-between; }
-  .cf-body { padding: 12px; gap: 14px; }
-  .cf-search-panel, .cf-order-panel { padding: 14px; border-radius: 10px; }
-  .cf-results { max-height: 60vh; }
+
+  .cf-body { padding: 10px; gap: 12px; width: 100%; }
+
+  .cf-search-panel,
+  .cf-order-panel { padding: 12px; border-radius: 10px; }
+
+  .cf-results { max-height: 60vh; overflow-y: auto; overflow-x: hidden; }
+
   .cf-filter-row { flex-wrap: wrap; }
   .cf-input--cutoff { width: 100%; }
   .cf-category-row { gap: 4px; }
   .cf-cat-btn { padding: 5px 8px; font-size: 10px; }
-  .cf-result-item { padding: 10px 12px; }
-  /* On mobile, show cutoff pills in a scrollable row */
+
+  /* Search result card */
+  .cf-result-item { padding: 10px 10px; gap: 6px; }
+  .cf-result-college { font-size: 12px; }
+  .cf-result-course { font-size: 11px; }
+
+  /* Cutoff pills: horizontal scroll so they don't wrap and push layout */
   .cf-result-cutoffs {
     flex-wrap: nowrap;
     overflow-x: auto;
+    overflow-y: hidden;
     padding-bottom: 2px;
     -webkit-overflow-scrolling: touch;
   }
   .cf-cut-pill { min-width: 28px; flex-shrink: 0; }
-  .cf-order-item { gap: 8px; padding: 8px 10px; }
-  .cf-order-controls { flex-direction: row; }
+
+  /* Add button stays in its grid column */
+  .cf-add-btn { width: 34px; height: 34px; font-size: 18px; }
+
+  /* Order item */
+  .cf-order-item { padding: 8px 10px; gap: 6px; }
+  .cf-order-controls { flex-direction: row; gap: 4px; }
   .cf-ctrl-btn { width: 28px; height: 28px; font-size: 11px; }
 }
