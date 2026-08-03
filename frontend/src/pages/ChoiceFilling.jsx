@@ -161,7 +161,11 @@ async function generatePDF(order, category) {
     const cutoffVal = item.cutoffs?.[category];
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
-    pdf.setTextColor(cutoffVal ? 26, 58, 110 : 180, 180, 180);
+    if (cutoffVal != null) {
+      pdf.setTextColor(26, 58, 110);
+    } else {
+      pdf.setTextColor(180, 180, 180);
+    }
     pdf.text(cutoffVal != null ? String(cutoffVal) : '—', colX[4] + 2, y + 5.5);
 
     y += rowH;
