@@ -85,7 +85,7 @@ async function generatePDF(order, category) {
   const colWidths = [10, 18, 80, 52, 22];
   const colX = [margin];
   colWidths.slice(0, -1).forEach((w, i) => colX.push(colX[i] + w));
-  const rowH = 8;
+  const rowH = 12;
   const headers = ['#', 'Code', 'College Name', 'Course', `${category} 2025`];
 
   // Header row
@@ -95,7 +95,7 @@ async function generatePDF(order, category) {
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(8);
   headers.forEach((h, i) => {
-    pdf.text(h, colX[i] + 2, tableTop + 5.5);
+    pdf.text(h, colX[i] + 2, tableTop + 7.5);
   });
 
   let y = tableTop + rowH;
@@ -112,7 +112,7 @@ async function generatePDF(order, category) {
   };
 
   order.forEach((item, idx) => {
-    if (y > 276) {
+    if (y > 272) {
       addPageFooter();
       pdf.addPage();
       pageNum++;
@@ -122,7 +122,7 @@ async function generatePDF(order, category) {
       pdf.setTextColor(255, 255, 255);
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(8);
-      headers.forEach((h, i) => pdf.text(h, colX[i] + 2, y - 2.5));
+      headers.forEach((h, i) => pdf.text(h, colX[i] + 2, y - 4.5));
     }
 
     if (idx % 2 === 0) {
@@ -134,30 +134,37 @@ async function generatePDF(order, category) {
     pdf.setLineWidth(0.2);
     pdf.rect(margin, y, W - 2 * margin, rowH);
 
-    // # 
+    // #
     pdf.setTextColor(30, 42, 58);
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(8);
-    pdf.text(String(idx + 1), colX[0] + 2, y + 5.5);
+    pdf.text(String(idx + 1), colX[0] + 2, y + 5);
 
     // Code
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(26, 58, 110);
-    pdf.text(item.collegeCode, colX[1] + 2, y + 5.5);
+    pdf.text(item.collegeCode, colX[1] + 2, y + 5);
 
-    // College name
+    // College name (line 1) + district · pincode (line 2)
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(30, 42, 58);
+    pdf.setFontSize(7.5);
     const nameTrunc = pdf.splitTextToSize(item.shortName || item.collegeName, colWidths[2] - 4)[0];
-    pdf.text(nameTrunc, colX[2] + 2, y + 5.5);
+    pdf.text(nameTrunc, colX[2] + 2, y + 4.5);
+
+    const locationStr = [item.district, item.pincode].filter(Boolean).join(' · ');
+    pdf.setFontSize(6.5);
+    pdf.setTextColor(100, 120, 150);
+    pdf.text(locationStr, colX[2] + 2, y + 9.5);
 
     // Course
+    pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(7.5);
     pdf.setTextColor(40, 100, 160);
     const courseTrunc = pdf.splitTextToSize(item.name, colWidths[3] - 4)[0];
-    pdf.text(courseTrunc, colX[3] + 2, y + 5.5);
+    pdf.text(courseTrunc, colX[3] + 2, y + 5);
 
-    // Cutoff for selected category
+    // Cutoff
     const cutoffVal = item.cutoffs?.[category];
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
@@ -166,7 +173,7 @@ async function generatePDF(order, category) {
     } else {
       pdf.setTextColor(180, 180, 180);
     }
-    pdf.text(cutoffVal != null ? String(cutoffVal) : '—', colX[4] + 2, y + 5.5);
+    pdf.text(cutoffVal != null ? String(cutoffVal) : '—', colX[4] + 2, y + 5);
 
     y += rowH;
   });
@@ -225,8 +232,9 @@ function OrderItem({ item, index, total, category, onMove, onRemove, onDragStart
       <div className="cf-order-main">
         <div className="cf-order-info">
           <p className="cf-order-college">{item.shortName || item.collegeName}</p>
+          <p className="cf-order-location">{item.district}{item.pincode ? ` · ${item.pincode}` : ''}</p>
           <p className="cf-order-course">{item.name}</p>
-          <p className="cf-order-meta">{item.collegeCode} · {item.district}</p>
+          <p className="cf-order-meta">{item.collegeCode}</p>
         </div>
         <div className="cf-order-item-bottom">
           <div className="cf-order-cutoff">
