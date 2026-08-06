@@ -39,20 +39,48 @@ function Badge({ status }) {
   return <span className="badge-pill" style={{ color: s.color, background: s.bg }}>{status?.replace('_', ' ')}</span>;
 }
 
+// ── Authority persons with signatures ──────────────────────
+const AUTHORITIES = [
+  {
+    name: 'Sowmiya Dhasarathan',
+    designation: 'Co-Founder',
+    signature: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABkAAAAL8CAMAAACPlYmIAAADAFBMVEX///////3///v+/v///v/+///+//v///r+/vz+//38///+//r9/f3///j8/vv//fn9/fv//f/9/Pr8/fj9/P38/vn6+/b+//f//P///v38//3/+//9//P//vz8+/z6+vn5+/v++vb9/vn8+/j///X4+fX//PX/+/r8+PT//vr++/L9+////Pr//fz9/f/5///+/vUGFnv9//74+/8JHIf8/fMGFob++Pnz8fT19fX2+P75/f/39+/z9P769fMNIogLHHsDEHj7+P4LJ5T6//n5+/AFFpMED2wUJ4UCBU4GH5H8+O84TqMSInv49/ksPpsXKJACDYUSLZXs6/359Pvr8P7y8P0HFnEIH5vg6v4vRZ4gNI+NmMoUNakBBmkrP6cZNZv79O0fO6AFDlwoN5rj5vzv9/8BBF0cKXYOLp8JJ54YKJ3P0+zq9P5BWrJBT5QBCHdtfb+8xeWxt93d3O0kN6kfL5QVLohAUrRUZLLy+//U2O7Eze5IXqZzg8YSIZKUns8xSLqGkcrZ3vmsstXz9OxmdbceMKAUL6pTasNdcL0nPrU/R4bn5fA6SJozUsKhrdsRHW4ZPqzn6fYoRq0wULQ7VqU4SKvr7vQiL4RWYqMNF2GbpdhJVqTX5P64vt3d4vINKakoM3fGyOXz/v8WObb38OwcRbrj7v7LzeOgpcyJmNszPoxqfNAkO49Sa7NdaaRieMRncqpGYbXy7PO5wO6ntu1xerCmq84CBDrBwdfX1+OQntzr6upLYsXK1vstOIM4PnaosOR3gbaYncIwRZBAWsRQXbF0htLW2PlhbLG4uM7ByPPP3fzh4fqzu+hKVZccI2Lx7umLkbp6jMckSMpdcc1RXJnM0ffT0dxpbZn//f5eYpDIyNaGi7m1xvjh4eeZpuYRL7h5h7ssVNN7k9WAjdqrvfWCiMearu+/z/saPMVQVYfn5ONbeNuVlrZ8f6kHHaff3N4qL2ISF0yJoex2eJ1rhuOjo7xMbNo+YNmHiKl7lOiwr8RJTHaAbWvpO3wTAAAgAElEQVR42uzdT2hbhx3AcevJQpLlP4qU2EF1l0ySs9jZHBFPl9gdY1NgYOitg0B3GSSn5tBuMAihdB0+9BTYGOww2h7KMgYZbNDsUjoYo7TQ0sHaXHoog67deshtBIcc9mRJ9Z84sRRb0pP1+SiUEMfV83vS75v3nqQ3MgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMoZhUADOb83qHn9x/0654BGOSAxGJBEAgIgIAICICACAgAAgKAgAAgIAICICACAiAgAgIAAgIAAgIAACIiAAAgIgAAIiIAACIiAAAiIgAAgIAAc7oAEAgIwmEHoe0CSmdBmRPp9fRIAAREQAAQEAAEREAABERAAAREQAAF59ACO7SFqAREUAAEREAABObjFzWSKxaKAAAiIgAAIiIAACIiAALDfgATbRT0gOxfXFgboT0BiAx6QwBYGEBABARiggIzEgm236J8D2bG8tjBwYAORTlfotlvft+fe+ru8gIAQ0e3pVVeAgCAgAAgIAgIACAgAAgIwKAQEAAEBKCyBAFBSIHOyBuHhBqnZcOy7/tFOqv9uu2fbcqcvLqV6d4u5OchPARAO/yHBaOwNKgKBCAhCigAAhM1SCAgAiIAACIiAAKAQAACIiAAQEAAEBMBBARAAEBAAECcBAAAAgQAAfQAA/ZhIf4AAAAAIAAAAgIiAiP8AAICAACAAAgIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AGKWAMAjrtn7qqDwgFQtBJAZYc+Oz8BAAAAAAAAwN3ZegRg3mzHrQAAAABJRU5ErkJggg==',
+  },
+  {
+    name: 'Vinoth Kumar',
+    designation: 'Founder',
+    signature: null,
+  },
+  {
+    name: 'Team Meipuratchi',
+    designation: 'Management',
+    signature: null,
+  },
+];
+
 // ── Letter Generator ────────────────────────────────────────
 function LetterModal({ app, adminKey, onClose }) {
   const [type, setType]     = useState('offer');
+  const [signatoryIdx, setSignatoryIdx] = useState(0);
   const [form, setForm]     = useState({
     internshipStartDate: app.letterData?.internshipStartDate || '',
     internshipEndDate:   app.letterData?.internshipEndDate   || '',
     internshipDuration:  app.letterData?.internshipDuration  || '',
-    mentorName:          app.letterData?.mentorName          || 'Vinoth Kumar',
+    mentorName:          app.letterData?.mentorName          || AUTHORITIES[0].name,
   });
   const [saving, setSaving] = useState(false);
   const printRef = useRef();
 
   const set = e => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Sync mentorName when signatory changes
+  const handleSignatoryChange = (e) => {
+    const idx = parseInt(e.target.value, 10);
+    setSignatoryIdx(idx);
+    setForm(f => ({ ...f, mentorName: AUTHORITIES[idx].name }));
+  };
+
+  const selectedAuthority = AUTHORITIES[signatoryIdx];
   const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
   const saveAndMark = async () => {
@@ -79,10 +107,12 @@ function LetterModal({ app, adminKey, onClose }) {
   .letter-title { font-size: 1.05rem; font-weight: 700; text-align: center; text-decoration: underline; margin: 18px 0 20px; font-family: Poppins, sans-serif; }
   .letter-date { text-align: right; font-size: 0.86rem; margin-bottom: 18px; }
   .letter-body p { margin-bottom: 14px; line-height: 1.8; }
-  .letter-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-  .letter-sign { text-align: center; }
-  .letter-sign-line { width: 140px; border-bottom: 2px solid #192441; margin: 0 auto 6px; }
-  .letter-sign-name { font-size: 0.9rem; font-weight: 700; color: #192441; }
+  .letter-footer { margin-top: 48px; display: flex; justify-content: flex-start; align-items: flex-end; gap: 0; }
+  .letter-sign { text-align: left; }
+  .letter-sign-img { height: 64px; max-width: 180px; object-fit: contain; display: block; margin-bottom: 4px; }
+  .letter-sign-placeholder { height: 64px; width: 180px; display: block; margin-bottom: 4px; }
+  .letter-sign-name { font-size: 0.9rem; font-weight: 700; color: #192441; margin: 0; }
+  .letter-sign-title { font-size: 0.78rem; color: #4b5563; margin: 0; }
   @media print { @page { margin: 0; } body { padding: 20mm 25mm; } }
 </style></head><body>${content}</body></html>`);
     win.document.close();
@@ -103,8 +133,18 @@ function LetterModal({ app, adminKey, onClose }) {
           <button className={type === 'completion' ? 'active' : ''} onClick={() => setType('completion')}>🏆 Completion Letter</button>
         </div>
 
-        {type === 'completion' && (
-          <div className="letter-form-grid">
+        {/* Signatory selector — shown for both types */}
+        <div className="letter-form-grid">
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label>Authorized Signatory</label>
+            <select value={signatoryIdx} onChange={handleSignatoryChange} style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}>
+              {AUTHORITIES.map((a, i) => (
+                <option key={i} value={i}>{a.name} — {a.designation}</option>
+              ))}
+            </select>
+          </div>
+
+          {type === 'completion' && (<>
             <div className="form-group">
               <label>Start Date</label>
               <input name="internshipStartDate" value={form.internshipStartDate} onChange={set} placeholder="e.g. 1 June 2025" />
@@ -117,24 +157,15 @@ function LetterModal({ app, adminKey, onClose }) {
               <label>Duration</label>
               <input name="internshipDuration" value={form.internshipDuration} onChange={set} placeholder="e.g. 2 months" />
             </div>
+          </>)}
+
+          {type === 'offer' && (
             <div className="form-group">
-              <label>Mentor / Authorized Signatory</label>
-              <input name="mentorName" value={form.mentorName} onChange={set} placeholder="Mentor name" />
-            </div>
-          </div>
-        )}
-        {type === 'offer' && (
-          <div className="letter-form-grid">
-            <div className="form-group">
-              <label>Start Date</label>
+              <label>Joining Date</label>
               <input name="internshipStartDate" value={form.internshipStartDate} onChange={set} placeholder="e.g. 1 September 2025" />
             </div>
-            <div className="form-group">
-              <label>Authorized Signatory</label>
-              <input name="mentorName" value={form.mentorName} onChange={set} placeholder="Name for signature" />
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="letter-preview" ref={printRef}>
           <div className="letter-header">
@@ -170,11 +201,12 @@ function LetterModal({ app, adminKey, onClose }) {
           )}
           <div className="letter-footer">
             <div className="letter-sign">
-              <div className="letter-sign-line" />
-              <div className="letter-sign-name">{form.mentorName || 'Authorized Signatory'}</div>
-              <div className="letter-sign-title">Meipuratchi</div>
+              {selectedAuthority.signature
+                ? <img src={selectedAuthority.signature} alt="Signature" className="letter-sign-img" />
+                : <div className="letter-sign-placeholder" />}
+              <p className="letter-sign-name">{selectedAuthority.name}</p>
+              <p className="letter-sign-title">{selectedAuthority.designation}, Meipuratchi</p>
             </div>
-            <div className="letter-seal">🏛️</div>
           </div>
         </div>
 
