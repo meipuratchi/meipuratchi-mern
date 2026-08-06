@@ -75,6 +75,7 @@ function LetterModal({ app, adminKey, onClose }) {
   .letter-header { text-align: center; border-bottom: 3px double #192441; padding-bottom: 16px; margin-bottom: 24px; }
   .letter-org { font-size: 1.3rem; font-weight: 700; color: #192441; font-family: Poppins, sans-serif; }
   .letter-org-sub { font-size: 0.8rem; color: #6b7280; font-family: Poppins, sans-serif; }
+  .letter-logo { width: 72px; height: 72px; object-fit: cover; border-radius: 50%; border: 2px solid #192441; margin-bottom: 8px; }
   .letter-title { font-size: 1.05rem; font-weight: 700; text-align: center; text-decoration: underline; margin: 18px 0 20px; font-family: Poppins, sans-serif; }
   .letter-date { text-align: right; font-size: 0.86rem; margin-bottom: 18px; }
   .letter-body p { margin-bottom: 14px; line-height: 1.8; }

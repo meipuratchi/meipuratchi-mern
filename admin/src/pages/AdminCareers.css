@@ -111,7 +111,7 @@
   color: #1a1a1a; max-height: 70vh; overflow-y: auto;
 }
 .letter-header { text-align: center; margin-bottom: 24px; border-bottom: 3px double #192441; padding-bottom: 16px; }
-.letter-logo { width: 60px; height: 60px; margin-bottom: 8px; object-fit: contain; }
+.letter-logo { width: 72px; height: 72px; margin-bottom: 8px; object-fit: cover; border-radius: 50%; border: 2px solid #192441; }
 .letter-org { font-size: 1.3rem; font-weight: 700; color: #192441; font-family: 'Poppins', sans-serif; }
 .letter-org-sub { font-size: 0.8rem; color: #6b7280; font-family: 'Poppins', sans-serif; }
 .letter-title { font-size: 1.05rem; font-weight: 700; text-align: center; margin: 18px 0 20px; text-decoration: underline; text-underline-offset: 4px; font-family: 'Poppins', sans-serif; color: #192441; }
