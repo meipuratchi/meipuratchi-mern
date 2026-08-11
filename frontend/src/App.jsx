@@ -25,6 +25,7 @@ import TeamLogin from './pages/TeamLogin';
 import TeamDashboard from './pages/TeamDashboard';
 import UserDetail from './pages/UserDetail';
 import Tickets from './pages/Tickets';
+import MeiDocs from './pages/MeiDocs';
 import { initMobileScrollFix } from './utils/mobileScrollFix';
 
 function PublicLayout({ children }) {
@@ -71,6 +72,7 @@ function AnimatedRoutes() {
         <Route path="/volunteer" element={<PublicLayout><Volunteer /></PublicLayout>} />
         <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/tickets" element={<PublicLayout><Tickets /></PublicLayout>} />
+        <Route path="/meidocs" element={<PublicLayout><MeiDocs /></PublicLayout>} />
       </Routes>
     </AnimatePresence>
   );

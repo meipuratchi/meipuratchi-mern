@@ -12,6 +12,7 @@ const links = [
   { to: '/our-team', label: 'Our Team' },
   { to: '/volunteer', label: 'Volunteer' },
   { to: '/contact', label: 'Contact' },
+  { to: '/meidocs', label: '📚 meiDocs' },
 ];
 
 export default function Navbar() {
@@ -42,7 +43,7 @@ export default function Navbar() {
   };
 
   // Pages where navbar should always be solid (light/white background)
-  const solidPages = ['/engineering/choice-filling', '/engineering', '/our-team', '/volunteer', '/contact', '/registration', '/paramedical', '/tickets'];
+  const solidPages = ['/engineering/choice-filling', '/engineering', '/our-team', '/volunteer', '/contact', '/registration', '/paramedical', '/tickets', '/meidocs'];
   const isSolid = solidPages.some(p => location.pathname.startsWith(p));
 
   return (
