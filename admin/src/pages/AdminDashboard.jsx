@@ -8,12 +8,13 @@ import {
   FaGraduationCap, FaCheckCircle,
   FaKey, FaTimes, FaEye, FaEyeSlash,
   FaPaperPlane, FaUserShield, FaEdit, FaPalette,
-  FaPlus, FaLock, FaUserTie, FaChartLine, FaTicketAlt
+  FaPlus, FaLock, FaUserTie, FaChartLine, FaTicketAlt, FaIdBadge
 } from 'react-icons/fa';
 import './AdminDashboard.css';
 import AdminCMS     from './AdminCMS';
 import AdminCareers from './AdminCareers';
 import AdminTickets from './AdminTickets';
+import EmployeesTab from './EmployeesTab';
 
 import API_URL from '../config';
 const API = `${API_URL}/api/admin`;
@@ -611,12 +612,13 @@ export default function AdminDashboard() {
   };
 
   const tabs = [
-    { id: 'users',    label: 'All Users',    icon: <FaUsers /> },
-    { id: 'team',     label: 'Team Members', icon: <FaUserTie /> },
-    { id: 'contacts', label: 'Messages',     icon: <FaEnvelope /> },
-    { id: 'careers',  label: 'Careers',      icon: <FaGraduationCap /> },
-    { id: 'tickets',  label: 'Tickets',      icon: <FaTicketAlt /> },
-    { id: 'cms',      label: 'CMS / Pages',  icon: <FaPalette /> },
+    { id: 'users',     label: 'All Users',      icon: <FaUsers /> },
+    { id: 'team',      label: 'Team Members',   icon: <FaUserTie /> },
+    { id: 'employees', label: 'Employees',      icon: <FaIdBadge /> },
+    { id: 'contacts',  label: 'Messages',       icon: <FaEnvelope /> },
+    { id: 'careers',   label: 'Careers',        icon: <FaGraduationCap /> },
+    { id: 'tickets',   label: 'Tickets',        icon: <FaTicketAlt /> },
+    { id: 'cms',       label: 'CMS / Pages',    icon: <FaPalette /> },
   ];
 
   return (
@@ -664,12 +666,13 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {activeTab === 'users'    && <UsersTab    adminKey={adminKey} />}
-        {activeTab === 'team'     && <TeamMembersTab adminKey={adminKey} />}
-        {activeTab === 'contacts' && <ContactsTab adminKey={adminKey} />}
-        {activeTab === 'careers'  && <AdminCareers adminKey={adminKey} />}
-        {activeTab === 'tickets'  && <AdminTickets adminKey={adminKey} />}
-        {activeTab === 'cms'      && <AdminCMS    adminKey={adminKey} />}
+        {activeTab === 'users'     && <UsersTab       adminKey={adminKey} />}
+        {activeTab === 'team'      && <TeamMembersTab  adminKey={adminKey} />}
+        {activeTab === 'employees' && <EmployeesTab    adminKey={adminKey} />}
+        {activeTab === 'contacts'  && <ContactsTab     adminKey={adminKey} />}
+        {activeTab === 'careers'   && <AdminCareers    adminKey={adminKey} />}
+        {activeTab === 'tickets'   && <AdminTickets    adminKey={adminKey} />}
+        {activeTab === 'cms'       && <AdminCMS        adminKey={adminKey} />}
       </main>
 
       {showKeyModal && (

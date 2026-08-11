@@ -292,166 +292,11 @@ function TicketsList({ adminKey, employees }) {
   );
 }
 
-// ── Employees Tab ───────────────────────────────────────────
-function EmployeesTab({ adminKey }) {
-  const [employees, setEmployees] = useState([]);
-  const [loading, setLoading]     = useState(false);
-  const [form, setForm]           = useState({ username: '', displayName: '', role: 'employee', department: '' });
-  const [creating, setCreating]   = useState(false);
-  const [newKeyInfo, setNewKeyInfo] = useState(null); // { username, authKey }
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const r = await axios.get(E_API, { headers: h(adminKey) });
-      setEmployees(r.data.employees || []);
-    } catch { toast.error('Failed to load employees'); }
-    finally { setLoading(false); }
-  }, [adminKey]);
-
-  useEffect(() => { load(); }, [load]);
-
-  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
-
-  const create = async (e) => {
-    e.preventDefault();
-    if (!form.username || !form.displayName) return toast.error('Username and name required');
-    setCreating(true);
-    try {
-      const r = await axios.post(E_API, form, { headers: h(adminKey) });
-      setNewKeyInfo({ username: r.data.employee.username, authKey: r.data.authKey, displayName: r.data.employee.displayName });
-      setForm({ username: '', displayName: '', role: 'employee', department: '' });
-      toast.success('Employee created!');
-      load();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed');
-    } finally { setCreating(false); }
-  };
-
-  const regenerate = async (emp) => {
-    if (!confirm(`Regenerate key for @${emp.username}? The old key will stop working.`)) return;
-    try {
-      const r = await axios.patch(`${E_API}/${emp._id}/regenerate-key`, {}, { headers: h(adminKey) });
-      setNewKeyInfo({ username: emp.username, authKey: r.data.authKey, displayName: emp.displayName });
-      toast.success('New key generated');
-      load();
-    } catch { toast.error('Failed'); }
-  };
-
-  const toggleActive = async (emp) => {
-    try {
-      await axios.patch(`${E_API}/${emp._id}`, { isActive: !emp.isActive }, { headers: h(adminKey) });
-      toast.success(`Employee ${emp.isActive ? 'deactivated' : 'activated'}`);
-      load();
-    } catch { toast.error('Failed'); }
-  };
-
-  const del = async (emp) => {
-    if (!confirm(`Delete employee @${emp.username}?`)) return;
-    try {
-      await axios.delete(`${E_API}/${emp._id}`, { headers: h(adminKey) });
-      toast.success('Deleted');
-      load();
-    } catch { toast.error('Failed'); }
-  };
-
-  return (
-    <div>
-      {/* Key Display Modal */}
-      {newKeyInfo && (
-        <div className="at-modal-overlay" onClick={() => setNewKeyInfo(null)}>
-          <div className="at-modal at-key-modal" onClick={e => e.stopPropagation()}>
-            <h3>🔑 Employee Credentials</h3>
-            <p>Share these credentials with <strong>{newKeyInfo.displayName}</strong>:</p>
-            <div className="at-key-box">
-              <div className="at-key-row">
-                <span>Username:</span>
-                <code>{newKeyInfo.username}</code>
-              </div>
-              <div className="at-key-row">
-                <span>Auth Key:</span>
-                <code className="at-key-value">{newKeyInfo.authKey}</code>
-              </div>
-            </div>
-            <p className="at-key-note">⚠️ Copy and share this key now — it won't be shown again in plaintext.</p>
-            <div className="at-modal-actions">
-              <button className="at-btn-primary" onClick={() => {
-                navigator.clipboard.writeText(`Username: ${newKeyInfo.username}\nAuth Key: ${newKeyInfo.authKey}`);
-                toast.success('Copied to clipboard!');
-              }}>📋 Copy</button>
-              <button className="at-btn-ghost" onClick={() => setNewKeyInfo(null)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Create Form */}
-      <form className="at-form" onSubmit={create}>
-        <h3 className="at-form-title">➕ Add Employee</h3>
-        <div className="at-form-row">
-          <div className="at-form-field">
-            <label>Username *</label>
-            <input value={form.username} onChange={set('username')} placeholder="e.g. ravi.k" required />
-          </div>
-          <div className="at-form-field">
-            <label>Display Name *</label>
-            <input value={form.displayName} onChange={set('displayName')} placeholder="Full name" required />
-          </div>
-          <div className="at-form-field">
-            <label>Role</label>
-            <select value={form.role} onChange={set('role')}>
-              <option value="employee">Employee</option>
-              <option value="senior">Senior</option>
-              <option value="lead">Lead</option>
-            </select>
-          </div>
-          <div className="at-form-field">
-            <label>Department</label>
-            <input value={form.department} onChange={set('department')} placeholder="e.g. Counseling" />
-          </div>
-        </div>
-        <button type="submit" className="at-btn-primary" disabled={creating}>
-          {creating ? 'Creating...' : 'Create & Generate Key'}
-        </button>
-      </form>
-
-      {/* Employees List */}
-      {loading ? <p className="at-loading">Loading...</p> : (
-        <div className="at-emp-list">
-          {employees.length === 0 && <p className="at-empty">No employees yet.</p>}
-          {employees.map(emp => (
-            <div key={emp._id} className={`at-emp-card ${!emp.isActive ? 'inactive' : ''}`}>
-              <div className="at-emp-info">
-                <div className="at-emp-avatar">{emp.displayName[0].toUpperCase()}</div>
-                <div>
-                  <p className="at-emp-name">{emp.displayName}
-                    {!emp.isActive && <span className="at-emp-inactive-tag"> (inactive)</span>}
-                  </p>
-                  <p className="at-emp-meta">@{emp.username} · {emp.role}{emp.department ? ` · ${emp.department}` : ''}</p>
-                  {emp.lastLogin && <p className="at-emp-last">Last login: {new Date(emp.lastLogin).toLocaleDateString('en-IN')}</p>}
-                </div>
-              </div>
-              <div className="at-emp-actions">
-                <button className="at-btn-sm" onClick={() => regenerate(emp)}>🔄 Regen Key</button>
-                <button className="at-btn-sm" onClick={() => toggleActive(emp)}>
-                  {emp.isActive ? '⏸ Deactivate' : '▶ Activate'}
-                </button>
-                <button className="at-btn-sm danger" onClick={() => del(emp)}>🗑️</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Main Export ─────────────────────────────────────────────
 export default function AdminTickets({ adminKey }) {
-  const [subTab, setSubTab]       = useState('tickets');
   const [employees, setEmployees] = useState([]);
 
-  // Load employees for both sub-tabs
+  // Load employees for assignee dropdowns
   const loadEmployees = useCallback(async () => {
     try {
       const r = await axios.get(E_API, { headers: h(adminKey) });
@@ -463,27 +308,10 @@ export default function AdminTickets({ adminKey }) {
 
   return (
     <div className="at-container">
-      <div className="at-subtabs">
-        <button className={`at-subtab ${subTab === 'tickets' ? 'active' : ''}`} onClick={() => setSubTab('tickets')}>
-          🎫 Tickets
-        </button>
-        <button className={`at-subtab ${subTab === 'employees' ? 'active' : ''}`} onClick={() => setSubTab('employees')}>
-          👥 Employees
-        </button>
-      </div>
-
-      {subTab === 'tickets' && (
-        <div>
-          <CreateTicketForm adminKey={adminKey} employees={employees} onCreated={loadEmployees} />
-          <hr className="at-divider" />
-          <h3 className="at-section-title">All Tickets</h3>
-          <TicketsList adminKey={adminKey} employees={employees} />
-        </div>
-      )}
-
-      {subTab === 'employees' && (
-        <EmployeesTab adminKey={adminKey} />
-      )}
+      <CreateTicketForm adminKey={adminKey} employees={employees} onCreated={loadEmployees} />
+      <hr className="at-divider" />
+      <h3 className="at-section-title">All Tickets</h3>
+      <TicketsList adminKey={adminKey} employees={employees} />
     </div>
   );
 }
