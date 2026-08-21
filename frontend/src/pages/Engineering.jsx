@@ -64,6 +64,15 @@ export default function Engineering() {
       </div>
 
       <div className="container eng-content">
+        <section className="c-onboarding-callout">
+          <div>
+            <span className="c-onboarding-label">For new engineering students</span>
+            <h2>Start your C programming foundation</h2>
+            <p>Prepare for CSE, IT, AI/ML, AI&amp;DS, and ECE with a simple onboarding guide, compiler setup steps, and beginner resources.</p>
+          </div>
+          <Link to="/engineering/c-programming" className="btn btn-accent">Open C Foundations</Link>
+        </section>
+
         {/* Cutoff Info */}
         <section className="eng-section">
           <h2>{c('cutoff_title','How to Find Cutoff Marks')}</h2>
