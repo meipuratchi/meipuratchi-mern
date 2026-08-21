@@ -1,0 +1,51 @@
+.c-page { padding-top: 0; }
+.c-hero { background: linear-gradient(135deg, var(--primary) 0%, #275274 100%); color: white; padding: 142px 0 76px; position: relative; overflow: hidden; }
+.c-hero::after { content: '</>'; position: absolute; right: 8%; bottom: -36px; color: rgba(255,255,255,.07); font: 800 14rem/1 monospace; }
+.c-hero-content { position: relative; z-index: 1; max-width: 850px; }
+.c-hero-mark { color: var(--accent); font-size: 2rem; margin-bottom: 20px; }
+.c-eyebrow, .c-kicker { color: var(--accent); font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.c-hero h1 { max-width: 720px; font-size: clamp(2.4rem, 6vw, 4.7rem); line-height: 1.06; margin: 12px 0 20px; }
+.c-hero-copy { max-width: 620px; color: rgba(255,255,255,.82); line-height: 1.8; margin-bottom: 30px; }
+.c-content { padding: 56px 24px 80px; }
+.c-section { background: white; border-radius: 16px; padding: 36px; margin-bottom: 28px; box-shadow: 0 5px 20px rgba(25,36,65,.07); }
+.c-section h2 { color: var(--primary); font-size: 1.6rem; margin-top: 6px; }
+.c-intro { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: start; border-left: 5px solid var(--accent); }
+.c-intro > p { color: var(--gray); line-height: 1.85; }
+.c-section-heading { display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px; }
+.c-heading-icon { color: #2b7890; font-size: 1.8rem; }
+.discipline-grid, .setup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.discipline-card { padding: 22px; background: #f5f8fa; border-top: 3px solid #2b7890; }
+.discipline-card h3, .setup-card h3, .resource-panel h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.05rem; }
+.discipline-card p, .setup-card li, .setup-note { color: var(--gray); font-size: .9rem; line-height: 1.7; }
+.setup-grid { grid-template-columns: repeat(2, 1fr); }
+.setup-card { border: 1px solid #e1e8ed; border-radius: 10px; padding: 24px; }
+.setup-icon { color: #2b7890; font-size: 1.8rem; margin-bottom: 14px; }
+.setup-card ol { padding-left: 20px; margin: 0 0 18px; }
+.resource-link { display: inline-flex; gap: 8px; align-items: center; color: var(--primary); font-weight: 700; font-size: .86rem; text-decoration: none; }
+.resource-link:hover { color: #2b7890; }
+.setup-note { margin-top: 18px; font-size: .78rem; }
+.learning-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.topic-list { border-top: 1px solid #e5eaee; }
+.topic-item { display: flex; align-items: center; gap: 16px; padding: 15px 0; border-bottom: 1px solid #e5eaee; color: var(--primary); }
+.topic-item span { color: #2b7890; font: 700 .8rem monospace; }
+.topic-item strong { font-size: .9rem; }
+.resource-panel { background: #f5f8fa; padding: 24px; }
+.resource-card { display: flex; align-items: center; gap: 12px; color: var(--primary); background: white; padding: 15px; margin-top: 12px; text-decoration: none; border-left: 3px solid var(--accent); }
+.resource-card > svg:first-child { color: #d94c3d; flex-shrink: 0; }
+.resource-card > svg:last-child { font-size: .75rem; margin-left: auto; flex-shrink: 0; }
+.resource-card span { display: flex; flex-direction: column; gap: 3px; }
+.resource-card small { color: var(--gray); font-size: .75rem; }
+.c-next-step { display: flex; gap: 22px; align-items: start; background: var(--primary); color: white; padding: 32px 36px; border-radius: 16px; }
+.c-next-step > span { color: var(--accent); font-size: 1.7rem; }
+.c-next-step h2 { color: white; margin: 6px 0 10px; font-size: 1.4rem; }
+.c-next-step p:last-child { color: rgba(255,255,255,.72); line-height: 1.7; font-size: .9rem; }
+@media (max-width: 700px) {
+  .c-hero { padding: 100px 0 54px; }
+  .c-hero h1 { font-size: 2.35rem; }
+  .c-hero::after { font-size: 8rem; right: -10px; }
+  .c-content { padding: 28px 16px 50px; }
+  .c-section { padding: 22px 18px; }
+  .c-intro, .discipline-grid, .setup-grid, .learning-layout { grid-template-columns: 1fr; gap: 20px; }
+  .c-section h2 { font-size: 1.25rem; }
+  .c-next-step { padding: 24px 20px; }
+}

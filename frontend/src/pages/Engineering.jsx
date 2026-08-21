@@ -48,6 +48,7 @@ export default function Engineering() {
           <div className="eng-hero-actions">
             <a href="#calculator" className="btn btn-accent"><FaCalculator /> {c('calc_btn','Calculate Cutoff')}</a>
             <a href="#colleges" className="btn btn-outline"><FaUniversity /> Explore Colleges</a>
+            <Link to="/engineering/c-programming" className="btn btn-outline">Start C Foundations</Link>
             <Link to="/engineering/choice-filling" className="btn btn-accent">Build Choice Order</Link>
           </div>
         </div>

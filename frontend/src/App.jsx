@@ -11,6 +11,7 @@ import AppPreloader from './components/AppPreloader';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 import Engineering from './pages/Engineering';
+import CProgramming from './pages/CProgramming';
 import ChoiceFilling from './pages/ChoiceFilling';
 import Paramedical from './pages/Paramedical';
 import Team from './pages/Team';
@@ -66,6 +67,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/registration" element={<PublicLayout><Registration /></PublicLayout>} />
         <Route path="/engineering" element={<PublicLayout><Engineering /></PublicLayout>} />
+        <Route path="/engineering/c-programming" element={<PublicLayout><CProgramming /></PublicLayout>} />
         <Route path="/engineering/choice-filling" element={<PublicLayout><ChoiceFilling /></PublicLayout>} />
         <Route path="/paramedical" element={<PublicLayout><Paramedical /></PublicLayout>} />
         <Route path="/our-team" element={<PublicLayout><Team /></PublicLayout>} />
