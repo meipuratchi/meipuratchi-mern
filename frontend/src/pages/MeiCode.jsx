@@ -83,7 +83,7 @@ const TOPICS = [
   {
     id: 'linked-list',
     title: 'Linked List',
-    desc: 'Pointer manipulation, dummy nodes, Floyd's cycle detection and merge patterns.',
+    desc: "Pointer manipulation, dummy nodes, Floyd's cycle detection and merge patterns.",
     color: '#315d78',
     problems: [
       { name: 'Reverse Linked List', url: 'https://leetcode.com/problems/reverse-linked-list/', diff: 'Easy' },
