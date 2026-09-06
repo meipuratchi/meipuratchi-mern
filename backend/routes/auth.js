@@ -185,8 +185,7 @@ router.post('/register', async (req, res) => {
 
 // ══════════════════════════════════════════════════════════
 //  POST /api/auth/login
-//  Step 1: verify password → send OTP → return { requiresOTP: true }
-//  Step 2: POST /api/auth/login/verify-otp → return full token
+//  Verify credentials → return JWT directly (no OTP step)
 // ══════════════════════════════════════════════════════════
 router.post('/login', async (req, res) => {
   try {
@@ -199,69 +198,12 @@ router.post('/login', async (req, res) => {
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ success: false, message: 'Incorrect password' });
 
-    // Generate OTP
-    const code = generateOTP();
-    const normalised = user.email.toLowerCase();
-    await OTP.deleteMany({ identifier: normalised, purpose: 'login' });
-    await OTP.create({ identifier: normalised, code, purpose: 'login' });
-
-    // Send OTP email (non-blocking)
-    sendOTPEmail(user.email, code, 'login').catch(console.error);
-
-    res.json({
-      success: true,
-      requiresOTP: true,
-      message: `OTP sent to ${user.email}. Enter it to complete login.`,
-      // Return masked email so frontend can show it
-      maskedEmail: user.email.replace(/(.{2})(.*)(@.*)/, '$1***$3'),
-      userId: user._id, // needed for OTP step
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
-
-// ══════════════════════════════════════════════════════════
-//  POST /api/auth/login/verify-otp
-//  Step 2 of login: verify OTP → return full JWT
-// ══════════════════════════════════════════════════════════
-router.post('/login/verify-otp', async (req, res) => {
-  try {
-    const { userId, code } = req.body;
-    if (!userId || !code) return res.status(400).json({ success: false, message: 'userId and code required' });
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-
-    const otp = await OTP.findOne({
-      identifier: user.email.toLowerCase(),
-      purpose: 'login',
-      used: false,
-    });
-
-    if (!otp) return res.status(400).json({ success: false, message: 'OTP expired. Please login again to get a new OTP.' });
-
-    otp.attempts += 1;
-    if (otp.attempts > 5) {
-      await otp.deleteOne();
-      return res.status(429).json({ success: false, message: 'Too many attempts. Please login again.' });
-    }
-
-    if (otp.code !== code) {
-      await otp.save();
-      return res.status(400).json({ success: false, message: `Incorrect OTP. ${5 - otp.attempts} attempts remaining.` });
-    }
-
-    // OTP correct — mark used, complete login
-    otp.used = true;
-    await otp.save();
-
     // Mark messages as read
     user.messages.forEach(m => { m.read = true; });
     await user.save();
 
     if (user.role === 'team') {
-      logActivity(user._id.toString(), 'login', null, null, 'Logged in via OTP');
+      logActivity(user._id.toString(), 'login', null, null, 'Logged in');
     }
 
     const token = signToken(user);

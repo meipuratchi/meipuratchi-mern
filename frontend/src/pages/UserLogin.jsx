@@ -2,14 +2,14 @@ import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   FaUser, FaLock, FaEye, FaEyeSlash, FaEnvelope,
-  FaShieldAlt, FaArrowLeft, FaKey, FaCheckCircle
+  FaArrowLeft, FaKey, FaCheckCircle, FaShieldAlt
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { loginUser, loginVerifyOTP, forgotPassword, resetPassword } from '../api';
+import { loginUser, forgotPassword, resetPassword } from '../api';
 import './UserAuth.css';
 
-// ── OTP box sub-component ─────────────────────────────────
+// OTP box sub-component (used for forgot-password flow only)
 function OtpBoxes({ otp, setOtp, otpRefs }) {
   const handleChange = (i, val) => {
     if (!/^\d?$/.test(val)) return;
@@ -38,19 +38,13 @@ function OtpBoxes({ otp, setOtp, otpRefs }) {
 }
 
 export default function UserLogin() {
-  // step: 'login' | 'otp' | 'forgot' | 'forgot-otp' | 'new-password' | 'done'
+  // step: 'login' | 'forgot' | 'forgot-otp' | 'new-password' | 'done'
   const [step, setStep]             = useState('login');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword]     = useState('');
   const [showPw, setShowPw]         = useState(false);
   const [showNewPw, setShowNewPw]   = useState(false);
   const [loading, setLoading]       = useState(false);
-
-  // Login OTP
-  const [userId, setUserId]         = useState('');
-  const [maskedEmail, setMaskedEmail] = useState('');
-  const [loginOtp, setLoginOtp]     = useState(['','','','','','']);
-  const loginOtpRefs                = useRef([]);
 
   // Forgot password
   const [fpIdentifier, setFpIdentifier] = useState('');
@@ -63,39 +57,18 @@ export default function UserLogin() {
 
   const navigate = useNavigate();
 
-  // ── Step 1: credentials ──────────────────────────────────
-  const handleCredentials = async e => {
+  // ── Direct login (no OTP) ────────────────────────────────
+  const handleLogin = async e => {
     e.preventDefault();
     setLoading(true);
     try {
       const res = await loginUser({ identifier, password });
-      if (res.data.requiresOTP) {
-        setUserId(res.data.userId);
-        setMaskedEmail(res.data.maskedEmail);
-        setStep('otp');
-        toast.success('OTP sent to your email!');
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
-    } finally { setLoading(false); }
-  };
-
-  // ── Step 2: verify login OTP ─────────────────────────────
-  const handleLoginOtp = async e => {
-    e.preventDefault();
-    const code = loginOtp.join('');
-    if (code.length < 6) { toast.error('Enter the 6-digit OTP'); return; }
-    setLoading(true);
-    try {
-      const res = await loginVerifyOTP({ userId, code });
       localStorage.setItem('userToken', res.data.token);
       localStorage.setItem('userInfo',  JSON.stringify(res.data.user));
       toast.success(`Welcome back, ${res.data.user.name}! 🎉`);
       navigate('/portal');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid OTP');
-      setLoginOtp(['','','','','','']);
-      loginOtpRefs.current[0]?.focus();
+      toast.error(err.response?.data?.message || 'Login failed');
     } finally { setLoading(false); }
   };
 
@@ -120,7 +93,6 @@ export default function UserLogin() {
     e.preventDefault();
     const code = fpOtp.join('');
     if (code.length < 6) { toast.error('Enter the 6-digit OTP'); return; }
-    // Just move to new password step — actual reset happens on submit
     setStep('new-password');
   };
 
@@ -152,7 +124,7 @@ export default function UserLogin() {
     <div className="auth-page">
       <AnimatePresence mode="wait">
 
-        {/* ══ STEP 1: Login credentials ══ */}
+        {/* ══ LOGIN ══ */}
         {step === 'login' && (
           <motion.div key="login" className="auth-card" {...slideIn}>
             <div className="auth-logo">
@@ -160,7 +132,7 @@ export default function UserLogin() {
               <h2>மெய் புரட்சி</h2>
               <p>Student Portal</p>
             </div>
-            <form onSubmit={handleCredentials}>
+            <form onSubmit={handleLogin}>
               <div className="form-group">
                 <label><FaUser /> Email or Phone</label>
                 <input value={identifier} onChange={e => setIdentifier(e.target.value)}
@@ -186,35 +158,12 @@ export default function UserLogin() {
               </div>
 
               <button type="submit" className="btn btn-primary auth-btn" disabled={loading}>
-                {loading ? 'Sending OTP...' : 'Continue →'}
+                {loading ? 'Logging in...' : 'Login →'}
               </button>
             </form>
             <p className="auth-switch">
               New here? <Link to="/portal/register">Register for free guidance →</Link>
             </p>
-          </motion.div>
-        )}
-
-        {/* ══ STEP 2: Login OTP ══ */}
-        {step === 'otp' && (
-          <motion.div key="otp" className="auth-card" {...slideIn}>
-            <div className="auth-logo">
-              <div className="otp-shield-icon"><FaShieldAlt /></div>
-              <h2>Verify Your Identity</h2>
-              <p>OTP sent to <strong>{maskedEmail}</strong></p>
-            </div>
-            <form onSubmit={handleLoginOtp}>
-              <OtpBoxes otp={loginOtp} setOtp={setLoginOtp} otpRefs={loginOtpRefs} />
-              <p className="otp-hint"><FaEnvelope /> Check your email inbox (and spam folder)</p>
-              <button type="submit" className="btn btn-primary auth-btn"
-                disabled={loading || loginOtp.join('').length < 6}>
-                {loading ? 'Verifying...' : '✅ Verify & Login'}
-              </button>
-            </form>
-            <button className="auth-back-btn"
-              onClick={() => { setStep('login'); setLoginOtp(['','','','','','']); }}>
-              <FaArrowLeft /> Back
-            </button>
           </motion.div>
         )}
 
