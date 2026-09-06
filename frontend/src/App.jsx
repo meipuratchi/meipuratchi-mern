@@ -28,6 +28,7 @@ import UserDetail from './pages/UserDetail';
 import Tickets from './pages/Tickets';
 import MeiDocs from './pages/MeiDocs';
 import IlamaiyilKal from './pages/IlamaiyilKal';
+import MeiCode from './pages/MeiCode';
 import { initMobileScrollFix } from './utils/mobileScrollFix';
 
 function PublicLayout({ children }) {
@@ -77,6 +78,7 @@ function AnimatedRoutes() {
         <Route path="/tickets" element={<PublicLayout><Tickets /></PublicLayout>} />
         <Route path="/meidocs" element={<PublicLayout><MeiDocs /></PublicLayout>} />
         <Route path="/ilamaiyil-kal" element={<PublicLayout><IlamaiyilKal /></PublicLayout>} />
+        <Route path="/meicode" element={<PublicLayout><MeiCode /></PublicLayout>} />
       </Routes>
     </AnimatePresence>
   );

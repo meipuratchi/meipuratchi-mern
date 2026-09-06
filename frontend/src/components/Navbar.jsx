@@ -14,6 +14,7 @@ const links = [
   { to: '/contact', label: 'Contact' },
   { to: '/meidocs', label: '📚 meiDocs' },
   { to: '/ilamaiyil-kal', label: 'இளமையில் கல்' },
+  { to: '/meicode', label: '💻 MeiCode' },
 ];
 
 export default function Navbar() {
@@ -44,7 +45,7 @@ export default function Navbar() {
   };
 
   // Pages where navbar should always be solid (light/white background)
-  const solidPages = ['/engineering/choice-filling', '/engineering', '/our-team', '/volunteer', '/contact', '/registration', '/paramedical', '/tickets', '/meidocs', '/ilamaiyil-kal'];
+  const solidPages = ['/engineering/choice-filling', '/engineering', '/our-team', '/volunteer', '/contact', '/registration', '/paramedical', '/tickets', '/meidocs', '/ilamaiyil-kal', '/meicode'];
   const isSolid = solidPages.some(p => location.pathname.startsWith(p));
 
   return (

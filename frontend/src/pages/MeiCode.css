@@ -1,0 +1,541 @@
+/* ─── MeiCode DSA Roadmap ─────────────────────────────────── */
+
+.meicode-page {
+  min-height: 100vh;
+  padding-top: 70px;
+  background: #f5f7fa;
+  color: var(--dark);
+}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.meicode-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #192441 0%, #263d70 65%, #315d78 100%);
+  color: #fff;
+}
+
+.meicode-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(245,166,35,0.12) 0%, transparent 60%),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.meicode-hero-inner {
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding-top: 56px;
+  padding-bottom: 56px;
+  position: relative;
+  z-index: 1;
+}
+
+.meicode-hero-copy {
+  max-width: 720px;
+}
+
+.meicode-eyebrow,
+.meicode-section-kicker {
+  display: inline-block;
+  color: var(--accent, #f5a623);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.meicode-hero h1 {
+  color: #fff;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 1.08;
+  margin: 0 0 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.meicode-accent {
+  color: #f5a623;
+}
+
+.meicode-hero-sub {
+  color: rgba(255,255,255,0.78);
+  line-height: 1.8;
+  font-size: 1rem;
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+/* Progress bar in hero */
+.meicode-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.meicode-progress-bar {
+  flex: 1;
+  min-width: 180px;
+  max-width: 360px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  overflow: hidden;
+}
+
+.meicode-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #48c78e, #f5a623);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 4px;
+}
+
+.meicode-progress-label {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Hero icon */
+.meicode-hero-icon {
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 140px;
+  flex: 0 0 140px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 28px;
+  color: #f5a623;
+  font-size: 4.5rem;
+  background: rgba(255,255,255,0.07);
+  transform: rotate(4deg);
+}
+
+/* ── Roadmap SVG map ─────────────────────────────────────── */
+.meicode-map-section {
+  padding: 52px 0 40px;
+}
+
+.meicode-map-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.meicode-map-header h2 {
+  color: #192441;
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin: 8px 0 10px;
+}
+
+.meicode-map-header p {
+  color: #6b7a95;
+  font-size: 0.92rem;
+}
+
+.meicode-map-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0 20px;
+  /* card-style wrapper */
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.meicode-svg {
+  display: block;
+  width: 100%;
+  min-width: 500px;
+  height: auto;
+}
+
+/* ── Slide-out drawer ────────────────────────────────────── */
+.meicode-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+}
+
+.meicode-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(480px, 100vw);
+  z-index: 501;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  box-shadow: -8px 0 48px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
+.meicode-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 20px 20px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.meicode-drawer-head h3 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.meicode-drawer-head p {
+  margin: 0 0 10px;
+  font-size: 0.84rem;
+  opacity: 0.82;
+  line-height: 1.6;
+}
+
+.meicode-drawer-count {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.meicode-drawer-close {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.meicode-drawer-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* Problem list */
+.meicode-problem-list {
+  list-style: none;
+  padding: 12px 16px;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.meicode-problem-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.meicode-problem-item:hover {
+  background: #f5f7fa;
+}
+
+.meicode-problem-item.done .meicode-problem-link {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.meicode-check-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+.meicode-check-btn:hover {
+  transform: scale(1.15);
+}
+
+.meicode-diff-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.meicode-problem-link {
+  flex: 1;
+  min-width: 0;
+  color: #192441;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.meicode-problem-link:hover {
+  color: #f5a623;
+}
+
+.meicode-ext-icon {
+  font-size: 0.65rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.meicode-diff-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Legend */
+.meicode-drawer-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border-top: 1px solid #eef0f4;
+  background: #f9fafb;
+  font-size: 0.75rem;
+  color: #6b7a95;
+  flex-shrink: 0;
+}
+
+.meicode-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.meicode-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.meicode-legend-note {
+  margin-left: auto;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ── All Topics Grid ─────────────────────────────────────── */
+.meicode-topics-section {
+  padding: 48px 0 80px;
+}
+
+.meicode-topics-header {
+  margin-bottom: 32px;
+}
+
+.meicode-topics-header h2 {
+  color: #192441;
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin: 8px 0 8px;
+}
+
+.meicode-topics-header p {
+  color: #6b7a95;
+  font-size: 0.92rem;
+}
+
+.meicode-topics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* Topic card */
+.meicode-topic-card {
+  padding: 22px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.meicode-topic-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+  transform: translateY(-2px);
+  border-color: rgba(25,36,65,0.15);
+}
+
+.meicode-topic-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.meicode-topic-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.meicode-topic-count {
+  color: #9aaabf;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.meicode-topic-title {
+  color: #192441;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.meicode-topic-desc {
+  color: #6b7a95;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
+}
+
+/* Progress bar in card */
+.meicode-topic-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.meicode-topic-bar-track {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: #eef0f4;
+  overflow: hidden;
+}
+
+.meicode-topic-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
+}
+
+.meicode-topic-pct {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9aaabf;
+  font-variant-numeric: tabular-nums;
+  width: 30px;
+  text-align: right;
+}
+
+.meicode-topic-cta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f5a623;
+  margin-top: 4px;
+  transition: letter-spacing 0.2s;
+}
+
+.meicode-topic-card:hover .meicode-topic-cta {
+  letter-spacing: 0.03em;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .meicode-topics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .meicode-hero-icon {
+    width: 110px;
+    height: 110px;
+    flex-basis: 110px;
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .meicode-page {
+    padding-top: 62px;
+  }
+  .meicode-hero-inner {
+    min-height: 0;
+    padding-top: 44px;
+    padding-bottom: 48px;
+  }
+  .meicode-hero-icon {
+    display: none;
+  }
+  .meicode-hero h1 {
+    font-size: 2.2rem;
+  }
+  .meicode-hero-sub {
+    font-size: 0.9rem;
+  }
+  .meicode-map-section {
+    padding: 28px 0 24px;
+  }
+  .meicode-topics-section {
+    padding: 32px 0 60px;
+  }
+  .meicode-topics-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .meicode-drawer {
+    width: 100vw;
+  }
+  .meicode-map-header h2,
+  .meicode-topics-header h2 {
+    font-size: 1.5rem;
+  }
+  .meicode-legend-note {
+    display: none;
+  }
+}
