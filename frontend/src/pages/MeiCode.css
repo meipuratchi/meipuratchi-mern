@@ -147,28 +147,56 @@
   overflow-x: auto;
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
-  padding: 8px 0 20px;
-  /* card-style wrapper */
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  border: 1px solid rgba(0,0,0,0.06);
+  padding: 24px 16px 28px;
+  /* Styled map container */
+  background: linear-gradient(135deg, #0d1b2a 0%, #192441 60%, #1e3a5f 100%);
+  border-radius: 20px;
+  box-shadow:
+    0 8px 32px rgba(13,27,42,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+}
+
+/* Dot-grid overlay on the map */
+.meicode-map-scroll::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* Scroll hint gradient on right edge */
+.meicode-map-scroll::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 32px;
+  border-radius: 0 20px 20px 0;
+  background: linear-gradient(to right, transparent, rgba(13,27,42,0.7));
+  pointer-events: none;
 }
 
 .meicode-svg {
   display: block;
   width: 100%;
-  min-width: 500px;
+  min-width: 540px;
   height: auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Slide-out drawer ────────────────────────────────────── */
 .meicode-drawer-overlay {
   position: fixed;
   inset: 0;
-  z-index: 500;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(2px);
+  z-index: 1300;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 .meicode-drawer {
@@ -176,35 +204,60 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: min(480px, 100vw);
-  z-index: 501;
+  width: min(460px, 100vw);
+  z-index: 1301;
   display: flex;
   flex-direction: column;
   background: #fff;
-  box-shadow: -8px 0 48px rgba(0,0,0,0.18);
+  box-shadow: -8px 0 48px rgba(0,0,0,0.22);
   overflow: hidden;
+}
+
+/* Close button — pinned top-right, always above navbar */
+.meicode-drawer-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.25);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  z-index: 10;
+  flex-shrink: 0;
+}
+.meicode-drawer-close:hover {
+  background: rgba(255,255,255,0.4);
 }
 
 .meicode-drawer-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  padding: 24px 20px 20px;
+  gap: 48px;          /* leaves room for the absolute close btn */
+  padding: 20px 56px 18px 20px;  /* right padding clears the close btn */
   color: #fff;
   flex-shrink: 0;
+  position: relative;
 }
 
 .meicode-drawer-head h3 {
-  margin: 0 0 6px;
-  font-size: 1.25rem;
+  margin: 0 0 5px;
+  font-size: 1.15rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .meicode-drawer-head p {
   margin: 0 0 10px;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   opacity: 0.82;
   line-height: 1.6;
 }
@@ -218,23 +271,16 @@
   font-weight: 700;
 }
 
-.meicode-drawer-close {
-  background: rgba(255,255,255,0.15);
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
-
-.meicode-drawer-close:hover {
-  background: rgba(255,255,255,0.3);
+/* On mobile push drawer below navbar (66px tall) */
+@media (max-width: 960px) {
+  .meicode-drawer {
+    top: 66px;          /* below the fixed navbar */
+    width: 100vw;
+  }
+  .meicode-drawer-close {
+    top: 10px;
+    right: 12px;
+  }
 }
 
 /* Problem list */

@@ -463,21 +463,19 @@ export default function MeiCode() {
               const y1 = f.y + NODE_H;
               const x2 = t.x + NODE_W / 2;
               const y2 = t.y;
-              const mx = (x1 + x2) / 2;
               const my = (y1 + y2) / 2;
               return (
                 <g key={`${from}-${to}`}>
                   <path
                     d={`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`}
                     fill="none"
-                    stroke="rgba(25,36,65,0.18)"
-                    strokeWidth="2"
-                    strokeDasharray="4 3"
+                    stroke="rgba(245,166,35,0.25)"
+                    strokeWidth="1.5"
+                    strokeDasharray="5 4"
                   />
-                  {/* Arrow */}
                   <polygon
                     points={`${x2},${y2} ${x2 - 5},${y2 - 8} ${x2 + 5},${y2 - 8}`}
-                    fill="rgba(25,36,65,0.3)"
+                    fill="rgba(245,166,35,0.45)"
                   />
                 </g>
               );
@@ -491,6 +489,21 @@ export default function MeiCode() {
               const pct = topicSolved / t.problems.length;
               const isActive = activeTopic === t.id;
 
+              // Node fill colours on the dark map background
+              const nodeFill   = isActive ? '#f5a623'
+                               : pct === 1 ? '#10b981'
+                               : 'rgba(255,255,255,0.10)';
+              const nodeStroke = isActive ? '#f5a623'
+                               : pct === 1 ? '#10b981'
+                               : 'rgba(255,255,255,0.22)';
+              const labelFill  = isActive ? '#0d1b2a'
+                               : pct === 1 ? '#fff'
+                               : 'rgba(255,255,255,0.92)';
+              const countFill  = isActive ? 'rgba(13,27,42,0.7)'
+                               : 'rgba(255,255,255,0.4)';
+              const trackFill  = 'rgba(255,255,255,0.12)';
+              const barFill    = pct === 1 ? '#10b981' : '#f5a623';
+
               return (
                 <g
                   key={t.id}
@@ -500,69 +513,65 @@ export default function MeiCode() {
                   role="button"
                   aria-label={`${t.title}: ${topicSolved}/${t.problems.length} solved`}
                 >
-                  {/* Node background */}
-                  <rect
-                    x={0}
-                    y={0}
-                    width={NODE_W}
-                    height={NODE_H}
-                    rx={10}
-                    fill={isActive ? t.color : pct === 1 ? '#edfaf3' : 'white'}
-                    stroke={isActive ? t.color : pct === 1 ? '#48c78e' : 'rgba(25,36,65,0.18)'}
-                    strokeWidth={isActive ? 2.5 : 1.5}
-                    filter="url(#shadow)"
-                  />
-                  {/* Progress bar inside node */}
-                  {pct > 0 && (
+                  {/* Hover glow ring */}
+                  {isActive && (
                     <rect
-                      x={6}
-                      y={NODE_H - 8}
-                      width={(NODE_W - 12) * pct}
-                      height={4}
-                      rx={2}
-                      fill="#48c78e"
+                      x={-3} y={-3}
+                      width={NODE_W + 6} height={NODE_H + 6}
+                      rx={13}
+                      fill="none"
+                      stroke="rgba(245,166,35,0.35)"
+                      strokeWidth={3}
                     />
                   )}
-                  {/* Background track */}
+                  {/* Node background */}
                   <rect
-                    x={6}
-                    y={NODE_H - 8}
-                    width={NODE_W - 12}
-                    height={4}
-                    rx={2}
-                    fill="rgba(0,0,0,0.06)"
+                    x={0} y={0}
+                    width={NODE_W} height={NODE_H}
+                    rx={10}
+                    fill={nodeFill}
+                    stroke={nodeStroke}
+                    strokeWidth={isActive ? 2 : 1.5}
+                    filter="url(#shadow)"
                   />
+                  {/* Progress track */}
+                  <rect
+                    x={6} y={NODE_H - 7}
+                    width={NODE_W - 12} height={3}
+                    rx={2}
+                    fill={trackFill}
+                  />
+                  {/* Progress fill */}
                   {pct > 0 && (
                     <rect
-                      x={6}
-                      y={NODE_H - 8}
-                      width={(NODE_W - 12) * pct}
-                      height={4}
+                      x={6} y={NODE_H - 7}
+                      width={(NODE_W - 12) * pct} height={3}
                       rx={2}
-                      fill={pct === 1 ? '#48c78e' : '#f5a623'}
+                      fill={barFill}
                     />
                   )}
                   {/* Label */}
                   <text
                     x={NODE_W / 2}
-                    y={NODE_H / 2 - 4}
+                    y={NODE_H / 2 - 3}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fontSize={pct === 1 ? 11 : 11.5}
+                    fontSize={11}
                     fontWeight="700"
-                    fill={isActive ? 'white' : pct === 1 ? '#2e7d32' : '#192441'}
-                    fontFamily="system-ui, sans-serif"
+                    fill={labelFill}
+                    fontFamily="Inter, system-ui, sans-serif"
                   >
                     {t.title.length > 20 ? t.title.substring(0, 18) + '…' : t.title}
                   </text>
                   {/* Counter */}
                   <text
-                    x={NODE_W - 8}
+                    x={NODE_W - 7}
                     y={8}
                     textAnchor="end"
-                    fontSize={9}
-                    fill={isActive ? 'rgba(255,255,255,0.8)' : '#9aaabf'}
-                    fontFamily="system-ui, sans-serif"
+                    fontSize={8.5}
+                    fill={countFill}
+                    fontFamily="Inter, system-ui, sans-serif"
+                    fontWeight="600"
                   >
                     {topicSolved}/{t.problems.length}
                   </text>
@@ -570,10 +579,10 @@ export default function MeiCode() {
               );
             })}
 
-            {/* SVG filter for shadow */}
+            {/* SVG filter for glow on dark bg */}
             <defs>
-              <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
-                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.08)" />
+              <filter id="shadow" x="-15%" y="-15%" width="130%" height="150%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.5)" />
               </filter>
             </defs>
           </svg>
