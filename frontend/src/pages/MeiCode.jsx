@@ -301,45 +301,6 @@ const TOPICS = [
   },
 ];
 
-// Dependency arrows for the roadmap SVG (from → to)
-const EDGES = [
-  ['arrays-hashing', 'two-pointers'],
-  ['arrays-hashing', 'stack'],
-  ['two-pointers', 'sliding-window'],
-  ['two-pointers', 'linked-list'],
-  ['sliding-window', 'binary-search'],
-  ['stack', 'binary-search'],
-  ['linked-list', 'trees'],
-  ['binary-search', 'trees'],
-  ['trees', 'heap'],
-  ['trees', 'backtracking'],
-  ['trees', 'tries'],
-  ['heap', 'graphs'],
-  ['backtracking', 'graphs'],
-  ['tries', 'graphs'],
-  ['graphs', 'dp-1d'],
-  ['graphs', 'advanced-graphs'],
-  ['graphs', 'intervals'],
-  ['dp-1d', 'dp-2d'],
-  ['dp-1d', 'greedy'],
-  ['dp-2d', 'bit-manipulation'],
-  ['greedy', 'bit-manipulation'],
-  ['bit-manipulation', 'math-geometry'],
-];
-
-// Layout: each row of topic IDs for the visual map
-const ROWS = [
-  ['arrays-hashing'],
-  ['two-pointers', 'stack'],
-  ['sliding-window', 'binary-search', 'linked-list'],
-  ['trees'],
-  ['heap', 'backtracking', 'tries'],
-  ['graphs', 'intervals'],
-  ['advanced-graphs', 'dp-1d', 'greedy'],
-  ['dp-2d', 'bit-manipulation'],
-  ['math-geometry'],
-];
-
 const DIFF_COLOR = { Easy: '#48c78e', Medium: '#f5a623', Hard: '#f87171' };
 
 // ── Track localStorage for solved ──
@@ -363,44 +324,6 @@ export default function MeiCode() {
     toggleSolved(key);
     setSolved(getSolved());
   };
-
-  // Build node positions for SVG map
-  const NODE_W = 160;
-  const NODE_H = 44;
-  const COL_GAP = 180;
-  const ROW_GAP = 90;
-  const SVG_PAD = 20;
-
-  // Assign x/y to each node
-  const positions = {};
-  ROWS.forEach((row, ri) => {
-    const totalW = row.length * NODE_W + (row.length - 1) * 20;
-    const startX = SVG_PAD;
-    row.forEach((id, ci) => {
-      const rowWidth = row.length * NODE_W + (row.length - 1) * 20;
-      const colStep = rowWidth / row.length;
-      positions[id] = {
-        x: SVG_PAD + ci * (NODE_W + 20) + (row.length === 1 ? (ROWS.reduce((max, r) => Math.max(max, r.length), 0) * (NODE_W + 20) - NODE_W) / 2 : 0),
-        y: SVG_PAD + ri * ROW_GAP,
-        row: ri,
-      };
-    });
-  });
-
-  // Center single-item rows
-  const maxRowItems = Math.max(...ROWS.map(r => r.length));
-  const svgWidth = maxRowItems * (NODE_W + 20) + SVG_PAD * 2;
-  ROWS.forEach((row, ri) => {
-    if (row.length < maxRowItems) {
-      const totalUsed = row.length * NODE_W + (row.length - 1) * 20;
-      const offset = (svgWidth - SVG_PAD * 2 - totalUsed) / 2;
-      row.forEach((id, ci) => {
-        positions[id].x = SVG_PAD + offset + ci * (NODE_W + 20);
-      });
-    }
-  });
-
-  const svgHeight = ROWS.length * ROW_GAP + NODE_H + SVG_PAD * 2;
 
   const totalProblems = TOPICS.reduce((s, t) => s + t.problems.length, 0);
   const solvedCount = solved.size;
@@ -440,151 +363,165 @@ export default function MeiCode() {
         </div>
       </section>
 
-      {/* Roadmap SVG Map */}
+      {/* Roadmap SVG Map — pixel-perfect recreation of original layout */}
       <section className="meicode-map-section container">
         <AnimatedSection variant="fadeInUp" className="meicode-map-header">
           <span className="meicode-section-kicker">பாதை வரைபடம்</span>
           <h2>Learning Roadmap</h2>
-          <p>Follow the arrows — each topic builds on the previous ones. Click a node to see problems.</p>
+          <p>Follow the connections — each topic builds on the previous ones. Click a node to see problems.</p>
         </AnimatedSection>
 
         <div className="meicode-map-scroll">
           <svg
-            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+            viewBox="0 0 541 546"
             className="meicode-svg"
             aria-label="DSA Roadmap"
+            preserveAspectRatio="xMidYMid meet"
           >
-            {/* Edges */}
-            {EDGES.map(([from, to]) => {
-              const f = positions[from];
-              const t = positions[to];
-              if (!f || !t) return null;
-              const x1 = f.x + NODE_W / 2;
-              const y1 = f.y + NODE_H;
-              const x2 = t.x + NODE_W / 2;
-              const y2 = t.y;
-              const my = (y1 + y2) / 2;
-              return (
-                <g key={`${from}-${to}`}>
-                  <path
-                    d={`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`}
-                    fill="none"
-                    stroke="rgba(245,166,35,0.25)"
-                    strokeWidth="1.5"
-                    strokeDasharray="5 4"
-                  />
-                  <polygon
-                    points={`${x2},${y2} ${x2 - 5},${y2 - 8} ${x2 + 5},${y2 - 8}`}
-                    fill="rgba(245,166,35,0.45)"
-                  />
-                </g>
-              );
-            })}
+            <defs>
+              <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="160%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.6)" />
+              </filter>
+              <filter id="node-glow" x="-30%" y="-30%" width="160%" height="200%">
+                <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#f5a623" floodOpacity="0.7" />
+              </filter>
+            </defs>
 
-            {/* Nodes */}
-            {TOPICS.map(t => {
-              const pos = positions[t.id];
-              if (!pos) return null;
-              const topicSolved = t.problems.filter(p => solved.has(`${t.id}::${p.name}`)).length;
-              const pct = topicSolved / t.problems.length;
-              const isActive = activeTopic === t.id;
+            {/* ── CONNECTIONS (exact paths from dsa.html) ── */}
+            {[
+              /* Arrays → Two Pointers */    "M304 67 C304 84, 250 87, 250 105",
+              /* Arrays → Stack */           "M304 67 C304 80, 339 80, 339 96",
+              /* Two Pointers → Binary */    "M250 131 C250 138, 167 136, 167 145",
+              /* Two Pointers → Sliding */   "M250 131 C250 138, 262 138, 262 145",
+              /* Two Pointers → Linked */    "M250 131 C250 139, 362 136, 362 145",
+              /* Binary → Trees */           "M167 172 C167 203, 258 196, 258 230",
+              /* Sliding → Trees */          "M262 172 C262 195, 258 201, 258 230",
+              /* Linked → Trees */           "M362 172 C362 199, 258 194, 258 230",
+              /* Trees → Tries */            "M258 256 C258 274, 175 271, 175 291",
+              /* Trees → Backtracking */     "M258 256 C258 273, 341 270, 341 289",
+              /* Trees → Heap */             "M258 256 C258 291, 230 302, 230 335",
+              /* Trees → Graphs */           "M258 256 C258 299, 337 316, 337 355",
+              /* Backtracking → Graphs */    "M341 316 C341 330, 337 341, 337 355",
+              /* Backtracking → 1-D DP */    "M341 316 C341 333, 441 331, 441 352",
+              /* Heap → Intervals */         "M230 374 C230 389, 76 390, 76 404",
+              /* Heap → Greedy */            "M230 374 C230 400, 178 401, 178 428",
+              /* Heap → Advanced Graphs */   "M230 374 C230 394, 269 398, 269 417",
+              /* Graphs → Advanced Graphs */ "M337 382 C337 397, 269 399, 269 417",
+              /* Graphs → 2-D DP */          "M337 382 C337 405, 377 409, 377 431",
+              /* 1-D DP → 2-D DP */          "M441 392 C441 410, 377 408, 377 431",
+              /* 1-D DP → Bit Manipulation */"M441 392 C441 411, 485 411, 485 430",
+              /* 2-D DP → Math & Geometry */ "M377 471 C377 482, 447 481, 447 493",
+              /* Bit → Math & Geometry */    "M485 457 C485 477, 447 476, 447 493",
+            ].map((d, i) => (
+              <path
+                key={i}
+                d={d}
+                fill="none"
+                stroke="rgba(245,166,35,0.35)"
+                strokeWidth="1.4"
+                strokeDasharray="5 3"
+                opacity="0.85"
+              />
+            ))}
 
-              // Node fill colours on the dark map background
-              const nodeFill   = isActive ? '#f5a623'
-                               : pct === 1 ? '#10b981'
-                               : 'rgba(255,255,255,0.10)';
-              const nodeStroke = isActive ? '#f5a623'
-                               : pct === 1 ? '#10b981'
-                               : 'rgba(255,255,255,0.22)';
-              const labelFill  = isActive ? '#0d1b2a'
-                               : pct === 1 ? '#fff'
-                               : 'rgba(255,255,255,0.92)';
-              const countFill  = isActive ? 'rgba(13,27,42,0.7)'
-                               : 'rgba(255,255,255,0.4)';
-              const trackFill  = 'rgba(255,255,255,0.12)';
-              const barFill    = pct === 1 ? '#10b981' : '#f5a623';
+            {/* ── NODES (exact positions from dsa.html) ── */}
+            {[
+              { id: 'arrays-hashing',    x: 264, y: 42,  w: 80,  h: 25, label: 'Arrays & Hashing',         green: true  },
+              { id: 'two-pointers',      x: 209, y: 105, w: 81,  h: 26, label: 'Two Pointers',              green: true  },
+              { id: 'stack',             x: 299, y: 96,  w: 80,  h: 27, label: 'Stack',                     green: true  },
+              { id: 'binary-search',     x: 127, y: 145, w: 80,  h: 27, label: 'Binary Search',             green: false },
+              { id: 'sliding-window',    x: 221, y: 145, w: 82,  h: 27, label: 'Sliding Window',            green: false },
+              { id: 'linked-list',       x: 322, y: 145, w: 81,  h: 27, label: 'Linked List',               green: false },
+              { id: 'trees',             x: 218, y: 230, w: 81,  h: 26, label: 'Trees',                     green: false },
+              { id: 'tries',             x: 135, y: 291, w: 81,  h: 27, label: 'Tries',                     green: false },
+              { id: 'backtracking',      x: 300, y: 289, w: 83,  h: 27, label: 'Backtracking',              green: false },
+              { id: 'heap',              x: 190, y: 335, w: 80,  h: 39, label: 'Heap / Priority\nQueue',    green: false },
+              { id: 'graphs',            x: 296, y: 355, w: 81,  h: 27, label: 'Graphs',                    green: false },
+              { id: 'dp-1d',             x: 400, y: 352, w: 82,  h: 40, label: '1-D Dynamic\nProgramming', green: false },
+              { id: 'intervals',         x: 35,  y: 404, w: 81,  h: 27, label: 'Intervals',                 green: false },
+              { id: 'greedy',            x: 138, y: 428, w: 80,  h: 27, label: 'Greedy',                    green: false },
+              { id: 'advanced-graphs',   x: 228, y: 417, w: 81,  h: 27, label: 'Advanced Graphs',           green: false },
+              { id: 'dp-2d',             x: 336, y: 431, w: 81,  h: 40, label: '2-D Dynamic\nProgramming', green: false },
+              { id: 'bit-manipulation',  x: 445, y: 430, w: 81,  h: 27, label: 'Bit Manipulation',          green: false },
+              { id: 'math-geometry',     x: 407, y: 493, w: 80,  h: 27, label: 'Math & Geometry',           green: false },
+            ].map(node => {
+              const topicSolved = (TOPICS.find(t => t.id === node.id)?.problems || [])
+                .filter(p => solved.has(`${node.id}::${p.name}`)).length;
+              const totalP = TOPICS.find(t => t.id === node.id)?.problems.length || 1;
+              const pct = topicSolved / totalP;
+              const isActive = activeTopic === node.id;
+
+              // Colours
+              const fill   = isActive ? '#f5a623'
+                           : pct === 1 ? '#10b981'
+                           : node.green ? '#23775e'
+                           : '#505785';
+              const underlineColor = isActive ? '#0d1b2a'
+                           : pct === 1 ? '#a7f3d0'
+                           : node.green ? '#4ebf99'
+                           : '#9ea8e0';
+              const textColor = '#ffffff';
+
+              // Split label at \n for multi-line nodes
+              const lines = node.label.split('\n');
+              const lineH = 12;
+              const totalTextH = lines.length * lineH;
+              const textY = node.y + (node.h - totalTextH) / 2 + 1;
 
               return (
                 <g
-                  key={t.id}
-                  transform={`translate(${pos.x},${pos.y})`}
-                  onClick={() => setActiveTopic(activeTopic === t.id ? null : t.id)}
+                  key={node.id}
+                  onClick={() => setActiveTopic(activeTopic === node.id ? null : node.id)}
                   style={{ cursor: 'pointer' }}
                   role="button"
-                  aria-label={`${t.title}: ${topicSolved}/${t.problems.length} solved`}
+                  aria-label={node.label}
+                  filter={isActive ? 'url(#node-glow)' : 'url(#node-shadow)'}
                 >
-                  {/* Hover glow ring */}
-                  {isActive && (
+                  {/* Node rect */}
+                  <rect
+                    x={node.x} y={node.y}
+                    width={node.w} height={node.h}
+                    rx={4}
+                    fill={fill}
+                    stroke={isActive ? '#f5a623' : 'rgba(255,255,255,0.12)'}
+                    strokeWidth={isActive ? 1.5 : 0.8}
+                  />
+                  {/* Underline bar */}
+                  <rect
+                    x={node.x + 5} y={node.y + node.h - 4}
+                    width={node.w - 10} height={2}
+                    rx={1}
+                    fill={underlineColor}
+                    opacity={0.9}
+                  />
+                  {/* Progress fill over underline */}
+                  {pct > 0 && pct < 1 && (
                     <rect
-                      x={-3} y={-3}
-                      width={NODE_W + 6} height={NODE_H + 6}
-                      rx={13}
-                      fill="none"
-                      stroke="rgba(245,166,35,0.35)"
-                      strokeWidth={3}
+                      x={node.x + 5} y={node.y + node.h - 4}
+                      width={(node.w - 10) * pct} height={2}
+                      rx={1}
+                      fill="#f5a623"
                     />
                   )}
-                  {/* Node background */}
-                  <rect
-                    x={0} y={0}
-                    width={NODE_W} height={NODE_H}
-                    rx={10}
-                    fill={nodeFill}
-                    stroke={nodeStroke}
-                    strokeWidth={isActive ? 2 : 1.5}
-                    filter="url(#shadow)"
-                  />
-                  {/* Progress track */}
-                  <rect
-                    x={6} y={NODE_H - 7}
-                    width={NODE_W - 12} height={3}
-                    rx={2}
-                    fill={trackFill}
-                  />
-                  {/* Progress fill */}
-                  {pct > 0 && (
-                    <rect
-                      x={6} y={NODE_H - 7}
-                      width={(NODE_W - 12) * pct} height={3}
-                      rx={2}
-                      fill={barFill}
-                    />
-                  )}
-                  {/* Label */}
-                  <text
-                    x={NODE_W / 2}
-                    y={NODE_H / 2 - 3}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontSize={11}
-                    fontWeight="700"
-                    fill={labelFill}
-                    fontFamily="Inter, system-ui, sans-serif"
-                  >
-                    {t.title.length > 20 ? t.title.substring(0, 18) + '…' : t.title}
-                  </text>
-                  {/* Counter */}
-                  <text
-                    x={NODE_W - 7}
-                    y={8}
-                    textAnchor="end"
-                    fontSize={8.5}
-                    fill={countFill}
-                    fontFamily="Inter, system-ui, sans-serif"
-                    fontWeight="600"
-                  >
-                    {topicSolved}/{t.problems.length}
-                  </text>
+                  {/* Label text */}
+                  {lines.map((line, li) => (
+                    <text
+                      key={li}
+                      x={node.x + node.w / 2}
+                      y={textY + li * lineH + lineH / 2 - 1}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize={10}
+                      fontWeight={isActive ? '700' : '500'}
+                      fill={isActive ? '#0d1b2a' : textColor}
+                      fontFamily="Inter, Arial, sans-serif"
+                    >
+                      {line}
+                    </text>
+                  ))}
                 </g>
               );
             })}
-
-            {/* SVG filter for glow on dark bg */}
-            <defs>
-              <filter id="shadow" x="-15%" y="-15%" width="130%" height="150%">
-                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.5)" />
-              </filter>
-            </defs>
           </svg>
         </div>
       </section>

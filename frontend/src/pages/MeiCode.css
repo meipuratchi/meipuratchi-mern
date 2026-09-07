@@ -183,7 +183,9 @@
 .meicode-svg {
   display: block;
   width: 100%;
-  min-width: 540px;
+  min-width: 300px;      /* allow it to shrink on mobile */
+  max-width: 541px;      /* never wider than the original design */
+  margin: 0 auto;        /* centre it */
   height: auto;
   position: relative;
   z-index: 1;
