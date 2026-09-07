@@ -16,18 +16,18 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Tech',
-    icon: <FaCode />,
-    links: [
-      { to: '/meicode',  label: '💻 MeiCode',   sub: 'DSA roadmap & LeetCode' },
-      { to: '/meidocs',  label: '📚 meiDocs',   sub: 'Internal documentation' },
-    ],
-  },
-  {
     label: 'Business',
     icon: <FaBriefcase />,
     links: [
       { to: '/business', label: '🚀 MeiBuilds', sub: 'Web design for local businesses' },
+    ],
+  },
+  {
+    label: 'SCL Tools',
+    icon: <FaCode />,
+    links: [
+      { to: '/meicode',  label: '💻 MeiCode',   sub: 'DSA roadmap & LeetCode' },
+      { to: '/meidocs',  label: '📚 meiDocs',   sub: 'Internal documentation' },
     ],
   },
 ];

@@ -4,11 +4,11 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
   FaGraduationCap, FaArrowRight, FaUsers, FaStar, FaHeart,
-  FaCheckCircle, FaUserCircle, FaCode, FaBriefcase, FaBook,
+  FaCheckCircle, FaUserCircle, FaBriefcase,
   FaRocket, FaLaptopCode, FaBuilding, FaFlask, FaPaintBrush,
-  FaMusic, FaPhone, FaWhatsapp, FaShieldAlt, FaChartLine,
+  FaMusic, FaPhone, FaWhatsapp, FaChartLine,
 } from 'react-icons/fa';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { getStats } from '../api';
 import { useCMS } from '../hooks/useCMS';
@@ -424,35 +424,6 @@ export default function Home() {
                 <Link to="/business" className="btn btn-accent" style={{ marginTop: 16 }}>Claim Your Spot →</Link>
               </div>
             </AnimatedSection>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TOOLS HUB ───────────────────────────────────────── */}
-      <section className="h3-section" style={{ background: 'var(--light)' }}>
-        <div className="container">
-          <AnimatedSection variant="fadeInUp" className="h3-section-head text-center">
-            <div className="tag">Tools & Resources</div>
-            <h2 className="section-title">Everything You Need, In One Place</h2>
-          </AnimatedSection>
-          <div className="grid-3 h3-tools-grid">
-            {[
-              { icon: <FaCode />, title: 'MeiCode', sub: 'DSA Roadmap', desc: '18 topics, 150+ LeetCode problems linked. Track your progress.', to: '/meicode', cta: 'Start Practicing', color: '#192441' },
-              { icon: <FaBook />, title: 'meiDocs', sub: 'Internal Docs', desc: 'Onboarding guides, tech stack tutorials, and team documentation.', to: '/meidocs', cta: 'Read Docs', color: '#2563eb' },
-              { icon: <FaBriefcase />, title: 'MeiBuilds', sub: 'Business Services', desc: 'Affordable MERN stack websites for local small businesses.', to: '/business', cta: 'Learn More', color: '#f5a623' },
-            ].map((tool, i) => (
-              <AnimatedSection key={i} variant="fadeInUp" delay={i * 0.09}>
-                <div className="h3-tool-card card">
-                  <div className="h3-tool-icon" style={{ background: tool.color }}>{tool.icon}</div>
-                  <div className="h3-tool-badge">{tool.sub}</div>
-                  <h3>{tool.title}</h3>
-                  <p>{tool.desc}</p>
-                  <Link to={tool.to} className="h3-tool-cta">
-                    {tool.cta} <FaArrowRight />
-                  </Link>
-                </div>
-              </AnimatedSection>
-            ))}
           </div>
         </div>
       </section>
