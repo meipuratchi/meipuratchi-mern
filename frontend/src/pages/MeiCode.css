@@ -191,6 +191,52 @@
   z-index: 1;
 }
 
+/* ── SVG node & edge animations ─────────────────────────── */
+
+/* Edges fade + draw in */
+@keyframes mc-edge-in {
+  from { opacity: 0; stroke-dashoffset: 40; }
+  to   { opacity: 1; stroke-dashoffset: 0; }
+}
+.mc-edge {
+  stroke-dasharray: 5 3;
+  stroke-dashoffset: 40;
+  opacity: 0;
+  animation: mc-edge-in 0.5s ease forwards;
+}
+
+/* Nodes pop in */
+@keyframes mc-node-pop {
+  0%   { opacity: 0; transform: scale(0.7); }
+  70%  { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.mc-node-rect {
+  opacity: 0;
+  transform-origin: center;
+  animation: mc-node-pop 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Glow ring pulse on active node */
+@keyframes mc-glow-pulse {
+  0%, 100% { opacity: 0.5; r: 3; }
+  50%       { opacity: 1;   r: 5; }
+}
+.mc-glow-ring {
+  animation: mc-glow-pulse 1.8s ease-in-out infinite;
+}
+
+/* Hover: nodes scale up slightly */
+.mc-node:hover .mc-node-rect {
+  filter: brightness(1.15);
+  transition: filter 0.15s ease;
+}
+
+/* Active node keeps glow */
+.mc-node--active .mc-node-rect {
+  filter: drop-shadow(0 0 6px rgba(245,166,35,0.7));
+}
+
 /* ── Slide-out drawer ────────────────────────────────────── */
 .meicode-drawer-overlay {
   position: fixed;

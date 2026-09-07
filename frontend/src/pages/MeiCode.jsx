@@ -383,11 +383,13 @@ export default function MeiCode() {
                 <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.6)" />
               </filter>
               <filter id="node-glow" x="-30%" y="-30%" width="160%" height="200%">
-                <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#f5a623" floodOpacity="0.7" />
+                <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#f5a623" floodOpacity="0.9" />
               </filter>
+              <linearGradient id="edge-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="rgba(245,166,35,0.55)" />
+                <stop offset="100%" stopColor="rgba(245,166,35,0.15)" />
+              </linearGradient>
             </defs>
-
-            {/* ── CONNECTIONS (exact paths from dsa.html) ── */}
             {[
               /* Arrays → Two Pointers */    "M304 67 C304 84, 250 87, 250 105",
               /* Arrays → Stack */           "M304 67 C304 80, 339 80, 339 96",
@@ -417,10 +419,11 @@ export default function MeiCode() {
                 key={i}
                 d={d}
                 fill="none"
-                stroke="rgba(245,166,35,0.35)"
+                stroke="url(#edge-grad)"
                 strokeWidth="1.4"
                 strokeDasharray="5 3"
-                opacity="0.85"
+                className="mc-edge"
+                style={{ animationDelay: `${i * 55}ms` }}
               />
             ))}
 
@@ -444,7 +447,7 @@ export default function MeiCode() {
               { id: 'dp-2d',             x: 336, y: 431, w: 81,  h: 40, label: '2-D Dynamic\nProgramming', green: false },
               { id: 'bit-manipulation',  x: 445, y: 430, w: 81,  h: 27, label: 'Bit Manipulation',          green: false },
               { id: 'math-geometry',     x: 407, y: 493, w: 80,  h: 27, label: 'Math & Geometry',           green: false },
-            ].map(node => {
+            ].map((node, nodeIdx) => {
               const topicSolved = (TOPICS.find(t => t.id === node.id)?.problems || [])
                 .filter(p => solved.has(`${node.id}::${p.name}`)).length;
               const totalP = TOPICS.find(t => t.id === node.id)?.problems.length || 1;
@@ -456,17 +459,24 @@ export default function MeiCode() {
                            : pct === 1 ? '#10b981'
                            : node.green ? '#23775e'
                            : '#505785';
-              const underlineColor = isActive ? '#0d1b2a'
+              const underlineColor = isActive ? 'rgba(13,27,42,0.4)'
                            : pct === 1 ? '#a7f3d0'
                            : node.green ? '#4ebf99'
                            : '#9ea8e0';
-              const textColor = '#ffffff';
+              const textColor = isActive ? '#0d1b2a' : '#ffffff';
 
-              // Split label at \n for multi-line nodes
-              const lines = node.label.split('\n');
-              const lineH = 12;
-              const totalTextH = lines.length * lineH;
-              const textY = node.y + (node.h - totalTextH) / 2 + 1;
+              // ── Text alignment ─────────────────────────────
+              // Split on \n for multi-line nodes
+              const lines  = node.label.split('\n');
+              const lineH  = 11;          // px per line
+              const fontSize = 9.5;
+
+              // Centre the text block vertically inside the node.
+              // Leave 5px at bottom for the underline bar.
+              const usableH   = node.h - 6;          // space above the bar
+              const blockH    = lines.length * lineH;
+              // cy = centre of usable area
+              const blockTop  = node.y + (usableH - blockH) / 2;
 
               return (
                 <g
@@ -475,26 +485,41 @@ export default function MeiCode() {
                   style={{ cursor: 'pointer' }}
                   role="button"
                   aria-label={node.label}
-                  filter={isActive ? 'url(#node-glow)' : 'url(#node-shadow)'}
+                  className={`mc-node ${isActive ? 'mc-node--active' : ''}`}
                 >
-                  {/* Node rect */}
+                  {/* Active outer glow ring */}
+                  {isActive && (
+                    <rect
+                      x={node.x - 3} y={node.y - 3}
+                      width={node.w + 6} height={node.h + 6}
+                      rx={6}
+                      fill="none"
+                      stroke="rgba(245,166,35,0.5)"
+                      strokeWidth={2}
+                      className="mc-glow-ring"
+                    />
+                  )}
+
+                  {/* Node background */}
                   <rect
                     x={node.x} y={node.y}
                     width={node.w} height={node.h}
                     rx={4}
                     fill={fill}
-                    stroke={isActive ? '#f5a623' : 'rgba(255,255,255,0.12)'}
-                    strokeWidth={isActive ? 1.5 : 0.8}
+                    stroke={isActive ? '#fbbf24' : 'rgba(255,255,255,0.14)'}
+                    strokeWidth={isActive ? 1.5 : 0.7}
+                    className="mc-node-rect"
+                    style={{ animationDelay: `${nodeIdx * 40}ms` }}
                   />
-                  {/* Underline bar */}
+
+                  {/* Bottom underline bar (always shown) */}
                   <rect
                     x={node.x + 5} y={node.y + node.h - 4}
                     width={node.w - 10} height={2}
                     rx={1}
                     fill={underlineColor}
-                    opacity={0.9}
                   />
-                  {/* Progress fill over underline */}
+                  {/* Progress fill on top of bar */}
                   {pct > 0 && pct < 1 && (
                     <rect
                       x={node.x + 5} y={node.y + node.h - 4}
@@ -503,18 +528,19 @@ export default function MeiCode() {
                       fill="#f5a623"
                     />
                   )}
-                  {/* Label text */}
+
+                  {/* Label lines — properly centred */}
                   {lines.map((line, li) => (
                     <text
                       key={li}
                       x={node.x + node.w / 2}
-                      y={textY + li * lineH + lineH / 2 - 1}
+                      y={blockTop + li * lineH + lineH * 0.72}
                       textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize={10}
-                      fontWeight={isActive ? '700' : '500'}
-                      fill={isActive ? '#0d1b2a' : textColor}
+                      fontSize={fontSize}
+                      fontWeight="600"
+                      fill={textColor}
                       fontFamily="Inter, Arial, sans-serif"
+                      letterSpacing="0.1"
                     >
                       {line}
                     </text>
