@@ -200,7 +200,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — rendered as portal-like sibling outside nav flow */}
       <AnimatePresence>
         {open && (
           <>
@@ -209,6 +209,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setOpen(false)}
             />
             <motion.div
@@ -216,52 +217,86 @@ export default function Navbar() {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 340, damping: 36 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 34 }}
             >
+              {/* Drawer header */}
               <div className="nav3-mobile-head">
-                <span className="nav3-mobile-title">மெய் புரட்சி 3.0</span>
-                <button onClick={() => setOpen(false)} className="nav3-mobile-close">
+                <div className="nav3-mobile-brand">
+                  <img src="/mei_logo.png" alt="Meipuratchi" />
+                  <span className="nav3-mobile-title">மெய் புரட்சி <em>3.0</em></span>
+                </div>
+                <button onClick={() => setOpen(false)} className="nav3-mobile-close" aria-label="Close menu">
                   <FaTimes />
                 </button>
               </div>
 
+              {/* Drawer links */}
               <div className="nav3-mobile-body">
-                <Link to="/" className="nav3-mob-link" onClick={() => setOpen(false)}>
-                  <FaHome /> Home
+                <Link to="/" className={`nav3-mob-link ${location.pathname === '/' ? 'mob-active' : ''}`} onClick={() => setOpen(false)}>
+                  <span className="nav3-mob-icon"><FaHome /></span>
+                  <span className="nav3-mob-label">Home</span>
                 </Link>
 
                 {NAV_GROUPS.map(group => (
                   <div key={group.label} className="nav3-mob-section">
-                    <span className="nav3-mob-section-title">{group.icon} {group.label}</span>
+                    <span className="nav3-mob-section-title">
+                      <span className="nav3-mob-section-icon">{group.icon}</span>
+                      {group.label}
+                    </span>
                     {group.links.map(l => (
-                      <Link key={l.to} to={l.to} className="nav3-mob-link indent" onClick={() => setOpen(false)}>
-                        {l.label}
+                      <Link
+                        key={l.to}
+                        to={l.to}
+                        className={`nav3-mob-link nav3-mob-indent ${location.pathname.startsWith(l.to) ? 'mob-active' : ''}`}
+                        onClick={() => setOpen(false)}
+                      >
+                        <span className="nav3-mob-label">{l.label}</span>
                         <span className="nav3-mob-sub">{l.sub}</span>
                       </Link>
                     ))}
                   </div>
                 ))}
 
+                <div className="nav3-mob-divider" />
+
                 {PLAIN_LINKS.map(l => (
-                  <Link key={l.to} to={l.to} className="nav3-mob-link" onClick={() => setOpen(false)}>
-                    {l.icon} {l.label}
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    className={`nav3-mob-link ${location.pathname === l.to ? 'mob-active' : ''}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="nav3-mob-icon">{l.icon}</span>
+                    <span className="nav3-mob-label">{l.label}</span>
                   </Link>
                 ))}
               </div>
 
+              {/* Drawer footer CTA */}
               <div className="nav3-mobile-foot">
                 {userInfo ? (
                   <>
-                    <Link to="/portal" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => setOpen(false)}>
+                    <Link
+                      to="/portal"
+                      className="nav3-mob-cta"
+                      onClick={() => setOpen(false)}
+                    >
                       <FaUserCircle /> {userInfo.name.split(' ')[0]}
                     </Link>
-                    <button className="btn btn-outline-dark" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} onClick={() => { logout(); setOpen(false); }}>
+                    <button
+                      className="nav3-mob-logout"
+                      onClick={() => { logout(); setOpen(false); }}
+                    >
                       <FaSignOutAlt /> Logout
                     </button>
                   </>
                 ) : (
-                  <Link to="/registration" className="btn btn-accent" style={{ width: '100%', justifyContent: 'center' }} onClick={() => setOpen(false)}>
-                    Register Free — No Cost
+                  <Link
+                    to="/registration"
+                    className="nav3-mob-cta nav3-mob-cta--accent"
+                    onClick={() => setOpen(false)}
+                  >
+                    <FaGraduationCap /> Register Free — No Cost
                   </Link>
                 )}
               </div>
